@@ -3,6 +3,7 @@
 html,
 body {
 	font-size: 22px;
+	color: #313131;
 }
 
 @media screen and (max-width: 360px) {
@@ -18,12 +19,14 @@ body {
 		font-size: 26px;
 	}
 }
+
 @media screen and (max-width: 320px) {
 	html,
 	body {
 		font-size: 16px;
 	}
 }
+
 * {
 	margin: 0px;
 	padding: 0;
@@ -46,7 +49,8 @@ img {
 	pointer-events: none;
 }
 
-textarea {
+textarea,
+input {
 	padding: 0px;
 	border: none;
 	outline: none;
@@ -103,7 +107,7 @@ textarea {
 
 /*flex布局*/
 
-.flexBox {
+.flex {
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: -ms-flexbox;
@@ -163,8 +167,17 @@ textarea {
 	opacity: 0;
 }
 
+
 /*按钮*/
-.cube-btn.color{
+
+.cube-btn {
+	height: 2rem;
+	line-height: 2rem;
+	padding: 0;
+	border-radius: 1rem;
+}
+
+.cube-btn.color {
 	background: #db3749;
 	background: -webkit-linear-gradient(left, #e25c34, #db3749);
 	/* Safari 5.1 - 6.0 */
@@ -175,6 +188,17 @@ textarea {
 	background: linear-gradient(to right, #e25c34, #db3749);
 	/* 标准的语法 */
 }
+
+.cube-btn.white {
+	background: #fff;
+	color: #313131;
+}
+
+.cube-btn.none {
+	background: none;
+	color: #313131;
+}
+
 
 /*checkbox*/
 
@@ -391,6 +415,7 @@ textarea {
 
 /*下拉收回*/
 
+
 /*.slide {
 	width: 22px;
 	height: 29px;
@@ -537,7 +562,6 @@ textarea {
 	color: #3E3A39
 }
 
-.xcomponent-outlet{
-	width:100%!important;	
+.xcomponent-outlet {
+	width: 100%!important;
 }
-

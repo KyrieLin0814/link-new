@@ -12,8 +12,10 @@ const getters = {
 };
 
 const mutations = {
-	show(state,param) {
-		state.data = param;
+	langFunc(state,param) {
+		state.langType = param;
+		console.log(param)
+		localStorage.setItem("lang", param);
 	}
 };
 const store = new Vuex.Store({

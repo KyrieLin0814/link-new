@@ -96,7 +96,7 @@ export default {
   	this.$store.commit('show','22')
   	console.log(this.$store.getters.isShow)
   	
-  	this.$tools.func()
+//	this.$tools.func()
   	
 //	this.$get('/')
 //    .then((response) => {

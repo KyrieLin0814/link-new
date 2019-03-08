@@ -1,5 +1,34 @@
 module.exports = {
 	message: {
+//		login
+		inputTxt:'请输入19/20位的ICCID卡号',
+		welcome:'欢迎您！',
+		loginBtn1:'查询登录',
+		loginBtn2:'随便看看',
+		loginBtn3:'有卡登陆',
+		loginBtn4:'商家登陆',
+		bussinessLogin: '商家登录',
+		userLogin: '用户登录',
+		enterUN: '请输入用户名',
+		enterPW: '请输入密码',
+		tips: '为了给您推荐更好的内容请根据需求进行选择',
+		wlw: '物联网',
+		lvk:'旅游卡',
+		tcsy:"套餐适用",
+		znsb:'智能手表',
+		gzq:'跟踪器',
+		fyj:'翻译机',
+		sim:'手机卡',
+		qrxz:'确认选择',
+		
+//		tips
+		ts: '提示',
+	 	confirm:'确定',
+	 	cancel:'取消',
+		
+		
+		
+		
 		noData:'暂无套餐数据',
 		help:'帮助中心',
 		myOrder:'我的订单',
@@ -43,8 +72,6 @@ module.exports = {
 	 	placeholder:'( 输入文本框 )',
 	 	enterTxt:'输入旅游卡背面的deviceId编号',
 	 	note:'注意：请您输入您要绑定套餐的领科物联网全球电话卡背面的deviceId，将以最后一次绑定为准。',
-	 	confirm:'确定',
-	 	cancel:'取消',
 	 	
 	 	chooseWay1: '选择领科物联网卡或收货方式',
 	 	chooseWay2: '绑定领科物联网卡',

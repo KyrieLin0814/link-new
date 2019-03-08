@@ -1,5 +1,34 @@
 module.exports = {
 	message: {
+//		login
+		inputTxt:'Please enter the card number',
+		welcome:'Welcome!',
+		loginBtn1:'Sign in',
+		loginBtn2:'Look around',
+		loginBtn3:'Have card',
+		loginBtn4:'Login',
+		bussinessLogin: 'Businessmen login',
+		userLogin: 'User login',
+		enterUN: 'Username',
+		enterPW: 'Password',
+		tips: 'In order to recommend better content for you, please choose according to your needs.',
+		wlw: 'Internet of things',
+		lvk:'Travel card',
+		tcsy:"✔",
+		znsb:'Intelligent Watch',
+		gzq:'Tracker',
+		fyj:'Interpreter',
+		sim:'Mobile card',
+		qrxz:'Confirm',
+		
+//		tips
+		ts: 'Prompt',
+		confirm:'Confirm',
+	 	cancel:'Cancel',
+		
+		
+		
+		
 		noData:'No package data.',
 		help:'Help center',
 		myOrder:'My order',
@@ -43,8 +72,7 @@ module.exports = {
 	 	placeholder:'(Input text box)',
 	 	enterTxt:'Enter the deviceId number on the back of the travel card.',
 	 	note:'Note: Please enter deviceId on the back of the Internet of Things Global Phone Card that you want to bind to the package, which will be the last binding.',
-	 	confirm:'Confirm',
-	 	cancel:'Cancel',
+	 	
 	 	
 	 	chooseWay1: 'Select card or receiving method',
 	 	chooseWay2: 'Binding Internet card',
