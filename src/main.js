@@ -13,6 +13,7 @@ import {post,get} from './axios/'
 import langEn from '@/lang/en'
 import langCn from '@/lang/cn'
 import '@/assets/css/common.css'
+import '@/assets/js/jquery-1.11.3.min.js'
 
 Vue.use(Cube)
 

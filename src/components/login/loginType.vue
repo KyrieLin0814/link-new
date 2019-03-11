@@ -38,7 +38,6 @@
 			}
 		},
 		created() {
-
 		},
 		methods: {
 			typeFunc(p){

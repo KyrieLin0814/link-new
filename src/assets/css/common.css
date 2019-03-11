@@ -149,6 +149,7 @@ input {
 	left: 0;
 	right: 0;
 	background-color: #fff;
+	overflow: hidden;
 }
 
 .body-container.bg {
@@ -175,6 +176,7 @@ input {
 	line-height: 2rem;
 	padding: 0;
 	border-radius: 1rem;
+	font-size:0.8rem;
 }
 
 .cube-btn.color {
@@ -198,6 +200,20 @@ input {
 	background: none;
 	color: #313131;
 }
+
+
+/*	tab*/
+.cube-tab-bar{
+	border-bottom:0.3rem solid #ccc;
+}
+.cube-tab_active{
+	color:#f65200;
+}
+
+
+
+
+
 
 
 /*checkbox*/
