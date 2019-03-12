@@ -13,6 +13,9 @@ import chooseCountry from '@/components/index/chooseCountry'
 import index from '@/components/index/index'
 
 
+//order
+import orderList from '@/components/order/orderList'
+
 
 
 import HelloWorld from '@/components/HelloWorld'
@@ -51,6 +54,11 @@ export default new Router({
 			path: '/chooseCountry',
 			name: 'chooseCountry',
 			component: chooseCountry
+		},
+		{
+			path: '/orderList',
+			name: 'orderList',
+			component: orderList
 		}
 		
 	]

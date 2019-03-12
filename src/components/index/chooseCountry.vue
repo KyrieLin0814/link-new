@@ -1,8 +1,7 @@
 <template>
 	<div class="body-container chooseCountry">
-		<p class="title">选择国家</p>
-
 		<div class="topContent">
+			<p class="title">选择国家</p>
 			<div class="inputBox flex">
 				<input class="flex-1" type="text" placeholder="请选择国家" v-model="param" />
 				<cube-button class="color">查询</cube-button>
