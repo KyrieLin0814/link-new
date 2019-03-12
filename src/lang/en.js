@@ -27,6 +27,10 @@ module.exports = {
 	 	cancel:'Cancel',
 		
 		
+
+//		price
+		yuanFH:'$',
+		yuan:'USD',
 		
 		
 		noData:'No package data.',
@@ -37,7 +41,6 @@ module.exports = {
 		chooseMeal:'Choose a package',
 		pullup:'Pull up the details of the product',
 		total:'Totals',
-		yuan:'USD',
 		buyNow:'Buy now',
 		addCart:'Add to cart',
 		back:'Back',

@@ -9,7 +9,7 @@
 			</div>
 			<div class="moreBtn" @click="more">更多选择</div>
 			<cube-button class="color">开始搜索</cube-button>
-			<div class="touch">向上滑动开启新世界</div>
+			<div class="touch" v-swipeup="{fn:vuetouch,name:'上滑'}">向上滑动开启新世界</div>
 		</div>
 	</div>
 </template>
@@ -23,6 +23,7 @@
 			return {
 				langType: this.$lang,
 				country: '中国',
+				name: '开始'
 			}
 		},
 		components: {
@@ -32,12 +33,17 @@
 
 		},
 		mounted() {
-			
+
 		},
 		methods: {
-			more(){
+			more() {
 				this.$router.push("/chooseCountry");
+			},
+			vuetouch: function(s, e) {
+				this.name = s.name;
+				this.$router.push("/")
 			}
+
 		}
 	}
 </script>
@@ -74,15 +80,16 @@
 			}
 			.touch {
 				position: absolute;
-				bottom: -2rem;
+				bottom: -3.6rem;
 				left: 0;
 				right: 0;
 				color: #fff;
-				line-height: 1;
+				line-height: 2;
 				font-size: 0.7rem;
 				text-align: center;
-				background: url(../../assets/image/top.png)no-repeat top center;
-				padding-top: 0.7rem;
+				background: url(../../assets/image/top.png)no-repeat center  1rem;
+				padding-top: 1.7rem;
+				padding-bottom:1rem;
 				background-size: 1rem 0.5rem;
 			}
 		}

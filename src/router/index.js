@@ -10,6 +10,7 @@ import loginShoper from '@/components/login/loginShoper'
 //index
 import screenCountry from '@/components/index/screenCountry'
 import chooseCountry from '@/components/index/chooseCountry'
+import index from '@/components/index/index'
 
 
 
@@ -34,8 +35,8 @@ export default new Router({
 		},
 		{
 			path: '/',
-			name: 'HelloWorld',
-			component: HelloWorld
+			name: 'index',
+			component: index
 		},{
 			path: '/loginType',
 			name: 'loginType',

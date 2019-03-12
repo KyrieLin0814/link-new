@@ -3,11 +3,10 @@
 		<a class="navBtn" @click="navFunc($event)"><img src="../../assets/image/nav.png"></a>
 		<div class="navMask" :class="{'show': !showNav}" @click="navFunc($event)"></div>
 		<ul class="nav" :class="{'hide': showNav}" @click="navFunc($event)">
-			<li class="logo"></li>
-			<li>帮助中心</li>
-			<li>帮助中心</li>
-			<li>帮助中心</li>
-			<li>帮助中心</li>
+			<li class="logo colorBg"><img src="../../assets/image/navLogo.png"></li>
+			<li><i class="nav1"></i>全部订单</li>
+			<li><i class="nav2"></i>帮助中心</li>
+			<li><i class="nav3"></i>联系我们</li>
 		</ul>
 	</div>
 </template>
@@ -36,6 +35,7 @@
 
 <style lang="less" scoped>
 	.navContent {
+		
 		.navBtn {
 			display: block;
 			width: 2rem;
@@ -43,9 +43,18 @@
 			right: .7rem;
 			top: .7rem;
 			position: absolute;
+			border-radius: 1rem;
+			background:#fff;
 			img {
 				display: block;
-				width: 100%;
+				width: 1.2rem;
+				margin:0 auto;
+				padding-top:0.4rem;
+			}
+		}
+		&.indexNav{
+			.navBtn{
+				position: inherit;
 			}
 		}
 		.nav {
@@ -62,14 +71,42 @@
 			border-top-left-radius: 10px;
 			transition: all 0.3s;
 			li.logo {
-				background: #ccc;
-				height: 60px;
-				margin-bottom: 0.5rem;
+				padding: 0.8rem 0;
+				margin:0 0 0.5rem;
+				img{
+					display: block;
+					width:84%;
+					margin:0 auto;
+				}
 			}
 			li {
 				text-align: center;
 				font-size: 0.8rem;
-				line-height: 2rem;
+				line-height: 2.4rem;
+				vertical-align: middle;
+				margin:0 0.5rem;
+				border-bottom:1px solid #e5e5e5;
+				i{
+					width:0.9rem;
+					height:0.9rem;
+					display: inline-block;
+					margin-right:0.3rem;
+					vertical-align: middle;
+					margin-top:-4px;
+				}
+				.nav1{
+					background: url(../../assets/image/nav1.png) no-repeat ;
+					background-size: contain;
+				}
+				.nav2{
+					background: url(../../assets/image/nav2.png) no-repeat ;
+					background-size: contain;
+				}
+				.nav3{
+					background: url(../../assets/image/nav3.png) no-repeat ;
+					background-size: contain;
+				}
+				
 			}
 			&.hide {
 				right: -6.5rem;

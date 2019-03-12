@@ -25,7 +25,10 @@ module.exports = {
 		ts: '提示',
 	 	confirm:'确定',
 	 	cancel:'取消',
-		
+	 	
+//		price
+		yuanFH:'￥',
+		yuan:'元',
 		
 		
 		
@@ -37,7 +40,7 @@ module.exports = {
 		chooseMeal:'选择套餐',
 		pullup:'上拉展开产品详情',
 		total:'总价',
-		yuan:'元',
+		
 		buyNow:'立即购买',
 		addCart:'下一步',
 		back:'返回',

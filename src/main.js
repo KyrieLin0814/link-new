@@ -12,12 +12,12 @@ import Cube from 'cube-ui'
 import {post,get} from './axios/'
 import langEn from '@/lang/en'
 import langCn from '@/lang/cn'
-import '@/assets/css/common.css'
 import '@/assets/js/jquery-1.11.3.min.js'
+import '@/assets/js/touch.js'
+
+import '@/assets/css/common.css'
 
 Vue.use(Cube)
-
-
 Vue.config.productionTip = false
 Vue.prototype.$tools = Tools
 Vue.prototype.$post = post

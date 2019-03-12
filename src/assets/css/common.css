@@ -149,7 +149,13 @@ input {
 	left: 0;
 	right: 0;
 	background-color: #fff;
-	overflow: hidden;
+}
+
+.scrollContent {
+	overflow-y: scroll;
+	width: calc(100% - 1.4rem);
+	max-height: 100%;
+	padding: 0 0.7rem;
 }
 
 .body-container.bg {
@@ -176,10 +182,11 @@ input {
 	line-height: 2rem;
 	padding: 0;
 	border-radius: 1rem;
-	font-size:0.8rem;
+	font-size: 0.8rem;
 }
 
-.cube-btn.color {
+.cube-btn.color,
+.colorBg {
 	background: #db3749;
 	background: -webkit-linear-gradient(left, #e25c34, #db3749);
 	/* Safari 5.1 - 6.0 */
@@ -203,17 +210,24 @@ input {
 
 
 /*	tab*/
-.cube-tab-bar{
-	border-bottom:0.3rem solid #ccc;
-}
-.cube-tab_active{
-	color:#f65200;
+
+.cube-tab-bar {
+	border-bottom: 0.3rem solid #ccc;
 }
 
+.cube-tab_active {
+	color: #f65200;
+}
 
 
+/*标题*/
 
-
+.title {
+	font-size: 0.9rem;
+	line-height: 2rem;
+	padding: 0 0.8rem;
+	font-weight: bold;
+}
 
 
 /*checkbox*/

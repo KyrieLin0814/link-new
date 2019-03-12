@@ -99,11 +99,6 @@
 <style lang="less" scoped>
 	.chooseCountry {
 		overflow: auto;
-		.title {
-			font-size: 1rem;
-			line-height: 2rem;
-			padding: 0 0.8rem;
-		}
 		.topContent {
 			padding: 0 0.8rem;
 			background: #fff;
