@@ -19,6 +19,10 @@ import orderList from '@/components/order/orderList'
 import orderInfo from '@/components/order/orderInfo'
 
 
+//car
+import car from '@/components/car/car'
+
+
 
 import HelloWorld from '@/components/HelloWorld'
 
@@ -72,6 +76,11 @@ export default new Router({
 			path: '/orderInfo',
 			name: 'orderInfo',
 			component: orderInfo
+		},
+		{
+			path: '/car',
+			name: 'car',
+			component: car
 		}
 		
 	]

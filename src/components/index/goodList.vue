@@ -4,7 +4,7 @@
 			<div class="head clearfix">
 				<a class="back">
 					<i @click="back"><img src="../../assets/image/left.png"/></i>
-					商品列表<span>共{{goodList.length}}种</span>
+					{{$t("message.goodList")}}<span>{{$t("message.gong")}}{{goodList.length}}{{$t("message.zhong")}}</span>
 				</a>
 				<span class="screen"><img src="../../assets/image/screen.png"/></span>
 			</div>
@@ -20,7 +20,7 @@
 							<p class="price">{{$t("message.yuanFH")}}<span>{{i.price}}</span></p>
 						</div>
 						<div class="carBox">
-							<a class="carBtn"><img src="../../assets/image/car.png" /></a>
+							<a class="carBtn" @click="addCar(i)"><img src="../../assets/image/car.png" /></a>
 						</div>
 					</li>
 				</ul>
@@ -55,6 +55,9 @@
 		methods: {
 			back() {
 				history.go(-1)
+			},
+			addCar(obj){
+				this.$router.push("/car")
 			}
 		}
 	}

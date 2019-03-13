@@ -49,7 +49,7 @@ module.exports = {
 		meatch: "套餐匹配",
 	 	costDetail:'费用详情',
 	 	tcCost:'套餐费用',
-	 	Cost:'快递费用',
+	 	kdCost:'快递费用',
 	 	kpCost:'卡片费用',
 	 	heji:'合计',
 	 	order :'订单',
@@ -73,8 +73,12 @@ module.exports = {
 		search:'查询',
 		choosedCountry:'已选择国家',
 		flxz:'分类选择',
+		goodList:'商品列表',
+		zhong:'种',
 
-
+//		car
+	 	car:'购物车',
+	 	jiesuan:'立即结算',
 
 
 
@@ -106,7 +110,6 @@ module.exports = {
 	 	txt2:'《领科物联网卡境外通信服务协议》',
 	 	addCar:'加入购物车',
 	 	mealCost:'套餐费',
-	 	car:'购物车',
 	 	mealDetail:'商品详情',
 	 	cost:'需支付',
 	 	continue:'继续购买',

@@ -250,3 +250,8 @@ input {
 	font-weight: bold;
 }
 
+/*checkBox*/
+.cube-checkbox-label{
+	width:calc(100% - 1.42em);
+}
+

@@ -74,8 +74,13 @@ module.exports = {
 		search:'Query',
 		choosedCountry:'Selected country',
 		flxz:'Classification',
+		goodList:'List of Goods',
+		zhong:' species',
 		
 		
+//		car
+	 	car:'Shopping Cart',
+	 	jiesuan:'Settle accounts',
 		
 		
 		
@@ -108,7 +113,6 @@ module.exports = {
 	 	txt2:'《Link IOT card Overseas communication service agreement》',
 	 	addCar:'Next',
 	 	mealCost:'Package cost',
-	 	car:'Shopping Cart',
 	 	mealDetail:'Commodity details',
 	 	cost:'Cost',
 	 	continue:'Continue',
