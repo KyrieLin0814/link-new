@@ -2,17 +2,17 @@
 	<div class="body-container index">
 		<div class="scrollContent">
 			<div class="top">
-				<div class="title">首页</div>
+				<div class="title">{{$t("message.homepage")}}</div>
 				<div class="flex">
-					<input :placeholder="placeholder" @focus="toScreen" class="flex-1" />
+					<input :placeholder="placeholder ? placeholder : (langType?'请选择':'Please choose')" @focus="toScreen" class="flex-1" />
 					<nav-model class="indexNav"></nav-model>
 				</div>
 			</div>
 
 			<div class="tuijian">
 				<div class="tilBox clearfix">
-					<p class="til">为您推荐</p>
-					<a class="more">查看更多</a>
+					<p class="til">{{$t("message.wntj")}}</p>
+					<a class="more">{{$t("message.ckgd")}}</a>
 				</div>
 
 				<div class="tuijianContent">
@@ -30,7 +30,7 @@
 			</div>
 
 			<div class="tejiaContent">
-				<p class="til">特价展示</p>
+				<p class="til">{{$t("message.tjzs")}}</p>
 				<div class="tejiaList clearfix">
 					<div class="content" v-for="i in tejia">
 						<div class="con">
@@ -38,7 +38,7 @@
 								<img src="../../assets/image/tejia.jpg" />
 							</div>
 							<div class="name text-2">
-								<i>特价</i>
+								<i>{{$t("message.tj")}}</i>
 								<span>{{i.name}}</span>
 							</div>
 							<div class="price flex">
@@ -48,51 +48,53 @@
 						</div>
 					</div>
 				</div>
-				<a class="more" @click="more">更多特价</a>
+				<div class="moreBox">
+					<a class="more" @click="more">{{$t("message.moreTj")}}</a>
+				</div>
 			</div>
 
 			<div class="hotType">
-				<p class="til">热门分类</p>
+				<p class="til">{{$t("message.rmfl")}}</p>
 				<div class="hotList clearfix">
 					<div class="content">
 						<div class="con" @click="hotFunc(1)">
 							<img src="../../assets/image/yazhou.jpg" />
-							<p>亚洲</p>
+							<p>{{langType?'亚洲':'Asia'}}</p>
 						</div>
 					</div>
 
 					<div class="content">
 						<div class="con" @click="hotFunc(2)">
 							<img src="../../assets/image/ouzhou.jpg" />
-							<p>欧洲</p>
+							<p>{{langType?'欧洲':'Europe'}}</p>
 						</div>
 					</div>
 
 					<div class="content">
 						<div class="con" @click="hotFunc(3)">
 							<img src="../../assets/image/feizhou.jpg" />
-							<p>非洲</p>
+							<p>{{langType?'非洲':'Africa'}}</p>
 						</div>
 					</div>
 
 					<div class="content">
 						<div class="con" @click="hotFunc(4)">
 							<img src="../../assets/image/nanmei.jpg" />
-							<p>南美洲</p>
+							<p>{{langType?'南美洲':'South America'}}</p>
 						</div>
 					</div>
 
 					<div class="content">
 						<div class="con" @click="hotFunc(5)">
 							<img src="../../assets/image/beimei.jpg" />
-							<p>北美洲</p>
+							<p>{{langType?'北美洲':'North America'}}</p>
 						</div>
 					</div>
 
 					<div class="content">
 						<div class="con" @click="hotFunc(6)">
 							<img src="../../assets/image/dayang.jpg" />
-							<p>大洋洲</p>
+							<p>{{langType?'大洋洲':'Oceania'}}</p>
 						</div>
 					</div>
 				</div>
@@ -108,9 +110,10 @@
 		name: 'index',
 		data() {
 			return {
-				langType: this.$lang,
-				placeholder: '请选择',
+				langType: this.$lang == 'cn',
+				placeholder: '',
 				tjActive: 0,
+				oldActive: null,
 				tjActiveObj: {},
 				tuijian: [{
 						name: '产品名称1产品名称1产品名称1',
@@ -171,12 +174,16 @@
 			tjFunc(idx) {
 				this.tjActive = idx
 				this.tjActiveObj = this.tuijian[idx]
+				if(this.oldActive == idx){
+					this.$router.push("/goodList")
+				}
+				this.oldActive = idx
 			},
-			more(){
-				this.$router.push('/')
+			more() {
+				this.$router.push('/goodList')
 			},
-			hotFunc(tyle){
-				this.$router.push('/')
+			hotFunc(tyle) {
+				this.$router.push('/goodList')
 			}
 		}
 	}
@@ -245,7 +252,7 @@
 							margin-top: -0.1rem;
 							transform: scale(1.1);
 							-webkit-transform: scale(1.1);
-							box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.2);
+							box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.1);
 							&:after {
 								display: none;
 							}
@@ -333,16 +340,19 @@
 					}
 				}
 			}
-			.more {
-				display: block;
-				font-size: 0.7rem;
-				color: #707070;
-				background: #eeeeee;
-				line-height: 1.2rem;
-				width: 5rem;
+			.moreBox {
 				text-align: center;
-				border-radius: 0.6rem;
-				margin: 0 auto;
+				.more {
+					display: inline-block;
+					font-size: 0.7rem;
+					color: #707070;
+					background: #eeeeee;
+					line-height: 1.3rem;
+					height:1.4rem;
+					text-align: center;
+					border-radius: 0.6rem;
+					padding:0 1rem;
+				}
 			}
 		}
 		.hotType {

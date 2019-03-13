@@ -32,10 +32,56 @@ module.exports = {
 		yuanFH:'$',
 		yuan:'USD',
 		
+	
+	
+//		button
+		back:'Back',
+		nextBuy:'Buy again',
+		clickToInfo: 'Click here for details',
+	
+//		nav
+		orderNav:'All orders',
+		helpNav:'Help center',
+		contactNav:'Contact us',
+	
+//		order	
+		myOrder:'My order',
+		orderDetail:'Order detail',
+		meatch: "Meal matching",
+	 	costDetail:'Details of cost',
+	 	tcCost:'Cost of packages',
+	 	kdCost:'Cost of express',
+	 	kpCost:'Cost of card',
+	 	heji:'Total',	
+	 	order :'Order',
+	 	gong:'Total of ',
+	 	geOrder:' orders',
+	 	
+	 	
+//		index	 	
+		homepage:'Homepage',
+		wntj:'Recommend',
+		ckgd:'More',
+		tjzs :'On sales',
+		tj:'Sale',
+		moreTj:'More Special Prices',
+		rmfl:'Classification',
+		duoxuan:'MultiSelect',
+		moreChoice:'More choices',
+		startFind:'Start search',
+		moveUp:'Move up to homepage',
+		chooseCountry:'Choose country',
+		search:'Query',
+		choosedCountry:'Selected country',
+		flxz:'Classification',
+		
+		
+		
+		
+		
+		
 		
 		noData:'No package data.',
-		help:'Help center',
-		myOrder:'My order',
 		covered:'Covered',
 		regions: 'regions',
 		chooseMeal:'Choose a package',
@@ -43,7 +89,7 @@ module.exports = {
 		total:'Totals',
 		buyNow:'Buy now',
 		addCart:'Add to cart',
-		back:'Back',
+		
 		detailsMeal:'Details of the set meal',
 		cardId:'Card number',
 		noOrder:'No order',
@@ -61,9 +107,7 @@ module.exports = {
 	 	and:'and',
 	 	txt2:'《Link IOT card Overseas communication service agreement》',
 	 	addCar:'Next',
-	 	costDetail:'Details of cost',
 	 	mealCost:'Package cost',
-	 	addTotal:'Total',
 	 	car:'Shopping Cart',
 	 	mealDetail:'Commodity details',
 	 	cost:'Cost',
@@ -92,7 +136,6 @@ module.exports = {
 	 	exceed:'More than ',
 	 	exempted1:'exempted',
 	 	exempted2:'can exempt',
-	 	heji:'Total',
 	 	paySuccess:'Purchase success',
 	 	payError:'Purchase failure',
 	 	

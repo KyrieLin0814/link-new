@@ -31,10 +31,55 @@ module.exports = {
 		yuan:'元',
 		
 		
+//		button
+		back:'返回',
+		nextBuy:'再次购买',
+	 	clickToInfo:'点击查看详情',
 		
-		noData:'暂无套餐数据',
-		help:'帮助中心',
+		
+//		nav
+		orderNav:'全部订单',
+		helpNav:'帮助中心',
+		contactNav:'联系我们',
+
+
+//		order	
 		myOrder:'我的订单',
+		orderDetail:'订单详情',
+		meatch: "套餐匹配",
+	 	costDetail:'费用详情',
+	 	tcCost:'套餐费用',
+	 	Cost:'快递费用',
+	 	kpCost:'卡片费用',
+	 	heji:'合计',
+	 	order :'订单',
+	 	gong:'共',
+	 	geOrder:'个',
+	 	
+	 	
+//		index
+		homepage:'首页',
+		wntj:'为您推荐',
+		ckgd:'查看更多',
+		tjzs :'特价展示',
+		tj:'特价',
+		moreTj:'更多特价',
+		rmfl:'热门分类',
+		duoxuan:'可多选',
+		moreChoice:'更多选择',
+		startFind:'开始搜索',
+		moveUp:'向上滑动开启新世界',
+		chooseCountry:'选择国家',
+		search:'查询',
+		choosedCountry:'已选择国家',
+		flxz:'分类选择',
+
+
+
+
+
+
+		noData:'暂无套餐数据',
 		covered:'已覆盖',
 		regions: '个地区',
 		chooseMeal:'选择套餐',
@@ -43,7 +88,6 @@ module.exports = {
 		
 		buyNow:'立即购买',
 		addCart:'下一步',
-		back:'返回',
 		detailsMeal:'套餐详情',
 		cardId:'卡号',
 		noOrder:'暂无订单',
@@ -61,9 +105,7 @@ module.exports = {
 	 	and:'和',
 	 	txt2:'《领科物联网卡境外通信服务协议》',
 	 	addCar:'加入购物车',
-	 	costDetail:'费用详情',
 	 	mealCost:'套餐费',
-	 	addTotal:'合计',
 	 	car:'购物车',
 	 	mealDetail:'商品详情',
 	 	cost:'需支付',
@@ -91,7 +133,6 @@ module.exports = {
 	 	exceed:'单笔满',
 	 	exempted1:'已免除',
 	 	exempted2:'可免除',
-	 	heji:'合计',
 	 	paySuccess:'购买成功',
 	 	payError:'购买失败',
 	 	

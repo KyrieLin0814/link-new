@@ -4,9 +4,9 @@
 		<div class="navMask" :class="{'show': !showNav}" @click="navFunc($event)"></div>
 		<ul class="nav" :class="{'hide': showNav}" @click="navFunc($event)">
 			<li class="logo colorBg"><img src="../../assets/image/navLogo.png"></li>
-			<li><i class="nav1"></i>全部订单</li>
-			<li><i class="nav2"></i>帮助中心</li>
-			<li><i class="nav3"></i>联系我们</li>
+			<li class="navItem" @click="router('/orderList')"><i class="nav1"></i>{{$t("message.orderNav")}}</li>
+			<li class="navItem" @click="router('/orderList')"><i class="nav2"></i>{{$t("message.helpNav")}}</li>
+			<li class="navItem" @click="router('/orderList')"><i class="nav3"></i>{{$t("message.contactNav")}}</li>
 		</ul>
 	</div>
 </template>
@@ -28,6 +28,10 @@
 				} else {
 					this.showNav = true
 				}
+			},
+			router(str){
+				this.$router.push(str)
+				console.log(str)
 			}
 		}
 	}
@@ -64,7 +68,7 @@
 			top: 0;
 			bottom: 0;
 			right: 0;
-			width: 6rem;
+			width: 7.2rem;
 			padding-top: 3rem;
 			box-shadow: -3px 0px 15px 3px rgba(222, 65, 63, 0.2);
 			border-bottom-left-radius: 10px;
@@ -80,7 +84,8 @@
 				}
 			}
 			li {
-				text-align: center;
+				text-align: left;
+				padding-left:0.3rem;
 				font-size: 0.8rem;
 				line-height: 2.4rem;
 				vertical-align: middle;
@@ -109,7 +114,7 @@
 				
 			}
 			&.hide {
-				right: -6.5rem;
+				right: -7.5rem;
 			}
 		}
 		.navMask {

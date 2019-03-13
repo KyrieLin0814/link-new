@@ -11,10 +11,12 @@ import loginShoper from '@/components/login/loginShoper'
 import screenCountry from '@/components/index/screenCountry'
 import chooseCountry from '@/components/index/chooseCountry'
 import index from '@/components/index/index'
+import goodList from '@/components/index/goodList'
 
 
 //order
 import orderList from '@/components/order/orderList'
+import orderInfo from '@/components/order/orderInfo'
 
 
 
@@ -40,7 +42,13 @@ export default new Router({
 			path: '/',
 			name: 'index',
 			component: index
-		},{
+		},
+		{
+			path: '/goodList',
+			name: 'goodList',
+			component: goodList
+		},
+		{
 			path: '/loginType',
 			name: 'loginType',
 			component: loginType
@@ -59,6 +67,11 @@ export default new Router({
 			path: '/orderList',
 			name: 'orderList',
 			component: orderList
+		},
+		{
+			path: '/orderInfo',
+			name: 'orderInfo',
+			component: orderInfo
 		}
 		
 	]

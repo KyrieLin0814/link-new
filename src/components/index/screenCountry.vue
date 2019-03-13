@@ -5,11 +5,11 @@
 		<div class="screenContent">
 			<div class="chooseBox flex">
 				<span class="text-1 flex-1">{{country}}</span>
-				<a class="addMore">可多选</a>
+				<a class="addMore">{{$t('message.duoxuan')}}</a>
 			</div>
-			<div class="moreBtn" @click="more">更多选择</div>
-			<cube-button class="color">开始搜索</cube-button>
-			<div class="touch" v-swipeup="{fn:vuetouch,name:'上滑'}">向上滑动开启新世界</div>
+			<div class="moreBtn" @click="more">{{$t('message.moreChoice')}}</div>
+			<cube-button class="color">{{$t('message.startFind')}}</cube-button>
+			<div class="touch" v-swipeup="{fn:vuetouch,name:'上滑'}">{{$t("message.moveUp")}}</div>
 		</div>
 	</div>
 </template>
@@ -50,6 +50,7 @@
 
 <style lang="less" scoped>
 	.screenCountry {
+		overflow: hidden;
 		background: url(../../assets/image/countryBg.jpg) no-repeat;
 		background-size: 100% 100%;
 		.screenContent {

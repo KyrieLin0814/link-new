@@ -44,7 +44,7 @@
 				this.type = p
 			},
 			confirm(){
-				
+				this.$router.push('/screenCountry')
 			}
 		}
 	}

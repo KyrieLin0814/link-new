@@ -1,14 +1,14 @@
 <template>
 	<div class="body-container chooseCountry">
 		<div class="topContent">
-			<p class="title">选择国家</p>
+			<p class="title">{{$t("message.chooseCountry")}}</p>
 			<div class="inputBox flex">
-				<input class="flex-1" type="text" placeholder="请选择国家" v-model="param" />
-				<cube-button class="color">查询</cube-button>
+				<input class="flex-1" type="text" :placeholder="placeholder" v-model="param" />
+				<cube-button class="color">{{$t("message.search")}}</cube-button>
 			</div>
 			<div class="myCountries">
 				<div class="top clearfix">
-					<p class="til">已选择国家</p>
+					<p class="til">{{$t("message.choosedCountry")}}</p>
 					<a class="clean"></a>
 				</div>
 				<ul class="clearfix">
@@ -17,7 +17,7 @@
 			</div>
 		</div>
 		<div class="list">
-			<p class="til">分类选择</p>
+			<p class="til">{{$t("message.flxz")}}</p>
 			<cube-tab-bar v-model="selectedLabel" show-slider>
 				<cube-tab v-for="(item, index) in tabs" :icon="item.icon" :label="item.label" :key="item.label">
 				</cube-tab>
@@ -32,8 +32,8 @@
 						</ul>
 					</cube-tab-panel>
 				</cube-tab-panels>
-				<div class="btns flex">
-					<cube-button class="white flex-1" @click="back">{{$t("message.cancel")}}</cube-button>
+				<div class="fixedBtns flex">
+					<cube-button class="gray flex-1" @click="back">{{$t("message.cancel")}}</cube-button>
 					<cube-button class="color flex-1" @click="confirm">{{$t("message.confirm")}}</cube-button>
 				</div>
 			</div>
@@ -47,8 +47,9 @@
 		name: 'chooseCountry',
 		data() {
 			return {
-				langType: this.$lang,
+				langType: this.$lang == 'cn',
 				param: '',
+				placeholder:'',
 				countryList: ['中国', '欧洲'],
 				selectedLabel: '全部国家',
 				tabs: [{
@@ -80,7 +81,11 @@
 
 		},
 		mounted() {
-
+			if(this.countryList.length > 0){
+				this.placeholder = this.countryList.join('/')
+			}else{
+				this.placeholder = this.langType? '请选择国家' : 'Please select countries'
+			}
 		},
 		methods: {
 			back(){
@@ -165,26 +170,6 @@
 						text-indent: 2em;
 						line-height: 1.4rem;
 					}
-				}
-				.btns{
-					position: fixed;
-					left:0;
-					right:0;
-					bottom:0;
-					padding:0.3rem 1rem;
-					background: #fff;
-					border-top:1px solid #d5d5d5;
-					button{
-						margin:0 0.5rem;
-						line-height:1.8rem;
-						height:1.8rem;
-						font-size:0.7rem;
-					}
-					.white{
-						background: #d5d5d5;
-						color:#000;
-					}
-					
 				}
 			}
 		}
