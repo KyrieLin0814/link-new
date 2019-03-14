@@ -26,12 +26,12 @@
 				if(this.num > 1) {
 					this.num--
 				}
-				event.stopPropagation(); 
 			},
-			add(event) {
+			add() {
 				if(this.num < Number(this.large)) {
 					this.num++
 				}
+				return false;
 			}
 		}
 	}

@@ -18,13 +18,15 @@
 							<p class="detail">{{i.detail}}</p>
 							<p class="price">{{$t("message.yuanFH")}}<span>{{i.price}}</span></p>
 						</div>
-
-						<div class="numModel">
-							<number-bar :large="i.large"></number-bar>
+						<div class="numModel" @click.stop>
+							<label>
+								<number-bar :large="i.large"></number-bar>
+							</label>
 						</div>
-
 					</div>
+
 				</cube-checkbox>
+
 			</cube-checkbox-group>
 		</div>
 
