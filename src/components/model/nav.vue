@@ -17,7 +17,7 @@
 		data() {
 			return {
 				showNav: true,
-				langType: this.$lang
+				langType: this.$lang == 'cn'
 			}
 		},
 		methods: {

@@ -1,7 +1,10 @@
 <template>
 	<div class="body-container bg orderList">
 		<div class="scrollContent">
-			<p class="title">{{$t("message.myOrder")}}<span>{{$t("message.gong")}}{{total}}{{$t("message.geOrder")}}</span></p>
+			<p class="title">
+				<i @click="back"><img src="../../assets/image/left.png"/></i> {{$t("message.myOrder")}}
+				<span>{{$t("message.gong")}}{{total}}{{$t("message.geOrder")}}</span>
+			</p>
 
 			<ul class="list">
 				<li class="item" v-for="i in list">
@@ -37,7 +40,7 @@
 		name: 'orderList',
 		data() {
 			return {
-				langType: this.$lang,
+				langType: this.$lang == 'cn',
 				total: '2',
 				list: [{
 					orderCode: '000025692',
@@ -61,6 +64,9 @@
 
 		},
 		methods: {
+			back() {
+				history.go(-1)
+			},
 			toInfo(obj) {
 				this.$router.push("/orderInfo")
 			}
@@ -76,6 +82,17 @@
 				margin-left: 0.5rem;
 				font-size: 0.65rem;
 				color: #bfbfbf;
+			}
+			i {
+				display: inline-block;
+				width: 0.5rem;
+				vertical-align: middle;
+				height: 100%;
+				padding-right: 0.2rem;
+				img {
+					width: 100%;
+					display: inline-block;
+				}
 			}
 		}
 		.list {

@@ -76,11 +76,26 @@ module.exports = {
 		flxz:'Classification',
 		goodList:'List of Goods',
 		zhong:' species',
+		timeChoose:'Time choice',
+		yue:' months',
 		
 		
 //		car
 	 	car:'Shopping Cart',
 	 	jiesuan:'Settle accounts',
+	 	addCar:'Add to cart',
+		buyNow:'Buy now',
+		buyNum:'Buy quantity',
+		qrdd:'Confirmation of order',
+		kpxx:'Card info',
+		kdxx:'Express info',
+		kdlx:'Express type',
+		ptkd:'Normal',
+		sf:'SF',
+	 	haveCard:'Have card',
+	 	noCard:'No card',
+	 	pay:'Pay',
+		
 		
 		
 		
@@ -92,7 +107,6 @@ module.exports = {
 		chooseMeal:'Choose a package',
 		pullup:'Pull up the details of the product',
 		total:'Totals',
-		buyNow:'Buy now',
 		addCart:'Add to cart',
 		
 		detailsMeal:'Details of the set meal',
@@ -100,7 +114,6 @@ module.exports = {
 		noOrder:'No order',
 		Relation:'Connecting my card',
 		overseas :'View overseas Internet settings' ,
-		noCard:'No card',
 		orderNum:'Order number',
 		buyTime:'Purchase time',
 		status:'Current state',
@@ -111,12 +124,10 @@ module.exports = {
 	 	txt1:'《User authorization protocol》',
 	 	and:'and',
 	 	txt2:'《Link IOT card Overseas communication service agreement》',
-	 	addCar:'Next',
 	 	mealCost:'Package cost',
 	 	mealDetail:'Commodity details',
 	 	cost:'Cost',
 	 	continue:'Continue',
-	 	pay:'Pay',
 	 	empty:'The shopping cart is empty',
 	 	recharge:'Recharge to existing IOT card',
 	 	scan:'Scan card back',
@@ -129,7 +140,6 @@ module.exports = {
 	 	chooseWay2: 'Binding Internet card',
 	 	express1:'Ordinary Express',
 	 	express2:'SF Express',
-	 	haveCard:'Existing cards，recharge to my card',
 	 	address:'Address',
 	 	edit:'Edit',
 	 	info:'Card infomation',

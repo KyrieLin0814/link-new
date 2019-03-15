@@ -8,7 +8,7 @@
 			</div>
 
 			<cube-checkbox-group v-model="checkList" class="checkboxBox">
-				<cube-checkbox :option="i.id" v-for="i in tcList">
+				<cube-checkbox :option="i.id" v-for="i in tcList" :key="i.id">
 					<div class="checkBoxContent flex">
 						<div class="imgBox">
 							<img src="../../assets/image/goodlist.jpg" />
@@ -32,7 +32,7 @@
 
 		<div class="fixedBtns flex">
 			<cube-button class="gray flex-1" @click="back">{{$t('message.cancel')}}</cube-button>
-			<cube-button class="color flex-1">
+			<cube-button class="color flex-1" @click="confirmOrder">
 				<span>{{$t("message.yuanFH")}}{{total}}</span> {{$t("message.jiesuan")}}
 			</cube-button>
 		</div>
@@ -45,7 +45,7 @@
 		name: 'car',
 		data() {
 			return {
-				langType: this.$lang,
+				langType: this.$lang == 'cn',
 				total: 0,
 				checkList: ['1'],
 				tcList: [{
@@ -81,6 +81,9 @@
 		methods: {
 			back() {
 				history.go(-1)
+			},
+			confirmOrder(){
+				this.$router.push("/confirmOrder")
 			}
 		}
 	}
@@ -121,21 +124,21 @@
 				padding-right: 0.5rem;
 				img {
 					display: block;
-					width: 7rem;
+					width: 6rem;
 				}
 			}
 			.content {
 				width: calc(100% - 9rem);
 				p {
 					max-width: 100%;
-					line-height: 1.2rem;
-					font-size: 0.8rem;
+					line-height: 1rem;
+					font-size: 0.7rem;
 					&.detail {
-						font-size: 0.7rem;
+						font-size: 0.6rem;
 						color: #bfbfbf;
 					}
 					&.price {
-						font-size: 0.7rem;
+						font-size: 0.6rem;
 						span {
 							vertical-align: bottom;
 							display: inline-block;
@@ -151,6 +154,7 @@
 				right: 0;
 				bottom: 0;
 				z-index: 99;
+				font-size:0;
 			}
 		}
 		.fixedBtns {

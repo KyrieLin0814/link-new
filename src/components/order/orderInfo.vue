@@ -77,7 +77,7 @@
 		name: 'orderInfo',
 		data() {
 			return {
-				langType: this.$lang,
+				langType: this.$lang == 'cn',
 				kd: '10',
 				kf: '10',
 				total: 0,

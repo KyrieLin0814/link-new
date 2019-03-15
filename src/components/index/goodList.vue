@@ -34,7 +34,7 @@
 		name: 'goodList',
 		data() {
 			return {
-				langType: this.$lang,
+				langType: this.$lang == 'cn',
 				goodList: [{
 					name: '套餐11111套餐11111套餐11111',
 					detail: "50MB/月",

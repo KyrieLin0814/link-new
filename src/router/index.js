@@ -12,6 +12,7 @@ import screenCountry from '@/components/index/screenCountry'
 import chooseCountry from '@/components/index/chooseCountry'
 import index from '@/components/index/index'
 import goodList from '@/components/index/goodList'
+import goodDetail from '@/components/index/goodDetail'
 
 
 //order
@@ -21,6 +22,7 @@ import orderInfo from '@/components/order/orderInfo'
 
 //car
 import car from '@/components/car/car'
+import confirmOrder from '@/components/car/confirmOrder'
 
 
 
@@ -53,6 +55,11 @@ export default new Router({
 			component: goodList
 		},
 		{
+			path: '/goodDetail',
+			name: 'goodDetail',
+			component: goodDetail
+		},
+		{
 			path: '/loginType',
 			name: 'loginType',
 			component: loginType
@@ -81,6 +88,11 @@ export default new Router({
 			path: '/car',
 			name: 'car',
 			component: car
+		},
+		{
+			path: '/confirmOrder',
+			name: 'confirmOrder',
+			component: confirmOrder
 		}
 		
 	]

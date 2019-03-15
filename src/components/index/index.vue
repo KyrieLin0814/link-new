@@ -12,7 +12,7 @@
 			<div class="tuijian">
 				<div class="tilBox clearfix">
 					<p class="til">{{$t("message.wntj")}}</p>
-					<a class="more">{{$t("message.ckgd")}}</a>
+					<a class="more" @click="tjMore">{{$t("message.ckgd")}}</a>
 				</div>
 
 				<div class="tuijianContent">
@@ -32,7 +32,7 @@
 			<div class="tejiaContent">
 				<p class="til">{{$t("message.tjzs")}}</p>
 				<div class="tejiaList clearfix">
-					<div class="content" v-for="i in tejia">
+					<div class="content" v-for="i in tejia" @click="tuijianFunc(i)">
 						<div class="con">
 							<div class="imgBox">
 								<img src="../../assets/image/tejia.jpg" />
@@ -175,14 +175,20 @@
 				this.tjActive = idx
 				this.tjActiveObj = this.tuijian[idx]
 				if(this.oldActive == idx){
-					this.$router.push("/goodList")
+					this.$router.push("/goodDetail")
 				}
 				this.oldActive = idx
+			},
+			tjMore(){
+				this.$router.push('/goodList')
+			},
+			tuijianFunc(obj){
+				this.$router.push("/goodDetail")
 			},
 			more() {
 				this.$router.push('/goodList')
 			},
-			hotFunc(tyle) {
+			hotFunc(type) {
 				this.$router.push('/goodList')
 			}
 		}

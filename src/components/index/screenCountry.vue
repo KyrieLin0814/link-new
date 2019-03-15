@@ -21,7 +21,7 @@
 		name: 'screenCountry',
 		data() {
 			return {
-				langType: this.$lang,
+				langType: this.$lang == 'cn',
 				country: '中国',
 				name: '开始'
 			}
