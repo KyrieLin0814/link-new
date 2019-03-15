@@ -1,7 +1,6 @@
 <template>
 	<div class="body-container bg confirmOrder">
 		<div class="scrollContent">
-
 			<div class="topCcontent">
 				<div class="title">{{$t("message.qrdd")}}</div>
 				<div class="topBox flex">
@@ -144,7 +143,7 @@
 				history.go(-1)
 			},
 			addressFunc() {
-
+				this.$router.push("/addressEdit")
 			},
 			chooseCard() {
 

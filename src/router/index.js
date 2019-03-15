@@ -23,6 +23,7 @@ import orderInfo from '@/components/order/orderInfo'
 //car
 import car from '@/components/car/car'
 import confirmOrder from '@/components/car/confirmOrder'
+import addressEdit from '@/components/car/addressEdit'
 
 
 
@@ -93,6 +94,11 @@ export default new Router({
 			path: '/confirmOrder',
 			name: 'confirmOrder',
 			component: confirmOrder
+		},
+		{
+			path: '/addressEdit',
+			name: 'addressEdit',
+			component: addressEdit
 		}
 		
 	]
