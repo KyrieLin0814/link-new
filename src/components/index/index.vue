@@ -14,13 +14,15 @@
 					<p class="til">{{$t("message.wntj")}}</p>
 					<a class="more" @click="tjMore">{{$t("message.ckgd")}}</a>
 				</div>
-
-				<div class="tuijianContent">
-					<div class="imageBox flex">
-						<div class="img flex-1" v-for="(i,idx) in tuijian" :class="{'active':idx == tjActive}" @click="tjFunc(idx)">
+				<div class="swiper-container">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide" v-for="(i,idx) in tuijian" @click="tjFunc($event,idx)">
 							<img src="../../assets/image/tj.jpg" />
+							<span>{{idx}}</span>
 						</div>
 					</div>
+				</div>
+				<div class="tuijianContent">
 					<div class="textBox">
 						<p class="tjName text-1">{{tjActiveObj.name}}</p>
 						<p class="tjTil text-1">{{tjActiveObj.name2}}</p>
@@ -105,6 +107,7 @@
 
 <script>
 	import NavModel from '../model/nav'
+	import Swiper from 'swiper';
 
 	export default {
 		name: 'index',
@@ -112,8 +115,6 @@
 			return {
 				langType: this.$lang == 'cn',
 				placeholder: '',
-				tjActive: 0,
-				oldActive: null,
 				tjActiveObj: {},
 				tuijian: [{
 						name: '产品名称1产品名称1产品名称1',
@@ -164,25 +165,44 @@
 
 		},
 		mounted() {
-			this.tjFunc(0)
+			var that = this
+			var width = document.body.clientWidth
+			
+			var swiper = new Swiper('.swiper-container', {
+				slidesPerView: 3,
+				spaceBetween: width * 0.05,
+				speed:100,
+				loop: true,
+				on: {
+					transitionEnd: function() {
+						var t = Number($(".swiper-slide-active span").html())
+						that.tjActiveObj = that.tuijian[t]
+					},
+				}
+			})
 
 		},
 		methods: {
 			toScreen() {
 				this.$router.push('/chooseCountry')
 			},
-			tjFunc(idx) {
-				this.tjActive = idx
+			tjFunc(e, idx) {
+				var str = $(e.currentTarget).attr('class')
+				if(str.indexOf('active') != -1) {
+					this.$router.push("/goodDetail")
+				}
+
+				return
 				this.tjActiveObj = this.tuijian[idx]
-				if(this.oldActive == idx){
+				if(this.oldActive == idx) {
 					this.$router.push("/goodDetail")
 				}
 				this.oldActive = idx
 			},
-			tjMore(){
+			tjMore() {
 				this.$router.push('/goodList')
 			},
-			tuijianFunc(obj){
+			tuijianFunc(obj) {
 				this.$router.push("/goodDetail")
 			},
 			more() {
@@ -228,7 +248,6 @@
 				}
 			}
 			.tuijianContent {
-				padding-top: 0.5rem;
 				.imageBox {
 					width: 100%;
 					.img {
@@ -354,10 +373,10 @@
 					color: #707070;
 					background: #eeeeee;
 					line-height: 1.3rem;
-					height:1.4rem;
+					height: 1.4rem;
 					text-align: center;
 					border-radius: 0.6rem;
-					padding:0 1rem;
+					padding: 0 1rem;
 				}
 			}
 		}

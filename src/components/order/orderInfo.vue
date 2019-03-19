@@ -98,11 +98,7 @@
 
 		},
 		mounted() {
-			var t = 0;
-			this.tcList.map(function(item) {
-				t = t + Number(item.price)
-			})
-			this.total = t
+			this.total = this.$tools.totalFunc(this.tcList,this.kd,this.kf)
 		},
 		methods: {
 			back() {

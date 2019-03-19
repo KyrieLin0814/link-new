@@ -7,12 +7,12 @@
 					<div class="kp">
 						<p class="til">{{$t("message.kpxx")}}</p>
 					</div>
-					<div class="kpContent flex-1">
+					<div class="kpContent flex-1 radioBox">
 						<cube-radio-group v-model="kpValue" :options="kpList" :horizontal="true" :hollowStyle="true" />
 					</div>
 				</div>
 
-				<div class="topBox flex">
+				<div class="topBox flex" v-if="kpValue=='0'">
 					<div class="kd">
 						<p class="til">{{$t("message.kdxx")}}</p>
 					</div>
@@ -21,11 +21,11 @@
 					</div>
 				</div>
 
-				<div class="topBox flex">
+				<div class="topBox flex" v-if="kpValue=='0'">
 					<div class="kp">
 						<p class="til">{{$t("message.kdlx")}}</p>
 					</div>
-					<div class="kpContent flex-1">
+					<div class="kpContent flex-1 radioBox">
 						<cube-radio-group v-model="kdValue" :options="kdList" :horizontal="true" :hollowStyle="true" />
 					</div>
 				</div>
@@ -95,7 +95,6 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
-				kpValue: '1',
 				kpList: [{
 					label: this.$t("message.haveCard"),
 					value: '1'
@@ -103,15 +102,13 @@
 					label: this.$t("message.noCard"),
 					value: '0'
 				}],
-				kdValue: '1',
 				kdList: [{
 					label: this.$t("message.ptkd") + this.$t("message.yuanFH") + 10,
-					value: '1'
+					value: '0'
 				}, {
 					label: this.$t("message.sf") + this.$t("message.yuanFH") + 15,
-					value: '0'
+					value: '1'
 				}],
-				address: '',
 				tcList: [{
 					name: '套餐11111套餐11111套餐11111',
 					detail: "50MB/月",
@@ -123,20 +120,45 @@
 					price: "188",
 					card: '卡1'
 				}],
+				kpValue: '1',
+				kdValue: '0',
+				address: '',
 				kd: '10',
-				kf: '10',
-				total: 0,
+				kf: '0',
 			}
 		},
 		created() {
 
 		},
 		mounted() {
-			var t = 0;
-			this.tcList.map(function(item) {
-				t = t + Number(item.price)
-			})
-			this.total = t
+		},
+		watch:{
+			kpValue(newVal,oldVal){
+				if(newVal=='1'){
+					this.kf='0'
+				}
+				if(newVal=='0'){
+					this.kf='10'
+				}
+			},
+			kdValue(newVal,oldVal){
+				if(newVal=='1'){
+					this.kd='15'
+				}
+				if(newVal=='0'){
+					this.kd='10'
+				}
+			},
+		},
+		computed:{
+			total:function(){
+				if(this.kpValue == '0'){
+					return this.$tools.totalFunc(this.tcList,this.kd,this.kf)
+				}else{
+					return this.$tools.totalFunc(this.tcList)
+				}
+				
+			}
 		},
 		methods: {
 			back() {

@@ -9,13 +9,19 @@ const tools = {
 			confirmBtn: v.$t('message.confirm')
 		}).show()
 	},
-	//计算价格
+	//计算总价格
 	totalFunc(arr,kd,kf){
 		var t = 0;
 		arr.map(function(item) {
 			t = t + Number(item.price)
 		})
-		this.total = t
+		if(kd){
+			t = t + Number(kd)
+		}
+		if(kf){
+			t = t + Number(kf)
+		}
+		return t
 	}
 	
 };

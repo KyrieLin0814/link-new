@@ -3,10 +3,10 @@
 		<div class="scrollContent">
 			<div class="head clearfix">
 				<a class="back">
-					<i @click="back"><img src="../../assets/image/left.png"/></i>
-					{{$t("message.goodList")}}<span>{{$t("message.gong")}}{{goodList.length}}{{$t("message.zhong")}}</span>
+					<i @click="back"><img src="../../assets/image/left.png"/></i> {{$t("message.goodList")}}
+					<span>{{$t("message.gong")}}{{goodList.length}}{{$t("message.zhong")}}</span>
 				</a>
-				<span class="screen"><img src="../../assets/image/screen.png"/></span>
+				<span class="screen" @click="screenFunc"><img src="../../assets/image/screen.png"/></span>
 			</div>
 			<div class="listContent">
 				<ul>
@@ -26,6 +26,22 @@
 				</ul>
 			</div>
 		</div>
+		
+		<div class="masker" v-if="screenFlag" @click="screenFunc"></div>
+		<div class="screenBox" :class="{'show': screenFlag}">
+			<p class="til">已选择国家</p>
+			<div class="radioBox three">
+				<cube-radio-group v-model="kpValue" :options="kpList" :horizontal="true" :hollowStyle="true" />
+			</div>
+			<p class="til">已选择时间</p>
+			<div class="radioBox three">
+				<cube-radio-group v-model="sjValue" :options="sjList" :horizontal="true" :hollowStyle="true" />
+			</div>
+			<div class="fixedBtns flex">
+				<cube-button class="gray flex-1" @click="screenFunc">{{$t('message.cancel')}}</cube-button>
+				<cube-button class="color flex-1" @click="confirm">{{$t("message.confirm")}}</cube-button>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -35,6 +51,7 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
+				screenFlag: false,
 				goodList: [{
 					name: '套餐11111套餐11111套餐11111',
 					detail: "50MB/月",
@@ -43,7 +60,35 @@
 					name: '套餐2222',
 					detail: "100MB/月",
 					price: "188"
-				}]
+				}],
+				kpList: [{
+					label: this.$t("message.haveCard"),
+					value: '1'
+				}, {
+					label: this.$t("message.noCard"),
+					value: '0'
+				}],
+				sjList: [{
+					label: '全部',
+					value: '1'
+				}, {
+					label: '日套餐',
+					value: '2'
+				}, {
+					label: '月套餐',
+					value: '3'
+				}, {
+					label: '季套餐',
+					value: '4'
+				}, {
+					label: '半年套餐',
+					value: '5'
+				}, {
+					label: '年套餐',
+					value: '6'
+				}],
+				kpValue: '1',
+				sjValue: '1'
 			}
 		},
 		created() {
@@ -56,15 +101,22 @@
 			back() {
 				history.go(-1)
 			},
-			addCar(obj){
+			addCar(obj) {
 				this.$router.push("/car")
-			}
+			},
+			screenFunc() {
+				this.screenFlag = !this.screenFlag
+			},
+			confirm(){
+				this.screenFunc()
+			},
 		}
 	}
 </script>
 
 <style lang="less" scoped>
 	.goodList {
+		overflow: hidden;
 		.head {
 			line-height: 2rem;
 			border-bottom: 1px solid #eee;
@@ -75,14 +127,14 @@
 				display: block;
 				font-size: 0.9rem;
 				color: #313131;
-				i{
+				i {
 					display: inline-block;
-					width:0.5rem;
+					width: 0.5rem;
 					vertical-align: middle;
 					height: 100%;
 					padding-right: 0.2rem;
-					img{
-						width:100%;
+					img {
+						width: 100%;
 						display: inline-block;
 					}
 				}
@@ -107,7 +159,7 @@
 			padding: 1rem 0;
 			ul {
 				li {
-					margin-bottom:1rem;
+					margin-bottom: 1rem;
 					.imgBox {
 						padding-right: 0.5rem;
 						img {
@@ -121,18 +173,18 @@
 							max-width: 100%;
 							line-height: 1.2rem;
 							font-size: 0.8rem;
-							&.detail{
-								font-size:0.7rem;
-								color:#bfbfbf;
+							&.detail {
+								font-size: 0.7rem;
+								color: #bfbfbf;
 							}
-							&.price{
-								font-size:0.7rem;
-								span{
+							&.price {
+								font-size: 0.7rem;
+								span {
 									vertical-align: bottom;
 									display: inline-block;
-									padding-left:0.2rem;
-									font-size:1rem;
-									color:#f65200;
+									padding-left: 0.2rem;
+									font-size: 1rem;
+									color: #f65200;
 								}
 							}
 						}
@@ -154,6 +206,31 @@
 					}
 				}
 			}
+		}
+		
+		.screenBox{
+			position: absolute;
+			left:0;
+			right:0;
+			bottom:-15rem;
+			background: #fff;
+			border-top-left-radius: 0.3rem;
+			border-top-right-radius: 0.3rem;
+			transition: all 0.3s;
+			-webkit-transition: all 0.3s;
+			z-index: 9;
+			padding:1rem 0.7rem;
+			padding-bottom:3.5rem;
+			&.show{
+				bottom:0
+			}
+			.til{
+				font-size:0.7rem;
+			}
+			.fixedBtns{
+				position: absolute;
+			}
+			
 		}
 	}
 </style>
