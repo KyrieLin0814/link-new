@@ -49,6 +49,8 @@ module.exports = {
 		orderDetail:'Order detail',
 		meatch: "Meal matching",
 	 	costDetail:'Details of cost',
+	 	payDetail:'Details of payment',
+	 	tcDetail:'Usage of set meals',
 	 	tcCost:'Cost of packages',
 	 	kdCost:'Cost of express',
 	 	kpCost:'Cost of card',
@@ -78,6 +80,8 @@ module.exports = {
 		zhong:' species',
 		timeChoose:'Time choice',
 		yue:' months',
+		myCard:'My card',
+		card:'Card',
 		
 		
 //		car

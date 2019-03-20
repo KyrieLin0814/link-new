@@ -48,6 +48,8 @@ module.exports = {
 		orderDetail:'订单详情',
 		meatch: "套餐匹配",
 	 	costDetail:'费用详情',
+	 	payDetail:'支付详情',
+	 	tcDetail:'套餐使用情况',
 	 	tcCost:'套餐费用',
 	 	kdCost:'快递费用',
 	 	kpCost:'卡片费用',
@@ -77,6 +79,8 @@ module.exports = {
 		zhong:'种',
 		timeChoose:'时间选择',
 		yue:'个月',
+		myCard:'我的卡片',
+		card:'卡',
 
 //		car
 	 	car:'购物车',

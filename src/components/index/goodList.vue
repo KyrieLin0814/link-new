@@ -61,32 +61,8 @@
 					detail: "100MB/月",
 					price: "188"
 				}],
-				kpList: [{
-					label: this.$t("message.haveCard"),
-					value: '1'
-				}, {
-					label: this.$t("message.noCard"),
-					value: '0'
-				}],
-				sjList: [{
-					label: '全部',
-					value: '1'
-				}, {
-					label: '日套餐',
-					value: '2'
-				}, {
-					label: '月套餐',
-					value: '3'
-				}, {
-					label: '季套餐',
-					value: '4'
-				}, {
-					label: '半年套餐',
-					value: '5'
-				}, {
-					label: '年套餐',
-					value: '6'
-				}],
+				kpList: this.$store.getters.getOptionKpList,
+				sjList: this.$store.getters.getOptionSjList,
 				kpValue: '1',
 				sjValue: '1'
 			}
@@ -206,31 +182,6 @@
 					}
 				}
 			}
-		}
-		
-		.screenBox{
-			position: absolute;
-			left:0;
-			right:0;
-			bottom:-15rem;
-			background: #fff;
-			border-top-left-radius: 0.3rem;
-			border-top-right-radius: 0.3rem;
-			transition: all 0.3s;
-			-webkit-transition: all 0.3s;
-			z-index: 9;
-			padding:1rem 0.7rem;
-			padding-bottom:3.5rem;
-			&.show{
-				bottom:0
-			}
-			.til{
-				font-size:0.7rem;
-			}
-			.fixedBtns{
-				position: absolute;
-			}
-			
 		}
 	}
 </style>

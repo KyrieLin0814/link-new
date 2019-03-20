@@ -13,6 +13,8 @@ import chooseCountry from '@/components/index/chooseCountry'
 import index from '@/components/index/index'
 import goodList from '@/components/index/goodList'
 import goodDetail from '@/components/index/goodDetail'
+import myCard from '@/components/index/myCard'
+import noCard from '@/components/index/noCard'
 
 
 //order
@@ -59,6 +61,16 @@ export default new Router({
 			path: '/goodDetail',
 			name: 'goodDetail',
 			component: goodDetail
+		},
+		{
+			path: '/myCard',
+			name: 'myCard',
+			component: myCard
+		},
+		{
+			path: '/noCard',
+			name: 'noCard',
+			component: noCard
 		},
 		{
 			path: '/loginType',

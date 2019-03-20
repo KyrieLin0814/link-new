@@ -16,7 +16,7 @@
 		name: 'loginIndex',
 		data() {
 			return {
-				langType: this.$lang == 'cn'
+				langType: this.$lang
 			}
 		},
 		created() {

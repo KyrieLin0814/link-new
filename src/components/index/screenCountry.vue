@@ -3,13 +3,29 @@
 		<nav-model></nav-model>
 
 		<div class="screenContent">
-			<div class="chooseBox flex">
+			<div class="chooseBox flex" @click="moreCountry">
 				<span class="text-1 flex-1">{{country}}</span>
 				<a class="addMore">{{$t('message.duoxuan')}}</a>
 			</div>
-			<div class="moreBtn" @click="more">{{$t('message.moreChoice')}}</div>
+			<div class="moreBtn" @click="screenFunc">{{$t('message.moreChoice')}}</div>
 			<cube-button class="color">{{$t('message.startFind')}}</cube-button>
 			<div class="touch" v-swipeup="{fn:vuetouch,name:'上滑'}">{{$t("message.moveUp")}}</div>
+		</div>
+
+		<div class="masker" v-if="screenFlag" @click="screenFunc"></div>
+		<div class="screenBox" :class="{'show': screenFlag}">
+			<p class="til">已选择国家</p>
+			<div class="radioBox three">
+				<cube-radio-group v-model="kpValue" :options="kpList" :horizontal="true" :hollowStyle="true" />
+			</div>
+			<p class="til">已选择时间</p>
+			<div class="radioBox three">
+				<cube-radio-group v-model="sjValue" :options="sjList" :horizontal="true" :hollowStyle="true" />
+			</div>
+			<div class="fixedBtns flex">
+				<cube-button class="gray flex-1" @click="screenFunc">{{$t('message.cancel')}}</cube-button>
+				<cube-button class="color flex-1" @click="confirm">{{$t("message.confirm")}}</cube-button>
+			</div>
 		</div>
 	</div>
 </template>
@@ -23,26 +39,37 @@
 			return {
 				langType: this.$lang == 'cn',
 				country: '中国',
-				name: '开始'
+				name: '开始',
+				screenFlag:false,
+				kpList: this.$store.getters.getOptionKpList,
+				sjList: this.$store.getters.getOptionSjList,
+				kpValue: '1',
+				sjValue: '1'
 			}
 		},
 		components: {
 			NavModel
 		},
 		created() {
-
+			
 		},
 		mounted() {
-
+			console.log( this.$store.getters.getOptionKpList)
 		},
 		methods: {
-			more() {
+			moreCountry() {
 				this.$router.push("/chooseCountry");
 			},
-			vuetouch: function(s, e) {
+			vuetouch(s, e) {
 				this.name = s.name;
 				this.$router.push("/")
-			}
+			},
+			screenFunc() {
+				this.screenFlag = !this.screenFlag
+			},
+			confirm(){
+				this.screenFunc()
+			},
 
 		}
 	}
@@ -88,9 +115,9 @@
 				line-height: 2;
 				font-size: 0.7rem;
 				text-align: center;
-				background: url(../../assets/image/top.png)no-repeat center  1rem;
+				background: url(../../assets/image/top.png)no-repeat center 1rem;
 				padding-top: 1.7rem;
-				padding-bottom:1rem;
+				padding-bottom: 1rem;
 				background-size: 1rem 0.5rem;
 			}
 		}

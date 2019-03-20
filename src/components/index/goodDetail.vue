@@ -59,7 +59,7 @@
 					detail: '50M/天',
 					large:'4'
 				},
-				timeValue: [1],
+				timeValue: 1,
 				options: [{
 						value: 1,
 						text: '1'

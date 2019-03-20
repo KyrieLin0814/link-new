@@ -58,6 +58,22 @@
 						</ul>
 					</div>
 
+					<div class="payBox">
+						<p class="secondTil">{{$t("message.payDetail")}}</p>
+						<ul class="contentList">
+							<li>交易方式：支付宝</li>
+							<li>交易号码：20215532645820003620</li>
+							<li>交易流水：20215532640036452</li>
+						</ul>
+					</div>
+
+					<div class="tcBox">
+						<p class="secondTil">{{$t("message.tcDetail")}}</p>
+						<div class="cards clearfix">
+							<span class="cardItem" v-for="i in cardList" :class="{'active': i.val == '1'}">{{i.text}}</span>
+						</div>
+					</div>
+
 				</div>
 
 			</div>
@@ -91,6 +107,16 @@
 					detail: "100MB/月",
 					price: "188",
 					card: '卡1'
+				}],
+				cardList: [{
+					text: '卡1',
+					val: '1'
+				}, {
+					text: '卡2',
+					val: '2'
+				}, {
+					text: '卡3',
+					val: '3'
 				}]
 			}
 		},
@@ -98,7 +124,7 @@
 
 		},
 		mounted() {
-			this.total = this.$tools.totalFunc(this.tcList,this.kd,this.kf)
+			this.total = this.$tools.totalFunc(this.tcList, this.kd, this.kf)
 		},
 		methods: {
 			back() {
@@ -163,11 +189,11 @@
 				.secondTil {
 					font-size: 0.7rem;
 					line-height: 1.2rem;
-					margin-top: 0.4rem;
+					margin-top: 0.5rem;
 				}
 				.contentList {
 					border-bottom: 2px dotted #ccc;
-					padding: 0 0.7rem 0.5rem;
+					padding: 0 0.7rem 0.7rem;
 					margin: 0 -0.7rem;
 				}
 				.tcBox {
@@ -213,13 +239,15 @@
 				}
 				.costBox {
 					ul {
-						border-bottom: 0;
 						li {
 							font-size: 0.7rem;
 							color: #a0a0a0;
 							line-height: 1rem;
 							padding: 0.4rem 0;
 							border-bottom: 1px solid #eee;
+							&:last-child {
+								border-bottom: none;
+							}
 							.thirdTil {
 								float: left;
 							}
@@ -233,6 +261,34 @@
 									font-style: normal;
 								}
 							}
+						}
+					}
+				}
+				.payBox {
+					ul {
+						li {
+							font-size: 0.6rem;
+							color: #a0a0a0;
+							line-height: 0.6rem;
+							padding: 0.3rem 0;
+						}
+					}
+				}
+				.cards {
+					padding: 0.4rem 0;
+					.cardItem {
+						border:1px solid #a0a0a0;
+						color:#a0a0a0;
+						font-size: 0.7rem;
+						line-height: 1.3rem;
+						height: 1.4rem;
+						border-radius: 0.7rem;
+						padding: 0 0.6rem;
+						margin: 0 0.5rem 0.5rem 0; 
+						&.active{
+						border:1px solid #F65200;
+							background: #F65200;
+							color: #fff;
 						}
 					}
 				}

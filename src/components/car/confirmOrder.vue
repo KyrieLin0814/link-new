@@ -77,7 +77,6 @@
 					</li>
 				</ul>
 			</div>
-
 		</div>
 
 		<div class="fixedBtns flex">
@@ -95,19 +94,20 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
-				kpList: [{
-					label: this.$t("message.haveCard"),
-					value: '1'
-				}, {
-					label: this.$t("message.noCard"),
-					value: '0'
-				}],
+				kpList: this.$store.getters.getOptionKpList,
 				kdList: [{
 					label: this.$t("message.ptkd") + this.$t("message.yuanFH") + 10,
 					value: '0'
 				}, {
 					label: this.$t("message.sf") + this.$t("message.yuanFH") + 15,
 					value: '1'
+				}],
+				cardList:[{
+					text:'卡1',
+					value:'1'
+				},{
+					text:'卡2',
+					value:'2'
 				}],
 				tcList: [{
 					name: '套餐11111套餐11111套餐11111',
@@ -130,34 +130,33 @@
 		created() {
 
 		},
-		mounted() {
-		},
-		watch:{
-			kpValue(newVal,oldVal){
-				if(newVal=='1'){
-					this.kf='0'
+		mounted() {},
+		watch: {
+			kpValue(newVal, oldVal) {
+				if(newVal == '1') {
+					this.kf = '0'
 				}
-				if(newVal=='0'){
-					this.kf='10'
-				}
-			},
-			kdValue(newVal,oldVal){
-				if(newVal=='1'){
-					this.kd='15'
-				}
-				if(newVal=='0'){
-					this.kd='10'
+				if(newVal == '0') {
+					this.kf = '10'
 				}
 			},
+			kdValue(newVal, oldVal) {
+				if(newVal == '1') {
+					this.kd = '15'
+				}
+				if(newVal == '0') {
+					this.kd = '10'
+				}
+			},
 		},
-		computed:{
-			total:function(){
-				if(this.kpValue == '0'){
-					return this.$tools.totalFunc(this.tcList,this.kd,this.kf)
-				}else{
+		computed: {
+			total: function() {
+				if(this.kpValue == '0') {
+					return this.$tools.totalFunc(this.tcList, this.kd, this.kf)
+				} else {
 					return this.$tools.totalFunc(this.tcList)
 				}
-				
+
 			}
 		},
 		methods: {
@@ -168,7 +167,18 @@
 				this.$router.push("/addressEdit")
 			},
 			chooseCard() {
-
+				var that = this
+				this.picker = this.$createPicker({
+					title: that.langType? '选择卡片': 'Choose card',
+					data: [that.cardList],
+					onSelect: (selectedVal, selectedIndex, selectedText)=>{
+						console.log(selectedVal)
+						console.log(selectedIndex)
+						console.log(selectedText)
+					},
+					onCancel: ()=>{}
+				})
+				this.picker.show()
 			}
 		}
 	}
@@ -185,7 +195,7 @@
 				line-height: 2rem;
 				border-bottom: 1px solid #eee;
 				.til {
-					padding-right:0.5rem;
+					padding-right: 0.5rem;
 				}
 				.kdContent {
 					max-width: calc(100% - 4rem);
@@ -208,7 +218,7 @@
 			line-height: 2rem;
 		}
 		.meatchBox {
-			margin-bottom:1rem;
+			margin-bottom: 1rem;
 			.tcBox {
 				ul {
 					li {
@@ -264,8 +274,8 @@
 			}
 		}
 		.costBox {
-			margin:0 -0.7rem 2.4rem;
-			padding:0 0.7rem;
+			margin: 0 -0.7rem 2.4rem;
+			padding: 0 0.7rem;
 			background: #fff;
 			ul {
 				li {
