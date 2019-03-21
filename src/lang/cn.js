@@ -79,8 +79,6 @@ module.exports = {
 		zhong:'种',
 		timeChoose:'时间选择',
 		yue:'个月',
-		myCard:'我的卡片',
-		card:'卡',
 
 //		car
 	 	car:'购物车',
@@ -97,6 +95,14 @@ module.exports = {
 	 	haveCard:'有卡',
 	 	noCard:'无卡',
 	 	pay:'支付',
+	 	editCard:'编辑卡片',
+		myCard:'我的卡片',
+		card:'卡',
+	 	cardInfo:'卡片信息',
+	 	addCard:'添加多张卡片',
+	 	tixing:'提醒：可添加多张卡片，进行套餐匹配充值。',
+		payment:'确认支付',
+		WxPay:'微信支付',
 
 
 
@@ -166,7 +172,5 @@ module.exports = {
 	 	
 	 	payType:'选择支付方式',
 	 	amount:'支付金额',
-		payment:'确认支付',
-		WxPay:'微信支付',
 	}
 }

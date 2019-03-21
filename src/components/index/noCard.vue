@@ -4,8 +4,8 @@
 			<div class="head clearfix">
 				<p>{{$t("message.myCard")}}</p>
 				<div class="addCard clearfix">
-					<span class="til">卡片信息</span>
-					<span class="addBtn" @click="addCard">添加多张卡片</span>
+					<span class="til">{{$t("message.cardInfo")}}</span>
+					<span class="addBtn" @click="addCard">{{$t("message.addCard")}}</span>
 				</div>
 			</div>
 
@@ -16,7 +16,7 @@
 						<span @click="delFunc(idx)">X</span>
 					</p>
 				</div>
-				<div class="tip">提醒：可添加多张卡片，进行套餐匹配充值</div>
+				<div class="tip">{{$t("message.tixing")}}</div>
 			</div>
 
 		</div>

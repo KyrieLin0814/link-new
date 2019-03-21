@@ -121,10 +121,12 @@
 				top:0;
 				left:0;
 				font-size:0.7rem;
+				height:1.8rem;
+				line-height:1.9rem;
 				color:#313131;
-				padding:0.5rem 0.5rem 0.5rem 0.7rem;
-				margin-left:0.4em;
-				background: url(../../assets/image/left.png) no-repeat left center;
+				padding:0 0.5rem 0 1rem;
+				margin-left:0.5em;
+				background: url(../../assets/image/left.png) no-repeat 0.2rem center;
 				background-size: 0.4rem;
 			}
 		}

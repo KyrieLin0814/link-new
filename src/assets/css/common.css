@@ -374,7 +374,7 @@ input {
 
 .swiper-slide.swiper-slide-active {
 	transform: scale(1.1);
-	margin-left: -4.8rem;
+	margin-left: -5rem;
 }
 
 .swiper-slide.swiper-slide-prev {
@@ -384,7 +384,7 @@ input {
 
 @media screen and (max-width: 321px) {
 	.swiper-slide.swiper-slide-active {
-		margin-left: -5.8rem;
+		margin-left: -6rem;
 	}
 	.swiper-slide.swiper-slide-prev {
 		margin-left: 6.5rem;
@@ -393,7 +393,7 @@ input {
 
 @media screen and (min-width: 413px) {
 	.swiper-slide.swiper-slide-active {
-		margin-left: -5.3rem;
+		margin-left: -5.6rem;
 	}
 	.swiper-slide.swiper-slide-prev {
 		margin-left: 6rem;
@@ -402,10 +402,18 @@ input {
 
 @media screen and (min-width: 768px) {
 	.swiper-slide.swiper-slide-active {
-		margin-left: -9rem;
+		margin-left: -9.1rem;
 	}
 	.swiper-slide.swiper-slide-prev {
 		margin-left: 10rem;
+	}
+}
+@media screen and (min-width: 1024px) {
+	.swiper-slide.swiper-slide-active {
+		margin-left: -12.3rem;
+	}
+	.swiper-slide.swiper-slide-prev {
+		margin-left: 13.5rem;
 	}
 }
 
@@ -428,7 +436,7 @@ input {
 
 /*查询弹窗*/
 
-.screenBox {
+.maskBox {
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -438,19 +446,19 @@ input {
 	border-top-right-radius: 0.3rem;
 	transition: all 0.3s;
 	-webkit-transition: all 0.3s;
-	z-index: 9;
+	z-index: 100;
 	padding: 1rem 0.7rem;
 	padding-bottom: 3.5rem;
 }
 
-.screenBox.show {
+.maskBox.show {
 	bottom: 0
 }
 
-.screenBox .til {
+.maskBox .til {
 	font-size: 0.7rem;
 }
 
-.screenBox .fixedBtns {
+.maskBox .fixedBtns {
 	position: absolute;
 }

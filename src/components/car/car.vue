@@ -78,7 +78,7 @@
 			back() {
 				history.go(-1)
 			},
-			confirmOrder(){
+			confirmOrder() {
 				this.$router.push("/confirmOrder")
 			}
 		}
@@ -100,12 +100,13 @@
 				i {
 					display: inline-block;
 					width: 0.5rem;
-					vertical-align: middle;
 					height: 100%;
 					padding-right: 0.2rem;
 					img {
 						width: 100%;
 						display: inline-block;
+						vertical-align: top;
+						margin-top:0.5rem;
 					}
 				}
 			}
@@ -150,7 +151,7 @@
 				right: 0;
 				bottom: 0;
 				z-index: 99;
-				font-size:0;
+				font-size: 0;
 			}
 		}
 		.fixedBtns {

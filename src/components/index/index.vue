@@ -16,7 +16,7 @@
 				</div>
 				<div class="swiper-container">
 					<div class="swiper-wrapper">
-						<div class="swiper-slide" v-for="(i,idx) in tuijian" @click="tjFunc($event,idx)">
+						<div class="swiper-slide" v-for="(i,idx) in tuijian">
 							<img src="../../assets/image/tj.jpg" />
 							<span>{{idx}}</span>
 						</div>
@@ -133,6 +133,24 @@
 						name2: '副标题333',
 						price: '555'
 
+					},
+					{
+						name: '产品名称1产品名称1产品名称1',
+						name2: '副标题111',
+						price: '2888'
+
+					},
+					{
+						name: '产品名称2产品名2产品名称2',
+						name2: '副标题222',
+						price: '999'
+
+					},
+					{
+						name: '产品名称3产品名称3产品名称3',
+						name2: '副标题333',
+						price: '555'
+
 					}
 				],
 				tejia: [{
@@ -176,8 +194,17 @@
 				on: {
 					transitionEnd: function() {
 						var t = Number($(".swiper-slide-active span").html())
+						console.log(t)
 						that.tjActiveObj = that.tuijian[t]
 					},
+				}
+			})
+			
+			//绑定跳转
+			$(".swiper-container .swiper-slide").on('click',function(event){
+				var str = $(event.currentTarget).attr('class')
+				if(str.indexOf('active') != -1) {
+					that.$router.push("/goodDetail")
 				}
 			})
 
@@ -185,19 +212,6 @@
 		methods: {
 			toScreen() {
 				this.$router.push('/chooseCountry')
-			},
-			tjFunc(e, idx) {
-				var str = $(e.currentTarget).attr('class')
-				if(str.indexOf('active') != -1) {
-					this.$router.push("/goodDetail")
-				}
-
-				return
-				this.tjActiveObj = this.tuijian[idx]
-				if(this.oldActive == idx) {
-					this.$router.push("/goodDetail")
-				}
-				this.oldActive = idx
 			},
 			tjMore() {
 				this.$router.push('/goodList')
@@ -229,9 +243,10 @@
 			input {
 				font-size: 0.7rem;
 				color: #d1d1d1;
-				padding: 0 0.5rem;
-				background: #f3f3f3;
+				padding: 0 0.5rem 0 2rem;
 				border-radius: 0.2rem;
+				background: url(../../assets/image/fdj.png) no-repeat #f3f3f3 0.3rem center;
+				background-size: 1rem;
 			}
 		}
 		.tuijian {

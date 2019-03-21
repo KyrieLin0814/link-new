@@ -80,8 +80,6 @@ module.exports = {
 		zhong:' species',
 		timeChoose:'Time choice',
 		yue:' months',
-		myCard:'My card',
-		card:'Card',
 		
 		
 //		car
@@ -99,7 +97,14 @@ module.exports = {
 	 	haveCard:'Have card',
 	 	noCard:'No card',
 	 	pay:'Pay',
-		
+	 	editCard:'Edit',
+		myCard:'My card',
+		card:'Card',
+	 	cardInfo:'Card info',
+	 	addCard:'Add cards',
+	 	tixing:'Reminder: Multiple cards can be added to match the packages and recharge them.',
+		payment:'Payment',
+		WxPay:'WeChat payment',
 		
 		
 		
@@ -171,8 +176,6 @@ module.exports = {
 	 	
 	 	payType:'Choose payment method',
 	 	amount:'Amount of payment',
-		payment:'Payment',
-		WxPay:'WeChat payment',
 		
 	}
 }

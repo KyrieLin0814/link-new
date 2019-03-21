@@ -26,9 +26,9 @@
 				</ul>
 			</div>
 		</div>
-		
+
 		<div class="masker" v-if="screenFlag" @click="screenFunc"></div>
-		<div class="screenBox" :class="{'show': screenFlag}">
+		<div class="maskBox" :class="{'show': screenFlag}">
 			<p class="til">已选择国家</p>
 			<div class="radioBox three">
 				<cube-radio-group v-model="kpValue" :options="kpList" :horizontal="true" :hollowStyle="true" />
@@ -83,7 +83,7 @@
 			screenFunc() {
 				this.screenFlag = !this.screenFlag
 			},
-			confirm(){
+			confirm() {
 				this.screenFunc()
 			},
 		}
@@ -106,12 +106,14 @@
 				i {
 					display: inline-block;
 					width: 0.5rem;
-					vertical-align: middle;
+					vertical-align: top;
 					height: 100%;
 					padding-right: 0.2rem;
 					img {
 						width: 100%;
 						display: inline-block;
+						vertical-align: top;
+						margin-top:0.5rem;
 					}
 				}
 				span {

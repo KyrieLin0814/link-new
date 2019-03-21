@@ -13,7 +13,7 @@
 		</div>
 
 		<div class="masker" v-if="screenFlag" @click="screenFunc"></div>
-		<div class="screenBox" :class="{'show': screenFlag}">
+		<div class="maskBox" :class="{'show': screenFlag}">
 			<p class="til">已选择国家</p>
 			<div class="radioBox three">
 				<cube-radio-group v-model="kpValue" :options="kpList" :horizontal="true" :hollowStyle="true" />

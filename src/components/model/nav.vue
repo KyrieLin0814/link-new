@@ -5,8 +5,8 @@
 		<ul class="nav" :class="{'hide': showNav}" @click="navFunc($event)">
 			<li class="logo colorBg"><img src="../../assets/image/navLogo.png"></li>
 			<li class="navItem" @click="router('/orderList')"><i class="nav1"></i>{{$t("message.orderNav")}}</li>
-			<li class="navItem" @click="router('/orderList')"><i class="nav2"></i>{{$t("message.helpNav")}}</li>
-			<li class="navItem" @click="router('/orderList')"><i class="nav3"></i>{{$t("message.contactNav")}}</li>
+			<li class="navItem" @click="router('/car')"><i class="nav2"></i>{{$t("message.car")}}</li>
+			<li class="navItem" @click="contactFunc()"><i class="nav3"></i>{{$t("message.contactNav")}}</li>
 		</ul>
 	</div>
 </template>
@@ -29,9 +29,16 @@
 					this.showNav = true
 				}
 			},
-			router(str){
+			router(str) {
 				this.$router.push(str)
 				console.log(str)
+			},
+			contactFunc() {
+				this.$createDialog({
+					type: 'alert',
+					title: this.$t("message.contactNav"),
+					content: '4001-123-123',
+				}).show()
 			}
 		}
 	}
@@ -39,7 +46,6 @@
 
 <style lang="less" scoped>
 	.navContent {
-		
 		.navBtn {
 			display: block;
 			width: 2rem;
@@ -48,16 +54,16 @@
 			top: .7rem;
 			position: absolute;
 			border-radius: 1rem;
-			background:#fff;
+			background: #fff;
 			img {
 				display: block;
 				width: 1.2rem;
-				margin:0 auto;
-				padding-top:0.4rem;
+				margin: 0 auto;
+				padding-top: 0.4rem;
 			}
 		}
-		&.indexNav{
-			.navBtn{
+		&.indexNav {
+			.navBtn {
 				position: inherit;
 			}
 		}
@@ -76,42 +82,41 @@
 			transition: all 0.3s;
 			li.logo {
 				padding: 0.8rem 0;
-				margin:0 0 0.5rem;
-				img{
+				margin: 0 0 0.5rem;
+				img {
 					display: block;
-					width:84%;
-					margin:0 auto;
+					width: 84%;
+					margin: 0 auto;
 				}
 			}
 			li {
 				text-align: left;
-				padding-left:0.3rem;
+				padding-left: 0.3rem;
 				font-size: 0.8rem;
 				line-height: 2.4rem;
 				vertical-align: middle;
-				margin:0 0.5rem;
-				border-bottom:1px solid #e5e5e5;
-				i{
-					width:0.9rem;
-					height:0.9rem;
+				margin: 0 0.5rem;
+				border-bottom: 1px solid #e5e5e5;
+				i {
+					width: 0.9rem;
+					height: 0.9rem;
 					display: inline-block;
-					margin-right:0.3rem;
+					margin-right: 0.3rem;
 					vertical-align: middle;
-					margin-top:-4px;
+					margin-top: -4px;
 				}
-				.nav1{
-					background: url(../../assets/image/nav1.png) no-repeat ;
+				.nav1 {
+					background: url(../../assets/image/nav1.png) no-repeat;
 					background-size: contain;
 				}
-				.nav2{
-					background: url(../../assets/image/nav2.png) no-repeat ;
+				.nav2 {
+					background: url(../../assets/image/nav2.png) no-repeat;
 					background-size: contain;
 				}
-				.nav3{
-					background: url(../../assets/image/nav3.png) no-repeat ;
+				.nav3 {
+					background: url(../../assets/image/nav3.png) no-repeat;
 					background-size: contain;
 				}
-				
 			}
 			&.hide {
 				right: -7.5rem;

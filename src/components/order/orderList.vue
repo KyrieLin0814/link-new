@@ -86,12 +86,14 @@
 			i {
 				display: inline-block;
 				width: 0.5rem;
-				vertical-align: middle;
+				vertical-align: top;
 				height: 100%;
 				padding-right: 0.2rem;
 				img {
 					width: 100%;
 					display: inline-block;
+					vertical-align: top;
+					margin-top: 0.5rem;
 				}
 			}
 		}
