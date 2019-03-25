@@ -9,6 +9,7 @@
 			<li class="navItem" @click="contactFunc()"><i class="nav3"></i>{{$t("message.contactNav")}}</li>
 		</ul>
 	</div>
+
 </template>
 
 <script>
@@ -17,6 +18,7 @@
 		data() {
 			return {
 				showNav: true,
+				showTel: false,
 				langType: this.$lang == 'cn'
 			}
 		},
@@ -37,8 +39,27 @@
 				this.$createDialog({
 					type: 'alert',
 					title: this.$t("message.contactNav"),
-					content: '4001-123-123',
+					maskClosable:true,
+					confirmBtn :{
+						text:''
+					},
+				}, (createElement) => {
+					return [
+						createElement('div', {
+							'class': {
+								'phoneContent': true
+							},
+							slot: 'content'
+						}, [
+							createElement('span', {
+								'class': {
+									'phoneText': true
+								}
+							},'4001-123-123'),
+						])
+					]
 				}).show()
+				$(".cube-dialog-btns").hide();
 			}
 		}
 	}
@@ -74,7 +95,7 @@
 			top: 0;
 			bottom: 0;
 			right: 0;
-			width: 7.2rem;
+			width: 7.4rem;
 			padding-top: 3rem;
 			box-shadow: -3px 0px 15px 3px rgba(222, 65, 63, 0.2);
 			border-bottom-left-radius: 10px;
@@ -91,8 +112,8 @@
 			}
 			li {
 				text-align: left;
-				padding-left: 0.3rem;
-				font-size: 0.8rem;
+				padding-left: 0.1rem;
+				font-size: 0.7rem;
 				line-height: 2.4rem;
 				vertical-align: middle;
 				margin: 0 0.5rem;
@@ -119,7 +140,7 @@
 				}
 			}
 			&.hide {
-				right: -7.5rem;
+				right: -8rem;
 			}
 		}
 		.navMask {

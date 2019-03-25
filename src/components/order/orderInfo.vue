@@ -70,7 +70,7 @@
 					<div class="tcBox">
 						<p class="secondTil">{{$t("message.tcDetail")}}</p>
 						<div class="cards clearfix">
-							<span class="cardItem" v-for="i in cardList" :class="{'active': i.val == '1'}">{{i.text}}</span>
+							<span class="cardItem" v-for="i in cardList" :class="{'active': i.id == activeCard}" @click="alertFunc(i)">{{i.text}}</span>
 						</div>
 					</div>
 
@@ -110,14 +110,33 @@
 				}],
 				cardList: [{
 					text: '卡1',
-					val: '1'
+					id: '1',
+					num: '800005231452',
+					total: '300MB',
+					used: '300MB',
+					startTime: '2019-03-05 12:05:31',
+					endTime: '2019-09-05 12:05:31',
+					shiji: '',
 				}, {
 					text: '卡2',
-					val: '2'
+					id: '2',
+					num: '800005231452',
+					total: '300MB',
+					used: '300MB',
+					startTime: '2019-03-05 12:05:31',
+					endTime: '2019-09-05 12:05:31',
+					shiji: '',
 				}, {
 					text: '卡3',
-					val: '3'
-				}]
+					id: '3',
+					num: '800005231452',
+					total: '300MB',
+					used: '300MB',
+					startTime: '2019-03-05 12:05:31',
+					endTime: '2019-09-05 12:05:31',
+					shiji: '',
+				}],
+				activeCard:null
 			}
 		},
 		created() {
@@ -125,10 +144,40 @@
 		},
 		mounted() {
 			this.total = this.$tools.totalFunc(this.tcList, this.kd, this.kf)
+			
+			this.activeCard = this.cardList[0].id
 		},
 		methods: {
 			back() {
 				history.go(-1)
+			},
+			alertFunc(i) {
+				var that = this
+				that.activeCard = i.id
+				this.$createDialog({
+					type: 'alert',
+					title: that.$t("message.tcDetail"),
+					confirmBtn: {
+						text: that.$t("message.confirm"),
+						active: true
+					}
+				}, (createElement) => {
+					return [
+						createElement('div', {
+							'class': {
+								'tcContent': true
+							},
+							slot: 'content'
+						}, [
+							createElement('p', that.$t('message.cardId') + '：' + i.num),
+							createElement('p', that.$t('message.totalLL') + '：' + i.total),
+							createElement('p', that.$t('message.usedLL') + '：' + i.used),
+							createElement('p', that.$t('message.startTime') + '：' + i.startTime),
+							createElement('p', that.$t('message.endTime') + '：' + i.endTime),
+							createElement('p', that.$t('message.cTime') + '：' + (i.shiji ? i.shiji : '——')),
+						])
+					]
+				}).show()
 			}
 		}
 	}
@@ -214,6 +263,8 @@
 									&.detail {
 										width: 30%;
 										text-align: center;
+										color: #a0a0a0;
+										font-size: 0.6rem;
 									}
 									&.price {
 										width: 30%;
@@ -277,16 +328,16 @@
 				.cards {
 					padding: 0.4rem 0;
 					.cardItem {
-						border:1px solid #a0a0a0;
-						color:#a0a0a0;
+						border: 1px solid #a0a0a0;
+						color: #a0a0a0;
 						font-size: 0.7rem;
 						line-height: 1.3rem;
 						height: 1.4rem;
 						border-radius: 0.7rem;
 						padding: 0 0.6rem;
-						margin: 0 0.5rem 0.5rem 0; 
-						&.active{
-						border:1px solid #F65200;
+						margin: 0 0.5rem 0.5rem 0;
+						&.active {
+							border: 1px solid #F65200;
 							background: #F65200;
 							color: #fff;
 						}

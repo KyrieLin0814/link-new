@@ -15,8 +15,9 @@
 		<div class="masker" v-if="screenFlag" @click="screenFunc"></div>
 		<div class="maskBox" :class="{'show': screenFlag}">
 			<p class="til">已选择国家</p>
-			<div class="radioBox three">
-				<cube-radio-group v-model="kpValue" :options="kpList" :horizontal="true" :hollowStyle="true" />
+			<div class="countryChooses clearfix">
+				<span class="countryItem" v-for="(i,idx) in areaList">{{i}}<i @click="deleteFunc(idx)">x</i></span>
+				<span class="add" @click="addFunc">添加</span>
 			</div>
 			<p class="til">已选择时间</p>
 			<div class="radioBox three">
@@ -41,9 +42,8 @@
 				country: '中国',
 				name: '开始',
 				screenFlag:false,
-				kpList: this.$store.getters.getOptionKpList,
+				areaList:['中国','欧洲'],
 				sjList: this.$store.getters.getOptionSjList,
-				kpValue: '1',
 				sjValue: '1'
 			}
 		},
@@ -54,7 +54,6 @@
 			
 		},
 		mounted() {
-			console.log( this.$store.getters.getOptionKpList)
 		},
 		methods: {
 			moreCountry() {
@@ -63,6 +62,12 @@
 			vuetouch(s, e) {
 				this.name = s.name;
 				this.$router.push("/")
+			},
+			deleteFunc(i){
+				this.areaList.splice(i,1)
+			},
+			addFunc(){
+				this.$router.push("/chooseCountry")
 			},
 			screenFunc() {
 				this.screenFlag = !this.screenFlag

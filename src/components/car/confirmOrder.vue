@@ -60,7 +60,7 @@
 					<li class="clearfix">
 						<p class="thirdTil">{{$t("message.tcCost")}}</p>
 						<div class="total">
-							{{$t("message.yuanFH")}}<span v-for="(i,idx) in tcList">{{i.price}}<i v-if="idx != tcList.length-1">+</i></span>
+							{{$t("message.yuanFH")}}{{tcTotal}}</span>
 						</div>
 					</li>
 					<li class="clearfix">
@@ -172,6 +172,9 @@
 					return this.$tools.totalFunc(this.tcList)
 				}
 
+			},
+			tcTotal:function(){
+				return this.$tools.totalFunc(this.tcList)
 			}
 		},
 		methods: {

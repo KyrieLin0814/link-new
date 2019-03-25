@@ -58,6 +58,12 @@ module.exports = {
 	 	order :'Order',
 	 	gong:'Total of ',
 	 	geOrder:' orders',
+		cardId:'Number',
+	 	totalLL:'Total flow',
+	 	usedLL:'Used flow',
+	 	startTime:'Start time',
+	 	endTime:'End time',
+	 	cTime:'Actual end',
 	 	
 	 	
 //		index	 	
@@ -106,7 +112,21 @@ module.exports = {
 		payment:'Payment',
 		WxPay:'WeChat payment',
 		
-		
+//		address
+	 	name:'Name',
+	 	tel:'Phone',
+	 	myLocation:'Location',
+	 	address:'Address',
+	 	company:'Company',
+	 	email:'E-mail',
+	 	
+	 	
+	 	province:'Province',
+	 	city:'City',
+	 	area:'Area',
+	 	pleaseChoose:'Please choose',
+	 	save:'Save',
+
 		
 		
 		
@@ -119,7 +139,6 @@ module.exports = {
 		addCart:'Add to cart',
 		
 		detailsMeal:'Details of the set meal',
-		cardId:'Card number',
 		noOrder:'No order',
 		Relation:'Connecting my card',
 		overseas :'View overseas Internet settings' ,
@@ -149,7 +168,6 @@ module.exports = {
 	 	chooseWay2: 'Binding Internet card',
 	 	express1:'Ordinary Express',
 	 	express2:'SF Express',
-	 	address:'Address',
 	 	edit:'Edit',
 	 	info:'Card infomation',
 	 	startUse:'Is it enabled immediately?',
@@ -162,17 +180,7 @@ module.exports = {
 	 	paySuccess:'Purchase success',
 	 	payError:'Purchase failure',
 	 	
-	 	fillAddress:'Fill in receipt information',
-	 	name:'Name',
-	 	tel:'Phone',
-	 	province:'Province',
-	 	city:'City',
-	 	area:'Area',
-	 	pleaseChoose:'Please choose',
-	 	detailAddress:'Detailed address',
-	 	company:'Company',
-	 	email:'E-mail',
-	 	save:'Save',
+	 	
 	 	
 	 	payType:'Choose payment method',
 	 	amount:'Amount of payment',

@@ -280,8 +280,8 @@ input {
 	color: #fff;
 }
 
-.cube-checker-item_active:after{
-	border:none;
+.cube-checker-item_active:after {
+	border: none;
 }
 
 
@@ -316,10 +316,13 @@ input {
 	width: 40%!important
 }
 
+
 /*picker*/
-.cube-picker-confirm{
-	color:#F65200;
+
+.cube-picker-confirm {
+	color: #F65200;
 }
+
 
 /*遮罩*/
 
@@ -408,6 +411,7 @@ input {
 		margin-left: 10rem;
 	}
 }
+
 @media screen and (min-width: 1024px) {
 	.swiper-slide.swiper-slide-active {
 		margin-left: -12.3rem;
@@ -461,4 +465,78 @@ input {
 
 .maskBox .fixedBtns {
 	position: absolute;
+}
+
+.countryChooses {
+	padding: 0.7rem 0;
+}
+
+.countryChooses span {
+	position: relative;
+	float:left;
+	display: block;
+	padding: 0 1.2rem 0 0.6rem ;
+	font-size:0.7rem;
+	line-height:1.1rem;
+	margin:0 0.8rem 0.5rem 0;
+	border-radius: 0.6rem;
+}
+
+.countryChooses span.countryItem {
+	background: #F65200;
+	color: #fff;
+	border: 1px solid #F65200;
+}
+
+.countryChooses span.add {
+	background: url(../image/add.png) no-repeat left center;
+	background-size: 0.8rem ;
+	padding-left:1rem;
+	color:#c7c7c7;
+}
+.countryChooses span i{
+	position: absolute;
+	top:0.15rem;
+	right:0.15rem;
+	display: block;
+	background: #fff;
+	color:#F65200;
+	width:0.8rem;
+	height:0.8rem;
+	line-height:0.7rem;
+	text-align: center;
+	font-style: normal;
+	font-size:0.8rem;
+	border-radius: 0.4rem;
+	
+}
+
+
+/*dialog 弹窗*/
+
+.cube-popup-content {
+	border-radius: 0.3rem;
+	overflow: hidden;
+}
+
+.phoneContent {
+	text-align: center;
+	margin-bottom: 1.5rem;
+}
+
+.phoneContent .phoneText {
+	display: inline-block;
+	line-height: 3rem;
+	height: 3rem;
+	font-size: 1rem;
+	font-weight: bold;
+	color: #f65200;
+	background: url(../image/phone.png) no-repeat left center;
+	background-size: 1.4rem;
+	padding-left: 2rem;
+}
+
+.tcContent {
+	padding: 0 0.7rem;
+	font-size: 0.6rem;
 }

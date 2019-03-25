@@ -30,8 +30,9 @@
 		<div class="masker" v-if="screenFlag" @click="screenFunc"></div>
 		<div class="maskBox" :class="{'show': screenFlag}">
 			<p class="til">已选择国家</p>
-			<div class="radioBox three">
-				<cube-radio-group v-model="kpValue" :options="kpList" :horizontal="true" :hollowStyle="true" />
+			<div class="countryChooses clearfix">
+				<span class="countryItem" v-for="(i,idx) in areaList">{{i}}<i @click="deleteFunc(idx)">x</i></span>
+				<span class="add" @click="addFunc">添加</span>
 			</div>
 			<p class="til">已选择时间</p>
 			<div class="radioBox three">
@@ -61,10 +62,9 @@
 					detail: "100MB/月",
 					price: "188"
 				}],
-				kpList: this.$store.getters.getOptionKpList,
+				areaList:['中国','欧洲'],
 				sjList: this.$store.getters.getOptionSjList,
-				kpValue: '1',
-				sjValue: '1'
+				sjValue: '1',
 			}
 		},
 		created() {
@@ -79,6 +79,12 @@
 			},
 			addCar(obj) {
 				this.$router.push("/car")
+			},
+			deleteFunc(i){
+				this.areaList.splice(i,1)
+			},
+			addFunc(){
+				this.$router.push("/chooseCountry")
 			},
 			screenFunc() {
 				this.screenFlag = !this.screenFlag
@@ -113,7 +119,7 @@
 						width: 100%;
 						display: inline-block;
 						vertical-align: top;
-						margin-top:0.5rem;
+						margin-top: 0.5rem;
 					}
 				}
 				span {

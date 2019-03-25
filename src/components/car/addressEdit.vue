@@ -4,31 +4,37 @@
 			<div class="title">{{$t("message.kdxx")}}</div>
 			<div class="formContent">
 
-				<div class="inputBox flex">
-					<label>姓名：</label>
-					<input type="text" class="flex-1" v-model="addressObj.name" />
+				<div class="inputBox name">
+					<label>{{$t("message.name")}}：</label>
+					<input type="text" v-model="addressObj.name" :placeholder=" langType ? '请输入收件人姓名':'Please enter your name' " />
 				</div>
-				<div class="inputBox flex tel">
-					<label>电话：</label>
-					<input type="tel" class="flex-1" v-model="addressObj.tel" />
-				</div>
-
-				<div class="inputBox flex">
-					<label>所在地区：</label>
-					<p class="flex-1 areaTxt">{{addressObj.areaTxt}}</p>
-				</div>
-				<div class="inputBox flex area">
-					<label>详细地址：</label>
-					<input type="text" class="flex-1" v-model="addressObj.addressTxt" />
+				<div class="inputBox tel">
+					<label>{{$t("message.tel")}}：</label>
+					<input type="number" v-model="addressObj.tel" :placeholder=" langType ? '请输入联系电话':'Please enter your telephone number' " />
 				</div>
 
-				<div class="inputBox flex">
-					<label>公司名称：</label>
-					<input type="text" class="flex-1" v-model="addressObj.companyName" />
+				<div class="inputBox local" v-if="langType">
+					<label>{{$t("message.myLocation")}}：</label>
+					<p class="areaTxt" :class="{'have': addressObj.areaTxt}" @click="areaFunc">
+						{{addressObj.areaTxt ? addressObj.areaTxt : '请点击选择所在地区'}}
+					</p>
 				</div>
-				<div class="inputBox flex">
-					<label>邮箱号码：</label>
-					<input type="text" class="flex-1" v-model="addressObj.email" />
+				<div class="inputBox local" v-else>
+					<label>{{$t("message.myLocation")}}：</label>
+					<input type="text" v-model="addressObj.areaTxt" placeholder="Please enter your location" />
+				</div>
+				<div class="inputBox area">
+					<label>{{$t("message.address")}}：</label>
+					<input type="text" v-model="addressObj.addressTxt" :placeholder=" langType ? '请输入详细地址':'Please enter a detailed address' " />
+				</div>
+
+				<div class="inputBox company">
+					<label>{{$t("message.company")}}：</label>
+					<input type="text" v-model="addressObj.companyName" :placeholder=" langType ? '请输入公司名称':'Please enter the name of your company' " />
+				</div>
+				<div class="inputBox email">
+					<label>{{$t("message.email")}}：</label>
+					<input type="text" v-model="addressObj.email" :placeholder=" langType ? '请输入电子邮件':'Please enter your e-mail' " />
 				</div>
 			</div>
 		</div>
@@ -41,6 +47,14 @@
 </template>
 
 <script>
+	import { provinceList, cityList, areaList } from '@/assets/js/area'
+	const addressData = provinceList
+	addressData.forEach(province => {
+		province.children = cityList[province.value]
+		province.children.forEach(city => {
+			city.children = areaList[city.value]
+		})
+	})
 	export default {
 		name: 'addressEdit',
 		data() {
@@ -60,7 +74,15 @@
 
 		},
 		mounted() {
-
+			var that = this
+			that.addressPicker = this.$createCascadePicker({
+				title: that.langType?'选择地区':'Choose the area',
+				data: addressData,
+				onSelect: (selectedVal, selectedIndex, selectedText)=>{
+					that.addressObj.areaTxt = selectedText.join('')
+				},
+				onCancel: ()=>{}
+			})
 		},
 		methods: {
 			back() {
@@ -68,6 +90,9 @@
 			},
 			confirm() {
 				this.$router.push("/confirmOrder")
+			},
+			areaFunc(){
+				this.addressPicker.show()
 			}
 		}
 	}
@@ -78,20 +103,56 @@
 		.formContent {
 			margin: 0 -0.7rem;
 			.inputBox {
-				padding: 0.7rem 0.7rem;
-				font-size: 0.7rem;
-				line-height: 1.2rem;
+				padding: 0.3rem 0.7rem;
 				label {
-					padding-right:0.3rem;
+					display: block;
+					padding-left: 1rem;
+					font-size: 0.8rem;
+					line-height: 1.4rem;
+				}
+				&.name label {
+					background: url(../../assets/image/name.png)no-repeat left center;
+					background-size: 0.6rem;
+				}
+				&.tel label {
+					background: url(../../assets/image/tel.png)no-repeat left center;
+					background-size: 0.7rem;
+				}
+				&.local label {
+					background: url(../../assets/image/local.png)no-repeat left center;
+					background-size: 0.6rem;
+				}
+				&.area label {
+					background: url(../../assets/image/place.png)no-repeat left center;
+					background-size: 0.7rem;
+				}
+				&.company label {
+					background: url(../../assets/image/company.png)no-repeat left center;
+					background-size: 0.7rem;
+				}
+				&.email label {
+					background: url(../../assets/image/email.png)no-repeat left center;
+					background-size: 0.7rem;
+				}
+				input {
+					display: block;
+					width: 100%;
 				}
 				input,
 				p {
-					border-bottom: 1px solid #eee;
+					font-size: 0.7rem;
+					line-height: 1.4rem;
+				}
+				.areaTxt {
+					color: #757575;
+					&.have {
+						color: #313131;
+					}
 				}
 				&.tel,
 				&.area {
-					padding-bottom:0.5rem;
-					border-bottom:1rem solid #f8f8f8;
+					padding-bottom: 0.5rem;
+					border-bottom: 1rem solid #f8f8f8;
 				}
 			}
 		}

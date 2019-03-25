@@ -57,6 +57,14 @@ module.exports = {
 	 	order :'订单',
 	 	gong:'共',
 	 	geOrder:'个',
+		cardId:'卡号',
+	 	totalLL:'总流量',
+	 	usedLL:'已使用',
+	 	startTime:'启用时间',
+	 	endTime:'套餐截止时间',
+	 	cTime:'实际结束时间',
+	 	
+
 	 	
 	 	
 //		index
@@ -104,6 +112,21 @@ module.exports = {
 		payment:'确认支付',
 		WxPay:'微信支付',
 
+//		address
+	 	name:'姓名',
+	 	tel:'电话',
+	 	myLocation:'所在地区',
+	 	address:'详细地址',
+	 	company:'公司名称',
+	 	email:'邮箱号码',
+	 	
+	 	province:'省',
+	 	city:'市',
+	 	area:'区',
+	 	pleaseChoose:'请选择',
+	 	save:'保存',
+
+		
 
 
 
@@ -116,7 +139,6 @@ module.exports = {
 		
 		addCart:'下一步',
 		detailsMeal:'套餐详情',
-		cardId:'卡号',
 		noOrder:'暂无订单',
 		Relation:'关联我的物联网卡',
 		overseas :'查看境外上网设置办法' ,
@@ -145,7 +167,6 @@ module.exports = {
 	 	chooseWay2: '绑定领科物联网卡',
 	 	express1:'普通快递',
 	 	express2:'顺风快递',
-	 	address:'收货地址',
 	 	edit:'编辑',
 	 	info:'已有物联网卡信息',
 	 	startUse:'是否购买即启用套餐',
@@ -158,17 +179,7 @@ module.exports = {
 	 	paySuccess:'购买成功',
 	 	payError:'购买失败',
 	 	
-	 	fillAddress:'填写收货信息',
-	 	name:'姓名',
-	 	tel:'电话',
-	 	province:'省',
-	 	city:'市',
-	 	area:'区',
-	 	pleaseChoose:'请选择',
-	 	detailAddress:'详细地址',
-	 	company:'公司',
-	 	email:'邮箱',
-	 	save:'保存',
+	 	
 	 	
 	 	payType:'选择支付方式',
 	 	amount:'支付金额',
