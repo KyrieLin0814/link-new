@@ -6,6 +6,13 @@ body {
 	color: #313131;
 }
 
+@media screen and (max-width: 320px) {
+	html,
+	body {
+		font-size: 16px;
+	}
+}
+
 @media screen and (max-width: 360px) {
 	html,
 	body {
@@ -19,14 +26,12 @@ body {
 		font-size: 26px;
 	}
 }
-
-@media screen and (max-width: 320px) {
+@media screen and (min-width: 1024px) {
 	html,
 	body {
-		font-size: 16px;
+		font-size: 32px;
 	}
 }
-
 * {
 	margin: 0px;
 	padding: 0;
@@ -342,7 +347,7 @@ input {
 .swiper-container {
 	padding: 0.7rem;
 	margin: 0 -0.7rem;
-	height: 6.2rem;
+	height: 6.8rem;
 }
 
 .swiper-slide {
@@ -389,7 +394,7 @@ input {
 
 @media screen and (max-width: 321px) {
 	.swiper-container {
-		height: 6.2rem;
+		height: 7.5rem;
 	}
 	.swiper-slide.swiper-slide-active {
 		margin-left: -6rem;
@@ -412,6 +417,9 @@ input {
 }
 
 @media screen and (min-width: 768px) {
+	.swiper-container {
+		height: 11rem;
+	}
 	.swiper-slide.swiper-slide-active {
 		margin-left: -9.1rem;
 	}
@@ -421,11 +429,14 @@ input {
 }
 
 @media screen and (min-width: 1024px) {
+	.swiper-container {
+		height: 12rem;
+	}
 	.swiper-slide.swiper-slide-active {
-		margin-left: -12.3rem;
+		margin-left: -9.7rem;
 	}
 	.swiper-slide.swiper-slide-prev {
-		margin-left: 13.5rem;
+		margin-left: 11rem;
 	}
 }
 

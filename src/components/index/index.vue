@@ -146,34 +146,7 @@
 			}).then((res) => {
 				if(res.data.tradeRstCode == '0000') {
 					that.tejia = res.data.teJia
-					that.tuijian = [{
-						originalPriceCNY: "8811",
-						originalPriceUSD: "2011",
-						packageCode: "PACKAGE20180502000019",
-						packageName: "中国+欧洲35国/地区产品二 30m/月",
-						picHomepage: "https://wx.linksfield.net/upload/homePage/P000270_PACKAGE20180502000019.jpg",
-						salesType: "1",
-						specialPriceCNY: "8611",
-						specialPriceUSD: "1811",
-					}, {
-						originalPriceCNY: "8822",
-						originalPriceUSD: "2022",
-						packageCode: "PACKAGE20180502000019",
-						packageName: "中国+欧洲35国/地区产品二 30m/月",
-						picHomepage: "https://wx.linksfield.net/upload/homePage/P000270_PACKAGE20180502000019.jpg",
-						salesType: "1",
-						specialPriceCNY: "86",
-						specialPriceUSD: "18",
-					}, {
-						originalPriceCNY: "8822",
-						originalPriceUSD: "2022",
-						packageCode: "PACKAGE20180502000019",
-						packageName: "中国+欧洲35国/地区产品二 30m/月",
-						picHomepage: "https://wx.linksfield.net/upload/homePage/P000270_PACKAGE20180502000019.jpg",
-						salesType: "1",
-						specialPriceCNY: "86",
-						specialPriceUSD: "18",
-					}]
+					that.tuijian = res.data.tuiJian
 				} else {
 					that.$tools.alert(that, res.data.tradeRstMessage)
 				}
