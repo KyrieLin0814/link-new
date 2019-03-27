@@ -98,10 +98,10 @@ export default {
   	
 //	this.$tools.func()
   	
-//	this.$get('/')
-//    .then((response) => {
-//      console.log(response)
-//    })
+	this.$get('/')
+      .then((response) => {
+        console.log(response)
+      })
   }
 }
 </script>

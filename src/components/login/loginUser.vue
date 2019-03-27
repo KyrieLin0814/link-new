@@ -24,6 +24,7 @@
 		name: 'loginUser',
 		data() {
 			return {
+				langType: this.$lang == 'cn',
 				placeholder: this.$t("message.inputTxt"),
 				cardNum: ''
 
@@ -33,7 +34,7 @@
 
 		},
 		mounted() {
-
+			
 		},
 		methods: {
 			goShoper() {
@@ -44,13 +45,33 @@
 			},
 			loginFunc() {
 				if(!this.cardNum) {
-					this.$tools.alert(this, this.$lang == 'cn' ? '请输入卡号' :'Please enter the card number')
+					this.$tools.alert(this, this.langType ? '请输入卡号' : 'Please enter the card number')
 					return
 				}
-				this.$router.replace("/")
+				var that = this
+				that.$post('/userLogin', {
+					tradeType: 'userLogin',
+					tradeData: {
+						deviceCode: that.cardNum,
+						partnerScope: that.$store.getters.getLoginType
+					}
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000'){
+						that.$tools.toast(that, res.data.tradeRstMessage)
+						that.$store.commit('setToken', res.data.token)
+						that.$store.commit('setDeviceCode', that.cardNum)
+						setTimeout(function(){
+							that.$router.replace("/index")
+						},1000)
+					}else{
+						that.$tools.alert(that, res.data.tradeRstMessage)
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 			},
 			loginLook() {
-				this.$router.push("/loginType")
+				this.$router.push("/")
 			}
 		}
 	}

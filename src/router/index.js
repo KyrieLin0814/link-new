@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/vuex/store'
 
 //login
 import loginIndex from '@/components/login/loginIndex'
@@ -16,39 +17,40 @@ import goodDetail from '@/components/index/goodDetail'
 import myCard from '@/components/index/myCard'
 import noCard from '@/components/index/noCard'
 
-
 //order
 import orderList from '@/components/order/orderList'
 import orderInfo from '@/components/order/orderInfo'
-
 
 //car
 import car from '@/components/car/car'
 import confirmOrder from '@/components/car/confirmOrder'
 import addressEdit from '@/components/car/addressEdit'
 
-
-
 import HelloWorld from '@/components/HelloWorld'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
 	routes: [{
 			path: '/loginIndex',
 			name: 'loginIndex',
 			component: loginIndex
-		},{
+		}, {
 			path: '/loginUser',
 			name: 'loginUser',
 			component: loginUser
-		},{
+		}, {
 			path: '/loginShoper',
 			name: 'loginShoper',
 			component: loginShoper
 		},
 		{
 			path: '/',
+			name: 'loginType',
+			component: loginType
+		},
+		{
+			path: '/index',
 			name: 'index',
 			component: index
 		},
@@ -71,11 +73,6 @@ export default new Router({
 			path: '/noCard',
 			name: 'noCard',
 			component: noCard
-		},
-		{
-			path: '/loginType',
-			name: 'loginType',
-			component: loginType
 		},
 		{
 			path: '/screenCountry',
@@ -112,6 +109,20 @@ export default new Router({
 			name: 'addressEdit',
 			component: addressEdit
 		}
-		
+
 	]
 })
+
+router.beforeEach((to, from, next) => {
+	if(to.name.indexOf('login') != -1) {
+		//清理token
+		store.state.token = ''
+		sessionStorage.removeItem('token')
+		next()
+	} else {
+
+		next()
+	}
+})
+
+export default router

@@ -1,55 +1,37 @@
 import axios from 'axios'
 import store from '@/vuex/store'
 import md5 from 'js-md5'
+import tools from '@/tools'
+import Qs from 'qs'
 
 //axios配置全局参数
 axios.defaults.timeout = 5000;
-axios.defaults.baseURL ='https://wx.linksfield.net';
-
+axios.defaults.baseURL = 'https://wx.linksfield.net/vshop';
 
 const Axios = axios.create({
 	transformRequest: [function(data) {
 		if(data) {
-			data.data.tradeTime = getNowFormatDate()
+			let param = new Object()
+			param.data = data
+			param.data.connSeqNo = store.state.connSeqNo
+			param.data.version = store.state.version
+			param.data.lang = store.state.langType
+			data.partnerCode = store.state.partnerCode
+			param.data.tradeTime = tools.getNowFormatDate('-')
+			if(store.state.token) {
+				param.data.token = store.state.token
+			}
+			param.data = tools.objKeySort(param.data)
 
-			var sign = md5(JSON.stringify(data.data))
-			data.sign = sign
-			
-			console.log(data)
-			data = JSON.stringify(data)
+			//加密
+			let sign = md5(JSON.stringify(param.data))
+			param.sign = sign
+
+			console.log(param)
+			data = JSON.stringify(param)
 		}
 		return data;
 
-		function getNowFormatDate() {
-			var date = new Date();
-			var seperator1 = "-";
-			var seperator2 = ":";
-			var month = date.getMonth() + 1;
-			if(month >= 1 && month <= 9) {
-				month = "0" + month;
-			}
-			var strDate = date.getDate();
-			if(strDate >= 0 && strDate <= 9) {
-				strDate = "0" + strDate;
-			}
-			var hour = date.getHours();
-			if(hour >= 0 && hour <= 9) {
-				hour = "0" + hour;
-			}
-			var minute = date.getMinutes();
-			if(minute >= 0 && minute <= 9) {
-				minute = "0" + minute;
-			}
-			var sec = date.getSeconds();
-			if(sec >= 0 && sec <= 9) {
-				sec = "0" + sec;
-			}
-			var currentdate = date.getFullYear() + seperator1 + month + seperator1 +
-				strDate + " " + hour + seperator2 + minute +
-				seperator2 + sec;
-
-			return currentdate;
-		}
 	}],
 	headers: {
 		'Content-Type': 'application/json;charset=UTF-8'
@@ -58,9 +40,6 @@ const Axios = axios.create({
 // http request 拦截器
 Axios.interceptors.request.use(
 	config => {
-		if(store.state.token) {
-			config.headers.Authorization = store.state.token;
-		}
 		return config;
 	},
 	err => {
@@ -75,29 +54,30 @@ Axios.interceptors.response.use(
 	error => {
 		return response;
 	});
+
 //get 请求
-export function get(url, params = {}) {
+export function get(url, params) {
 	return new Promise((resolve, reject) => {
 		Axios.get(url, {
-				params: params
-			})
-			.then(response => {
-				resolve(response.data);
-			})
-			.catch(err => {
-				reject(err)
-			})
-	})
+			params: params
+		}).then(res => {
+			resolve(res.data);
+		}).catch(err => {
+			reject(err.data)
+		})
+	});
 }
 
 //post 请求
-export function post(url, data = {}) {
+export function post(url, params) {
 	return new Promise((resolve, reject) => {
-		Axios.post(url, data)
-			.then(response => {
-				resolve(response.data);
-			}, err => {
-				reject(err)
+		Axios.post(url, params)
+			.then(res => {
+				console.log(res.data)
+				resolve(res.data);
 			})
-	})
+			.catch(err => {
+				reject(err.data)
+			})
+	});
 }

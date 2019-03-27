@@ -34,7 +34,7 @@
 		name: 'loginType',
 		data() {
 			return {
-				type:'1'
+				type: this.$store.getters.getLoginType
 			}
 		},
 		created() {
@@ -42,9 +42,15 @@
 		methods: {
 			typeFunc(p){
 				this.type = p
+				this.$store.commit('setLoginType', p)
 			},
 			confirm(){
-				this.$router.push('/screenCountry')
+				if(this.type== '1'){
+					this.$router.push('/loginUser')
+				}
+				if(this.type== '2'){
+					this.$router.push('/loginIndex')
+				}
 			}
 		}
 	}

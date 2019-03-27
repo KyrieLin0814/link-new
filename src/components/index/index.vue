@@ -9,43 +9,53 @@
 				</div>
 			</div>
 
-			<div class="tuijian">
+			<div class="tuijian" v-if="tuijian.length>0">
 				<div class="tilBox clearfix">
 					<p class="til">{{$t("message.wntj")}}</p>
 					<a class="more" @click="tjMore">{{$t("message.ckgd")}}</a>
 				</div>
-				<div class="swiper-container">
-					<div class="swiper-wrapper">
-						<div class="swiper-slide" v-for="(i,idx) in tuijian">
-							<img src="../../assets/image/tj.jpg" />
-							<span>{{idx}}</span>
+				<div>
+					<div class="swiper-container" v-if="tuijian.length>=3">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide" v-for="(i,idx) in tuijian" 
+								:style="{backgroundImage: 'url(' + i.picHomepage + ')', backgroundSize: 'cover', backgroundPosition: 'center'}" >
+								<!--<img :src="i.picHomepage" />-->
+								<span>{{idx}}</span>
+							</div>
 						</div>
 					</div>
+					<div class="imgsBox clearfix" v-else>
+						<div class="imgItem" v-for="(i,idx) in tuijian" 
+							:style="{backgroundImage: 'url(' + i.picHomepage + ')', backgroundSize: 'cover', backgroundPosition: 'center'}" 
+							@click="clickFunc(idx)" 
+							:class="{'active': tjActiveObj == i}"></div>
+					</div>
 				</div>
+
 				<div class="tuijianContent">
 					<div class="textBox">
-						<p class="tjName text-1">{{tjActiveObj.name}}</p>
-						<p class="tjTil text-1">{{tjActiveObj.name2}}</p>
-						<p class="tjPrice text-1">{{$t('message.yuanFH')}}{{tjActiveObj.price}}</p>
+						<p class="tjName text-1">{{tjActiveObj.packageName}}</p>
+						<!--<p class="tjTil text-1">{{tjActiveObj.name2}}</p>-->
+						<p class="tjPrice text-1">{{$t('message.yuanFH')}}{{langType ? tjActiveObj.originalPriceCNY : tjActiveObj.originalPriceUSD}}</p>
 					</div>
 				</div>
 			</div>
 
-			<div class="tejiaContent">
+			<div class="tejiaContent" v-if="tejia.length>0">
 				<p class="til">{{$t("message.tjzs")}}</p>
 				<div class="tejiaList clearfix">
 					<div class="content" v-for="i in tejia" @click="tuijianFunc(i)">
 						<div class="con">
 							<div class="imgBox">
-								<img src="../../assets/image/tejia.jpg" />
+								<img :src="i.picHomepage" />
 							</div>
 							<div class="name text-2">
 								<i>{{$t("message.tj")}}</i>
-								<span>{{i.name}}</span>
+								<span>{{i.packageName}}</span>
 							</div>
 							<div class="price flex">
-								<p class="now">{{$t('message.yuanFH')}}{{i.priceNow}}</p>
-								<p class="old flex-1">{{$t('message.yuanFH')}}{{i.priceOld}}</p>
+								<p class="now">{{$t('message.yuanFH')}}{{ langType? i.specialPriceCNY : i.specialPriceUSD}}</p>
+								<p class="old flex-1">{{$t('message.yuanFH')}}{{langType ? i.originalPriceCNY : i.originalPriceUSD}}</p>
 							</div>
 						</div>
 					</div>
@@ -115,101 +125,105 @@
 			return {
 				langType: this.$lang == 'cn',
 				placeholder: '',
+				tjActiveObjOld: null,
 				tjActiveObj: {},
-				tuijian: [{
-						name: '产品名称1产品名称1产品名称1',
-						name2: '副标题111',
-						price: '2888'
-
-					},
-					{
-						name: '产品名称2产品名2产品名称2',
-						name2: '副标题222',
-						price: '999'
-
-					},
-					{
-						name: '产品名称3产品名称3产品名称3',
-						name2: '副标题333',
-						price: '555'
-
-					},
-					{
-						name: '产品名称1产品名称1产品名称1',
-						name2: '副标题111',
-						price: '2888'
-
-					},
-					{
-						name: '产品名称2产品名2产品名称2',
-						name2: '副标题222',
-						price: '999'
-
-					},
-					{
-						name: '产品名称3产品名称3产品名称3',
-						name2: '副标题333',
-						price: '555'
-
-					}
-				],
-				tejia: [{
-					name: '产品名称1产品名称1产品名称1产品名称1产品名称1',
-					priceNow: '2888',
-					priceOld: '3888'
-
-				}, {
-					name: '产品名称1',
-					priceNow: '2888',
-					priceOld: '3888'
-
-				}, {
-					name: '产品名称1',
-					priceNow: '2888',
-					priceOld: '3888'
-
-				}, {
-					name: '产品名称1',
-					priceNow: '2888',
-					priceOld: '3888'
-
-				}]
+				tuijian: [],
+				tejia: []
 			}
 		},
 		components: {
 			NavModel
 		},
 		created() {
-
+			var that = this
+			//首页数据
+			that.$post('/packageHomePage', {
+				tradeType: 'packageHomePage',
+				tradeData: {
+					deviceCode: that.$store.getters.getDeviceCode,
+					partnerScope: that.$store.getters.getLoginType
+				}
+			}).then((res) => {
+				if(res.data.tradeRstCode == '0000') {
+					that.tejia = res.data.teJia
+					that.tuijian = [{
+						originalPriceCNY: "8811",
+						originalPriceUSD: "2011",
+						packageCode: "PACKAGE20180502000019",
+						packageName: "中国+欧洲35国/地区产品二 30m/月",
+						picHomepage: "https://wx.linksfield.net/upload/homePage/P000270_PACKAGE20180502000019.jpg",
+						salesType: "1",
+						specialPriceCNY: "8611",
+						specialPriceUSD: "1811",
+					}, {
+						originalPriceCNY: "8822",
+						originalPriceUSD: "2022",
+						packageCode: "PACKAGE20180502000019",
+						packageName: "中国+欧洲35国/地区产品二 30m/月",
+						picHomepage: "https://wx.linksfield.net/upload/homePage/P000270_PACKAGE20180502000019.jpg",
+						salesType: "1",
+						specialPriceCNY: "86",
+						specialPriceUSD: "18",
+					}, {
+						originalPriceCNY: "8822",
+						originalPriceUSD: "2022",
+						packageCode: "PACKAGE20180502000019",
+						packageName: "中国+欧洲35国/地区产品二 30m/月",
+						picHomepage: "https://wx.linksfield.net/upload/homePage/P000270_PACKAGE20180502000019.jpg",
+						salesType: "1",
+						specialPriceCNY: "86",
+						specialPriceUSD: "18",
+					}]
+				} else {
+					that.$tools.alert(that, res.data.tradeRstMessage)
+				}
+			}).catch(err => {
+				console.log(err)
+			})
 		},
 		mounted() {
-			var that = this
-			var width = document.body.clientWidth
-			
-			var swiper = new Swiper('.swiper-container', {
-				slidesPerView: 3,
-				spaceBetween: width * 0.05,
-				speed:100,
-				loop: true,
-				on: {
-					transitionEnd: function() {
-						var t = Number($(".swiper-slide-active span").html())
-						console.log(t)
-						that.tjActiveObj = that.tuijian[t]
-					},
-				}
-			})
-			
-			//绑定跳转
-			$(".swiper-container .swiper-slide").on('click',function(event){
-				var str = $(event.currentTarget).attr('class')
-				if(str.indexOf('active') != -1) {
-					that.$router.push("/goodDetail")
-				}
-			})
 
 		},
+		watch: {
+			tuijian: function() {
+				this.$nextTick(function() {
+					var that = this
+					if(that.tuijian.length >= 3) {
+						//轮播
+						var width = document.body.clientWidth
+						var swiper = new Swiper('.swiper-container', {
+							slidesPerView: 3,
+							spaceBetween: width * 0.05,
+							speed: 100,
+							loop: true,
+							on: {
+								transitionEnd: function() {
+									var t = Number($(".swiper-slide-active span").html())
+									that.tjActiveObj = that.tuijian[t]
+								},
+							}
+						})
+						$(".swiper-container .swiper-slide").on('click', function(event) {
+							var str = $(event.currentTarget).attr('class')
+							if(str.indexOf('active') != -1) {
+								that.$router.push("/goodDetail")
+							}
+						})
+					} else {
+						that.tjActiveObj = that.tjActiveObjOld = that.tuijian[0]
+					}
+
+				})
+			}
+		},
 		methods: {
+			clickFunc(idx) {
+				if(this.tuijian[idx] == this.tjActiveObjOld) {
+					this.$router.push("/goodDetail")
+				} else {
+					this.tjActiveObj = this.tjActiveObjOld = this.tuijian[idx]
+				}
+			},
 			toScreen() {
 				this.$router.push('/chooseCountry')
 			},
@@ -315,6 +329,38 @@
 						line-height: 1rem;
 						color: #f65200;
 						font-weight: bold;
+					}
+				}
+			}
+		}
+		.imgsBox {
+			margin-top: 0.4rem;
+			.imgItem {
+				position: relative;
+				float: left;
+				width: 30%;
+				margin: 0 2%;
+				float: left;
+				height: 0;
+				padding-bottom: 40%;
+				border-radius: 0.2rem;
+				box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.2);
+				transition: all 0.2s;
+				&:after {
+					content: "";
+					background: rgba(255, 255, 255, 0.3);
+					display: block;
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					transition: all 0.2s;
+				}
+				&.active {
+					transform: scale(1.1);
+					&:after {
+						background: none;
 					}
 				}
 			}

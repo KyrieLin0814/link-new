@@ -27,7 +27,7 @@
 				this.$router.push("/loginUser")
 			},
 			loginLook(){
-				this.$router.push("/loginType")
+				this.$router.push("/")
 			},
 			langFunc(lg){
 				this.$store.commit('langFunc', lg)

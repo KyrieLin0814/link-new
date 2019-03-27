@@ -342,6 +342,7 @@ input {
 .swiper-container {
 	padding: 0.7rem;
 	margin: 0 -0.7rem;
+	height: 6.2rem;
 }
 
 .swiper-slide {
@@ -365,6 +366,7 @@ input {
 	-webkit-transition: all 0.2s;
 	border-radius: 0.2rem;
 	overflow: hidden;
+	height: 100%;
 }
 
 .swiper-slide img {
@@ -386,6 +388,9 @@ input {
 }
 
 @media screen and (max-width: 321px) {
+	.swiper-container {
+		height: 6.2rem;
+	}
 	.swiper-slide.swiper-slide-active {
 		margin-left: -6rem;
 	}
@@ -395,6 +400,9 @@ input {
 }
 
 @media screen and (min-width: 413px) {
+	.swiper-container {
+		height: 7.5rem;
+	}
 	.swiper-slide.swiper-slide-active {
 		margin-left: -5.6rem;
 	}
@@ -473,12 +481,12 @@ input {
 
 .countryChooses span {
 	position: relative;
-	float:left;
+	float: left;
 	display: block;
-	padding: 0 1.2rem 0 0.6rem ;
-	font-size:0.7rem;
-	line-height:1.1rem;
-	margin:0 0.8rem 0.5rem 0;
+	padding: 0 1.2rem 0 0.6rem;
+	font-size: 0.7rem;
+	line-height: 1.1rem;
+	margin: 0 0.8rem 0.5rem 0;
 	border-radius: 0.6rem;
 }
 
@@ -490,25 +498,25 @@ input {
 
 .countryChooses span.add {
 	background: url(../image/add.png) no-repeat left center;
-	background-size: 0.8rem ;
-	padding-left:1rem;
-	color:#c7c7c7;
+	background-size: 0.8rem;
+	padding-left: 1rem;
+	color: #c7c7c7;
 }
-.countryChooses span i{
+
+.countryChooses span i {
 	position: absolute;
-	top:0.15rem;
-	right:0.15rem;
+	top: 0.15rem;
+	right: 0.15rem;
 	display: block;
 	background: #fff;
-	color:#F65200;
-	width:0.8rem;
-	height:0.8rem;
-	line-height:0.7rem;
+	color: #F65200;
+	width: 0.8rem;
+	height: 0.8rem;
+	line-height: 0.7rem;
 	text-align: center;
 	font-style: normal;
-	font-size:0.8rem;
+	font-size: 0.8rem;
 	border-radius: 0.4rem;
-	
 }
 
 
