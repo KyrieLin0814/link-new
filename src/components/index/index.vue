@@ -17,18 +17,13 @@
 				<div>
 					<div class="swiper-container" v-if="tuijian.length>=3">
 						<div class="swiper-wrapper">
-							<div class="swiper-slide" v-for="(i,idx) in tuijian" 
-								:style="{backgroundImage: 'url(' + i.picHomepage + ')', backgroundSize: 'cover', backgroundPosition: 'center'}" >
-								<!--<img :src="i.picHomepage" />-->
+							<div class="swiper-slide" v-for="(i,idx) in tuijian" :style="{backgroundImage: 'url(' + i.picHomepage + ')', backgroundSize: 'cover', backgroundPosition: 'center'}">
 								<span>{{idx}}</span>
 							</div>
 						</div>
 					</div>
 					<div class="imgsBox clearfix" v-else>
-						<div class="imgItem" v-for="(i,idx) in tuijian" 
-							:style="{backgroundImage: 'url(' + i.picHomepage + ')', backgroundSize: 'cover', backgroundPosition: 'center'}" 
-							@click="clickFunc(idx)" 
-							:class="{'active': tjActiveObj == i}"></div>
+						<div class="imgItem" v-for="(i,idx) in tuijian" :style="{backgroundImage: 'url(' + i.picHomepage + ')', backgroundSize: 'cover', backgroundPosition: 'center'}" @click="clickFunc(idx)" :class="{'active': tjActiveObj == i}"></div>
 					</div>
 				</div>
 
@@ -44,7 +39,7 @@
 			<div class="tejiaContent" v-if="tejia.length>0">
 				<p class="til">{{$t("message.tjzs")}}</p>
 				<div class="tejiaList clearfix">
-					<div class="content" v-for="i in tejia" @click="tuijianFunc(i)">
+					<div class="content" v-for="i in tejia" @click="detailFunc(i)">
 						<div class="con">
 							<div class="imgBox">
 								<img :src="i.picHomepage" />
@@ -136,23 +131,25 @@
 		},
 		created() {
 			var that = this
-			//首页数据
-			that.$post('/packageHomePage', {
-				tradeType: 'packageHomePage',
-				tradeData: {
-					deviceCode: that.$store.getters.getDeviceCode,
-					partnerScope: that.$store.getters.getLoginType
-				}
-			}).then((res) => {
-				if(res.data.tradeRstCode == '0000') {
-					that.tejia = res.data.teJia
-					that.tuijian = res.data.tuiJian
-				} else {
-					that.$tools.alert(that, res.data.tradeRstMessage)
-				}
-			}).catch(err => {
-				console.log(err)
-			})
+			if(that.$store.getters.getDeviceCode) {
+				//首页数据
+				that.$post('/packageHomePage', {
+					tradeType: 'packageHomePage',
+					tradeData: {
+						deviceCode: that.$store.getters.getDeviceCode,
+						partnerScope: that.$store.getters.getLoginType
+					}
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000') {
+						that.tejia = res.data.teJia
+						that.tuijian = res.data.tuiJian
+					} else {
+						that.$tools.toast(that, res.data.tradeRstMessage)
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			}
 		},
 		mounted() {
 
@@ -162,7 +159,8 @@
 				this.$nextTick(function() {
 					var that = this
 					if(that.tuijian.length >= 3) {
-						//轮播
+						
+						//轮播渲染
 						var width = document.body.clientWidth
 						var swiper = new Swiper('.swiper-container', {
 							slidesPerView: 3,
@@ -173,9 +171,11 @@
 								transitionEnd: function() {
 									var t = Number($(".swiper-slide-active span").html())
 									that.tjActiveObj = that.tuijian[t]
-								},
+								}
 							}
 						})
+						
+						//推荐3图以上点击绑定
 						$(".swiper-container .swiper-slide").on('click', function(event) {
 							var str = $(event.currentTarget).attr('class')
 							if(str.indexOf('active') != -1) {
@@ -190,21 +190,24 @@
 			}
 		},
 		methods: {
+			//3图以下推荐点击
 			clickFunc(idx) {
 				if(this.tuijian[idx] == this.tjActiveObjOld) {
-					this.$router.push("/goodDetail")
+					this.detailFunc(this.tjActiveObj)
 				} else {
 					this.tjActiveObj = this.tjActiveObjOld = this.tuijian[idx]
 				}
+			},
+			//跳转详情
+			detailFunc(obj) {
+				this.$store.commit("setCurrentPackage", obj)
+				this.$router.push("/goodDetail")
 			},
 			toScreen() {
 				this.$router.push('/chooseCountry')
 			},
 			tjMore() {
 				this.$router.push('/goodList')
-			},
-			tuijianFunc(obj) {
-				this.$router.push("/goodDetail")
 			},
 			more() {
 				this.$router.push('/goodList')

@@ -11,27 +11,45 @@
 		name: 'number',
 		data() {
 			return {
-				num: 1
+				langType: this.$lang == 'cn',
+				num: 1,
 			}
 		},
 		props: {
-			large: {
-				type: String,
-				default: '999999',
-			}
+//			max: {
+//				type: String,
+//				default: '9999',
+//			},
+//			mix: {
+//				type: String,
+//				default: '1',
+//			}
 		},
-		
+		mounted(){
+//			if(this.max != '-1'){
+//				this.large = this.max
+//			}
+		},
 		methods: {
 			del() {
+//				if(this.num > Number(this.mix)) {
+//					this.num--
+//				}else{
+//					this.$tools.toast(this, this.langType ? '不能再少了':'No less')
+//				}
 				if(this.num > 1) {
 					this.num--
 				}
+				this.$emit('currentNum',this.num);
 			},
 			add() {
-				if(this.num < Number(this.large)) {
-					this.num++
-				}
-				return false;
+//				if(this.num < Number(this.large)) {
+//					this.num++
+//				}else{
+//					this.$tools.toast(this, this.langType ? '不能再多了':'No more')
+//				}
+				this.num++
+				this.$emit('currentNum',this.num);
 			}
 		}
 	}

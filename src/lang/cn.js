@@ -87,6 +87,7 @@ module.exports = {
 		zhong:'种',
 		timeChoose:'时间选择',
 		yue:'个月',
+		day:'天',
 
 //		car
 	 	car:'购物车',
@@ -145,7 +146,6 @@ module.exports = {
 		orderNum:'订单号',
 		buyTime:'购买时间',
 		status:'当前状态',
-		day:'天',
 		num:'个数',
 		buyCard:'购买SIM卡',
 		agree:'同意',

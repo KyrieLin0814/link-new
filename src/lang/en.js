@@ -86,6 +86,7 @@ module.exports = {
 		zhong:' species',
 		timeChoose:'Time choice',
 		yue:' months',
+		day:'day',
 		
 		
 //		car
@@ -145,7 +146,6 @@ module.exports = {
 		orderNum:'Order number',
 		buyTime:'Purchase time',
 		status:'Current state',
-		day:'day',
 		num:'Number',
 		buyCard:'Buy SIM card',
 		agree:'Agree',

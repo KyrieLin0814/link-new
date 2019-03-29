@@ -20,7 +20,7 @@
 						</div>
 						<div class="numModel" @click.stop>
 							<label>
-								<number-bar :large="i.large"></number-bar>
+								<number-bar @currentNum="currentNum"></number-bar>
 							</label>
 						</div>
 					</div>
@@ -78,6 +78,9 @@
 			back() {
 				history.go(-1)
 			},
+			currentNum(num) {
+				this.currentNumber = num
+			},
 			confirmOrder() {
 				this.$router.push("/confirmOrder")
 			}
@@ -106,7 +109,7 @@
 						width: 100%;
 						display: inline-block;
 						vertical-align: top;
-						margin-top:0.5rem;
+						margin-top: 0.5rem;
 					}
 				}
 			}

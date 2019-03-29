@@ -3,17 +3,24 @@ import Vuex from 'vuex'
 import tools from '@/tools'
 Vue.use(Vuex)
 const state = {
+	//用户信息
 	langType: localStorage.getItem("lang") ? localStorage.getItem("lang") : "cn",
 	loginType: sessionStorage.getItem("loginType") ? sessionStorage.getItem("loginType") : "1",
 	partnerCode: sessionStorage.getItem("partnerCode") ? sessionStorage.getItem("partnerCode") : 'P000270',
 	token: sessionStorage.getItem("token") ? sessionStorage.getItem("token") : '',
 	deviceCode: sessionStorage.getItem("deviceCode") ? sessionStorage.getItem("deviceCode") : '',
-	connSeqNo:'',
-	version:'2.0',
+	connSeqNo: '',
+	version: '2.0',
+	
+	//跳转缓存
+	pageParam:{
+		currentPackage: sessionStorage.getItem("currentPackage") ? JSON.parse(sessionStorage.getItem("currentPackage")) : {},
+	},
 	
 	
+	//选项数组
 	listOptions: {
-		//		有无卡片
+		//有无卡片
 		kpListCn: [{
 			label: '有卡',
 			value: '1'
@@ -28,7 +35,7 @@ const state = {
 			label: 'No card',
 			value: '0'
 		}],
-		//		套餐时间
+		//套餐时间
 		sjListCn: [{
 			label: '全部',
 			value: '1'
@@ -68,35 +75,37 @@ const state = {
 			value: '6'
 		}]
 	},
-	data: 1,
 };
-
-state.connSeqNo = state.partnerCode +  tools.getNowFormatDate() + tools.generate(10)
+//生成流水号
+state.connSeqNo = state.partnerCode + tools.getNowFormatDate() + tools.generate(10)
 
 const getters = {
 	getOptionKpList(state) {
-		if(state.langType == 'cn'){
+		if(state.langType == 'cn') {
 			return state.listOptions.kpListCn
-		}else{
+		} else {
 			return state.listOptions.kpListEn
 		}
 	},
 	getOptionSjList(state) {
-		if(state.langType == 'cn'){
+		if(state.langType == 'cn') {
 			return state.listOptions.sjListCn
-		}else{
+		} else {
 			return state.listOptions.sjListEn
 		}
 	},
 	getLoginType(state) {
 		return state.loginType
 	},
-	getToken(state){
+	getToken(state) {
 		return state.token
 	},
-	getDeviceCode(state){
+	getDeviceCode(state) {
 		return state.deviceCode
-	}
+	},
+	getCurrentPackage(state) {
+		return state.pageParam.currentPackage
+	},
 }
 
 const mutations = {
@@ -108,17 +117,21 @@ const mutations = {
 		state.loginType = param;
 		sessionStorage.setItem("loginType", param);
 	},
-	setPartnerCode(state,param){
+	setPartnerCode(state, param) {
 		state.partnerCode = param;
 		sessionStorage.setItem("partnerCode", param);
 	},
-	setToken(state,param){
+	setToken(state, param) {
 		state.token = param;
 		sessionStorage.setItem("token", param);
 	},
-	setDeviceCode(state,param){
+	setDeviceCode(state, param) {
 		state.deviceCode = param;
 		sessionStorage.setItem("deviceCode", param);
+	},
+	setCurrentPackage(state, param) {
+		state.pageParam.currentPackage = param;
+		sessionStorage.setItem("currentPackage", JSON.stringify(param));
 	},
 };
 const store = new Vuex.Store({
