@@ -76,12 +76,12 @@
 		mounted() {
 			var that = this
 			that.addressPicker = this.$createCascadePicker({
-				title: that.langType?'选择地区':'Choose the area',
+				title: that.langType ? '选择地区' : 'Choose the area',
 				data: addressData,
-				onSelect: (selectedVal, selectedIndex, selectedText)=>{
+				onSelect: (selectedVal, selectedIndex, selectedText) => {
 					that.addressObj.areaTxt = selectedText.join('')
 				},
-				onCancel: ()=>{}
+				onCancel: () => {}
 			})
 		},
 		methods: {
@@ -89,9 +89,38 @@
 				history.go(-1)
 			},
 			confirm() {
-				this.$router.push("/confirmOrder")
+				var that = this
+				if(this.addressObj.name &&
+					this.addressObj.tel &&
+					this.addressObj.areaTxt &&
+					this.addressObj.addressTxt &&
+					this.addressObj.email &&
+					this.addressObj.companyName) {
+					that.$post('/userInfoReport ', {
+						tradeType: 'userInfoReport ',
+						tradeData: {
+							deviceCode: '',
+							expressPrice:'',
+							expressType:'',
+							openId: '',
+							recipientAddress: that.addressObj.areaTxt + that.addressObj.addressTxt,
+							recipientCompany:that.addressObj.companyName,
+							recipientEmail: that.addressObj.email,
+							recipientName: that.addressObj.name,
+							recipientPhone: that.addressObj.tel,
+						}
+					}).then((res) => {
+
+						//that.$router.push("/confirmOrder")
+					}).catch(err => {
+						console.log(err)
+					})
+
+				} else {
+					that.tools.alert(that, this.langType ? '请将信息填写完整' : 'Please fill in the complete information')
+				}
 			},
-			areaFunc(){
+			areaFunc() {
 				this.addressPicker.show()
 			}
 		}

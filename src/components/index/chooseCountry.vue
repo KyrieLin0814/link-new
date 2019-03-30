@@ -78,7 +78,15 @@
 			}
 		},
 		created() {
-
+			//国家列表
+			var that = this
+				that.$post('/continentList', {
+					tradeType: 'continentList'
+				}).then((res) => {
+					
+				}).catch(err => {
+					console.log(err)
+				})			
 		},
 		mounted() {
 			if(this.countryList.length > 0){

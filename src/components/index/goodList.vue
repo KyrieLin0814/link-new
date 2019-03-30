@@ -62,13 +62,26 @@
 					detail: "100MB/月",
 					price: "188"
 				}],
-				areaList:['中国','欧洲'],
+				areaList: ['中国', '欧洲'],
 				sjList: this.$store.getters.getOptionSjList,
 				sjValue: '1',
 			}
 		},
 		created() {
-
+			var that = this
+			that.$post('/packageList', {
+				tradeType: 'packageList',
+				tradeData: {
+					partnerScope: that.$store.getters.getLoginType,
+					country:'',
+					continent:'',
+					packageType:''
+				}
+			}).then((res) => {
+				
+			}).catch(err => {
+				console.log(err)
+			})
 		},
 		mounted() {
 
@@ -80,10 +93,10 @@
 			addCar(obj) {
 				this.$router.push("/car")
 			},
-			deleteFunc(i){
-				this.areaList.splice(i,1)
+			deleteFunc(i) {
+				this.areaList.splice(i, 1)
 			},
-			addFunc(){
+			addFunc() {
 				this.$router.push("/chooseCountry")
 			},
 			screenFunc() {
