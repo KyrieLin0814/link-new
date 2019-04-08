@@ -60,14 +60,7 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
-				addressObj: {
-					name: '',
-					tel: '',
-					areaTxt: '',
-					addressTxt: '',
-					companyName: '',
-					email: ''
-				}
+				addressObj: this.$store.getters.getAddressObj
 			}
 		},
 		created() {
@@ -96,28 +89,10 @@
 					this.addressObj.addressTxt &&
 					this.addressObj.email &&
 					this.addressObj.companyName) {
-					that.$post('/userInfoReport ', {
-						tradeType: 'userInfoReport ',
-						tradeData: {
-							deviceCode: '',
-							expressPrice:'',
-							expressType:'',
-							openId: '',
-							recipientAddress: that.addressObj.areaTxt + that.addressObj.addressTxt,
-							recipientCompany:that.addressObj.companyName,
-							recipientEmail: that.addressObj.email,
-							recipientName: that.addressObj.name,
-							recipientPhone: that.addressObj.tel,
-						}
-					}).then((res) => {
-
-						//that.$router.push("/confirmOrder")
-					}).catch(err => {
-						console.log(err)
-					})
-
+					that.$store.commit('setAddressObj', that.addressObj)
+					that.$router.replace("/confirmOrder")
 				} else {
-					that.tools.alert(that, this.langType ? '请将信息填写完整' : 'Please fill in the complete information')
+					that.$tools.alert(that, this.langType ? '请将信息填写完整' : 'Please fill in the complete information')
 				}
 			},
 			areaFunc() {

@@ -1,9 +1,12 @@
+import Vue from 'vue'
 import axios from 'axios'
 import store from '@/vuex/store'
+import { Dialog } from 'cube-ui'
 import md5 from 'js-md5'
 import tools from '@/tools'
 import Qs from 'qs'
 
+Vue.use(Dialog)
 //axios配置全局参数
 axios.defaults.timeout = 5000;
 axios.defaults.baseURL = 'https://wx.linksfield.net/vshop';
@@ -52,8 +55,70 @@ Axios.interceptors.response.use(
 		return response;
 	},
 	error => {
-		return response;
-	});
+		var lang = store.state.langType == 'en' ? true : false
+		if(error && error.response) {
+			switch(error.response.status) {
+				case 400:
+					error.message = lang ? '请求错误(400)' : 'Request error(400)';
+					break;
+
+				case 401:
+					error.message = lang ? '未授权，请重新登录(401)' : 'Unauthorized, please login again(401)';
+					break;
+
+				case 403:
+					error.message = lang ? '拒绝访问(403)' : 'Access denied(403)';
+					break;
+
+				case 404:
+					error.message = lang ? '请求出错(404)' : 'Request error(404)';
+					break;
+
+				case 408:
+					error.message = lang ? '请求超时(408)' : 'Request timeout(408)';
+					break;
+
+				case 500:
+					error.message = lang ? '服务器错误(500)' : 'Server error(500)';
+					break;
+
+				case 501:
+					error.message = lang ? '服务未实现(501)' : 'Service not implemented(501)';
+					break;
+
+				case 502:
+					error.message = lang ? '网络错误(502)' : 'network error(502)';
+					break;
+
+				case 503:
+					error.message = lang ? '服务不可用(503)' : 'Service unavailability(503)';
+					break;
+
+				case 504:
+					error.message = lang ? '网络超时(504)' : 'Network Timeout(504)';
+					break;
+
+				case 505:
+					error.message = lang ? 'HTTP版本不受支持(505)' : 'HTTP version is not supported(505)';
+					break;
+
+				default:
+					error.message = lang ? `连接出错(${error.response.status})!` : `Link error(${error.response.status})!`;
+			}
+		} else {
+			error.message = lang ? '连接服务器失败!' : 'Connection server failed'
+		}
+
+		Dialog.$create({
+			type: 'alert',
+			title: lang? '提示': 'Prompt',
+			content: error.message,
+			onConfirm: () => {
+				tools.toIndex()
+			}
+		}).show()
+		return Promise.reject(error)
+	})
 
 //get 请求
 export function get(url, params) {

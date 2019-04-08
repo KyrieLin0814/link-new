@@ -87,6 +87,15 @@ module.exports = {
 		timeChoose:'Time choice',
 		yue:' months',
 		day:'day',
+		qbgj: 'All countries',
+		zw:'No choice',
+		yxzgj:'Selected countries',
+		yxzsj:'Selected time',
+		add:'Add',
+		fggj:'Covered countries',
+		sysm:'Instructions',
+		
+		
 		
 		
 //		car
@@ -95,6 +104,7 @@ module.exports = {
 	 	addCar:'Add to cart',
 		buyNow:'Buy now',
 		buyNum:'Buy quantity',
+		orderPeriod:'Period',
 		qrdd:'Confirmation of order',
 		kpxx:'Card info',
 		kdxx:'Express info',
@@ -112,6 +122,12 @@ module.exports = {
 	 	tixing:'Reminder: Multiple cards can be added to match the packages and recharge them.',
 		payment:'Payment',
 		WxPay:'WeChat payment',
+		QhPay:'Ocean payment',
+		PyPal:'Paypal payment',
+	 	jixu:'Continue',
+	 	empty:'The shopping cart is empty',
+	 	xzkp:'Please choose your card',
+
 		
 //		address
 	 	name:'Name',
@@ -155,8 +171,6 @@ module.exports = {
 	 	mealCost:'Package cost',
 	 	mealDetail:'Commodity details',
 	 	cost:'Cost',
-	 	continue:'Continue',
-	 	empty:'The shopping cart is empty',
 	 	recharge:'Recharge to existing IOT card',
 	 	scan:'Scan card back',
 	 	placeholder:'(Input text box)',

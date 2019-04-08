@@ -12,7 +12,7 @@
 			<div class="cardAddBox">
 				<div class="cards">
 					<p class="card" v-for="(i,idx) in cardList">
-						{{$t("message.card")}}{{idx + 1}}
+						{{i.text}}
 						<span @click="delFunc(idx)">X</span>
 					</p>
 				</div>
@@ -35,33 +35,40 @@
 			return {
 				langType: this.$lang == 'cn',
 				placeholder: this.$t("message.inputTxt"),
-				cardList: [{
-					card: '',
-
-				}, {
-					card: '',
-
-				}],
+				cardList: this.$store.getters.getCardListNo,
 			}
 		},
 		created() {
 
 		},
-		mounted() {},
+		mounted() {
+			if(this.cardList.length == 0){
+				this.cardList.push({
+					text:(this.langType ? '卡' : 'Card') + 1,
+					value:(this.langType ? '卡' : 'Card') + 1
+				})
+				this.$store.commit('setCardListNo',this.cardList)
+			}
+		},
 		methods: {
 			back() {
 				history.go(-1)
 			},
 			confirm() {
-				this.$router.push("/confirmOrder")
+				this.$router.replace("/confirmOrder")
+				this.$store.commit('setCardListNo',this.cardList)
 			},
 			addCard() {
+				var str = this.cardList[this.cardList.length-1].text
+				var num = str.substr(str.length-1,1)
+				console.log(num)
 				this.cardList.push({
-					card: ''
+					text:(this.langType ? '卡' : 'Card') + (Number(num)+1),
+					value:(this.langType ? '卡' : 'Card') + (Number(num)+1)
 				})
 			},
 			delFunc(idx){
-				this.cardList.splice(idx-1, 1)
+				this.cardList.splice(idx, 1)
 			}
 		}
 	}

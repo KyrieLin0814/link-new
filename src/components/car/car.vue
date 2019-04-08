@@ -6,32 +6,38 @@
 					<i @click="back"><img src="../../assets/image/left.png"/></i> {{$t("message.car")}}
 				</a>
 			</div>
+			<div v-if="tcList.length>0">
+				<cube-checkbox-group v-model="checkList" class="checkboxBox">
+					<cube-checkbox :option="i.checkId" v-for="(i,idx) in tcList" :key="i.id">
+						<div class="checkBoxContent flex">
+							<div class="imgBox">
+								<img :src="i.picDetailspage" />
+							</div>
+							<div class="content flex-1">
+								<p class="name text-2">{{i.packageName}}</p>
+								<p class="detail">{{$t("message.orderPeriod")}}:{{i.orderPeriod}}{{$t("message.yue")}}</p>
+								<p class="price">{{$t("message.yuanFH")}}<span>{{i.currentPrice}}</span></p>
+							</div>
 
-			<cube-checkbox-group v-model="checkList" class="checkboxBox">
-				<cube-checkbox :option="i.id" v-for="i in tcList" :key="i.id">
-					<div class="checkBoxContent flex">
-						<div class="imgBox">
-							<img src="../../assets/image/goodlist.jpg" />
+							<div class="delBox" @click.stop>
+								<label @click="delFunc(idx,i)">X</label>
+							</div>
+							<div class="numModel" @click.stop>
+								<label>
+									<number-bar @currentNum="currentNum(idx, arguments)" :currentNumber='i.currentNumber'></number-bar>
+								</label>
+							</div>
 						</div>
-						<div class="content flex-1">
-							<p class="name text-2">{{i.name}}</p>
-							<p class="detail">{{i.detail}}</p>
-							<p class="price">{{$t("message.yuanFH")}}<span>{{i.price}}</span></p>
-						</div>
-						<div class="numModel" @click.stop>
-							<label>
-								<number-bar @currentNum="currentNum"></number-bar>
-							</label>
-						</div>
-					</div>
 
-				</cube-checkbox>
+					</cube-checkbox>
+				</cube-checkbox-group>
+			</div>
+			<p class="noData" v-else>{{$t("message.empty")}}</p>
 
-			</cube-checkbox-group>
 		</div>
 
 		<div class="fixedBtns flex">
-			<cube-button class="gray flex-1" @click="back">{{$t('message.cancel')}}</cube-button>
+			<cube-button class="gray flex-1" @click="back">{{$t('message.jixu')}}</cube-button>
 			<cube-button class="color flex-1" @click="confirmOrder">
 				<span>{{$t("message.yuanFH")}}{{total}}</span> {{$t("message.jiesuan")}}
 			</cube-button>
@@ -47,41 +53,74 @@
 			return {
 				langType: this.$lang == 'cn',
 				total: 0,
-				checkList: ['1'],
-				tcList: [{
-					id: '1',
-					name: '套餐11111套餐11111套餐11111',
-					detail: "50MB/月",
-					price: "90",
-					card: '卡1',
-					large: '5'
-				}, {
-					id: '2',
-					name: '套餐2222',
-					detail: "100MB/月",
-					price: "188",
-					card: '卡1',
-					large: '20'
-				}]
+				checkList: this.$store.getters.getCheckList,
+				tcList: this.$store.getters.getCartList
 			}
 		},
 		components: {
 			NumberBar
 		},
 		created() {
-
+			this.tcList.map(function(item, idx) {
+				if(!item.checkId) {
+					var checkId = item.packageCode + ',' + item.orderPeriod
+					item.checkId = checkId
+				}
+			})
+			this.totalFunc()
+		},
+		watch: {
+			checkList(newVal) {
+				this.$nextTick(function() {
+					this.$store.commit('setCheckList', this.checkList)
+					this.totalFunc()
+				})
+			}
 		},
 		mounted() {
-			this.total = this.$tools.totalFunc(this.tcList)
+
 		},
 		methods: {
 			back() {
-				history.go(-1)
+				history.go(-2)
 			},
-			currentNum(num) {
-				this.currentNumber = num
+			totalFunc() {
+				var that = this
+				var selectList = []
+				this.tcList.map(function(i) {
+					that.checkList.map(function(j) {
+						if(i.checkId == j) {
+							selectList.push(i)
+						}
+					})
+				})
+				this.total = this.$tools.totalFunc(selectList)
+			},
+			delFunc(idx, obj) {
+				var that = this
+				that.$tools.alert(that, that.langType ? '确定要删除该套餐吗？' : 'Are you sure to delete the package?', function() {
+					that.checkList.map(function(j, i) {
+						if(obj.checkId == j) {
+							that.checkList.splice(i, 1)
+						}
+					})
+					that.tcList.splice(idx, 1)
+					that.$store.commit('setCheckList', that.checkList)
+					that.$store.commit('setCartList', that.tcList)
+				})
+
+			},
+			currentNum() {
+				const index = arguments[0]
+				const tag = arguments[1][0]
+				this.tcList[index].currentNumber = tag
+				this.$store.commit('setCartList', this.tcList)
+				this.totalFunc()
 			},
 			confirmOrder() {
+				if(!this.checkList.length){
+					return
+				}
 				this.$router.push("/confirmOrder")
 			}
 		}
@@ -121,7 +160,8 @@
 			position: relative;
 			width: 100%;
 			.imgBox {
-				padding-right: 0.5rem;
+				margin-right: 0.5rem;
+				background: #f5f5f5;
 				img {
 					display: block;
 					width: 6rem;
@@ -134,8 +174,9 @@
 					line-height: 1rem;
 					font-size: 0.7rem;
 					&.detail {
+						margin: 0.1rem 0;
 						font-size: 0.6rem;
-						color: #bfbfbf;
+						color: #999;
 					}
 					&.price {
 						font-size: 0.6rem;
@@ -147,6 +188,20 @@
 							color: #f65200;
 						}
 					}
+				}
+			}
+			.delBox {
+				font-size: 0;
+				margin-right: -0.2rem;
+				height: 1rem;
+				label {
+					display: inline-block;
+					position: relative;
+					z-index: 99;
+					font-size: 0.7rem;
+					line-height: 1.1rem;
+					color: #dfdfdf;
+					padding: 0 0.25rem;
 				}
 			}
 			.numModel {

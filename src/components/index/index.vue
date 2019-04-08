@@ -12,7 +12,7 @@
 			<div class="tuijian" v-if="tuijian.length>0">
 				<div class="tilBox clearfix">
 					<p class="til">{{$t("message.wntj")}}</p>
-					<a class="more" @click="tjMore">{{$t("message.ckgd")}}</a>
+					<!--<a class="more" @click="tjMore">{{$t("message.ckgd")}}</a>-->
 				</div>
 				<div>
 					<div class="swiper-container" v-if="tuijian.length>=3">
@@ -31,7 +31,10 @@
 					<div class="textBox">
 						<p class="tjName text-1">{{tjActiveObj.packageName}}</p>
 						<!--<p class="tjTil text-1">{{tjActiveObj.name2}}</p>-->
-						<p class="tjPrice text-1">{{$t('message.yuanFH')}}{{langType ? tjActiveObj.originalPriceCNY : tjActiveObj.originalPriceUSD}}</p>
+						<div class="clearfix">
+							<p class="tjPrice">{{$t('message.yuanFH')}}{{$tools.priceShow(tjActiveObj)}}</p>
+							<p class="oldPrice" v-if="tjActiveObj.specialPriceCNY">{{$t("message.yuanFH")}}{{$tools.priceShow(tjActiveObj,'yj')}}</p>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -39,18 +42,17 @@
 			<div class="tejiaContent" v-if="tejia.length>0">
 				<p class="til">{{$t("message.tjzs")}}</p>
 				<div class="tejiaList clearfix">
-					<div class="content" v-for="i in tejia" @click="detailFunc(i)">
+					<div class="content" :class="{'en': !langType}" v-for="i in tejia" @click="detailFunc(i)">
 						<div class="con">
-							<div class="imgBox">
-								<img :src="i.picHomepage" />
+							<div class="imgBox" :style="{backgroundImage: 'url(' + i.picHomepage + ')', backgroundSize: 'cover', backgroundPosition: 'center'}">
 							</div>
 							<div class="name text-2">
 								<i>{{$t("message.tj")}}</i>
 								<span>{{i.packageName}}</span>
 							</div>
 							<div class="price flex">
-								<p class="now">{{$t('message.yuanFH')}}{{ langType? i.specialPriceCNY : i.specialPriceUSD}}</p>
-								<p class="old flex-1">{{$t('message.yuanFH')}}{{langType ? i.originalPriceCNY : i.originalPriceUSD}}</p>
+								<p class="now">{{$t('message.yuanFH')}}{{$tools.priceShow(i)}}</p>
+								<p class="old flex-1" v-if="i.specialPriceCNY">{{$t('message.yuanFH')}}{{$tools.priceShow(i,'yj')}}</p>
 							</div>
 						</div>
 					</div>
@@ -152,14 +154,14 @@
 			}
 		},
 		mounted() {
-
+			
 		},
 		watch: {
 			tuijian: function() {
 				this.$nextTick(function() {
 					var that = this
 					if(that.tuijian.length >= 3) {
-						
+
 						//轮播渲染
 						var width = document.body.clientWidth
 						var swiper = new Swiper('.swiper-container', {
@@ -174,7 +176,7 @@
 								}
 							}
 						})
-						
+
 						//推荐3图以上点击绑定
 						$(".swiper-container .swiper-slide").on('click', function(event) {
 							var str = $(event.currentTarget).attr('class')
@@ -204,16 +206,26 @@
 				this.$router.push("/goodDetail")
 			},
 			toScreen() {
-				this.$router.push('/chooseCountry')
+				this.$router.push('/screenCountry')
 			},
 			tjMore() {
 				this.$router.push('/goodList')
 			},
 			more() {
-				this.$router.push('/goodList')
+				this.$router.push({
+					name: 'goodList',
+					params: {
+						sale: '1'
+					}
+				})
 			},
-			hotFunc(type) {
-				this.$router.push('/goodList')
+			hotFunc(t) {
+				this.$router.push({
+					name: 'goodList',
+					params: {
+						type: t
+					}
+				})
 			}
 		}
 	}
@@ -301,10 +313,19 @@
 						color: #a0a0a0;
 					}
 					.tjPrice {
+						float: left;
 						font-size: 0.8rem;
 						line-height: 1rem;
 						color: #f65200;
 						font-weight: bold;
+					}
+					.oldPrice {
+						float: left;
+						margin-left: 0.5rem;
+						color: #a0a0a0;
+						font-size: 0.6rem;
+						text-decoration: line-through;
+						line-height: 1rem;
 					}
 				}
 			}
@@ -361,15 +382,18 @@
 						background-size: 100%;
 						z-index: 8;
 					}
+					&.en:after{
+						background: url(../../assets/image/tjIcon_en.png) no-repeat right top;
+						background-size: 100%;
+						z-index: 8;
+					}
 					.con {
 						margin: 0.25rem 0.25rem 0.6rem;
 						.imgBox {
 							border-radius: 0.2rem;
-							overflow: hidden;
-							img {
-								display: block;
-								width: 100%;
-							}
+							height: 0;
+							padding-bottom: 5.2rem;
+							background: #f5f5f5;
 						}
 						.name {
 							margin-top: 0.2rem;

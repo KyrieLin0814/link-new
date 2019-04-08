@@ -4,27 +4,27 @@
 
 		<div class="screenContent">
 			<div class="chooseBox flex" @click="moreCountry">
-				<span class="text-1 flex-1">{{country}}</span>
+				<span class="text-1 flex-1">{{countryText ? countryText : langType?'请选择国家':'Please choose country'}}</span>
 				<a class="addMore">{{$t('message.duoxuan')}}</a>
 			</div>
-			<div class="moreBtn" @click="screenFunc">{{$t('message.moreChoice')}}</div>
-			<cube-button class="color">{{$t('message.startFind')}}</cube-button>
+			<div class="moreBtn" @click="showMask">{{$t('message.moreChoice')}}</div>
+			<cube-button class="color" @click="toList()">{{$t('message.startFind')}}</cube-button>
 			<div class="touch" v-swipeup="{fn:vuetouch,name:'上滑'}">{{$t("message.moveUp")}}</div>
 		</div>
 
-		<div class="masker" v-if="screenFlag" @click="screenFunc"></div>
+		<div class="masker" v-if="screenFlag" @click="hideMask"></div>
 		<div class="maskBox" :class="{'show': screenFlag}">
-			<p class="til">已选择国家</p>
+			<p class="til">{{$t('message.yxzgj')}}</p>
 			<div class="countryChooses clearfix">
-				<span class="countryItem" v-for="(i,idx) in areaList">{{i}}<i @click="deleteFunc(idx)">x</i></span>
-				<span class="add" @click="addFunc">添加</span>
+				<span class="countryItem" v-for="(i,idx) in country">{{i}}<i @click="deleteFunc(idx)">x</i></span>
+				<span class="add" @click="addFunc">{{$t('message.add')}}</span>
 			</div>
-			<p class="til">已选择时间</p>
+			<p class="til">{{$t('message.yxzsj')}}</p>
 			<div class="radioBox three">
 				<cube-radio-group v-model="sjValue" :options="sjList" :horizontal="true" :hollowStyle="true" />
 			</div>
 			<div class="fixedBtns flex">
-				<cube-button class="gray flex-1" @click="screenFunc">{{$t('message.cancel')}}</cube-button>
+				<cube-button class="gray flex-1" @click="hideMask">{{$t('message.cancel')}}</cube-button>
 				<cube-button class="color flex-1" @click="confirm">{{$t("message.confirm")}}</cube-button>
 			</div>
 		</div>
@@ -39,43 +39,66 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
-				country: '中国',
+				country: [],
+				countryText: '',
 				name: '开始',
-				screenFlag:false,
-				areaList:['中国','欧洲'],
+				screenFlag: false,
 				sjList: this.$store.getters.getOptionSjList,
-				sjValue: '1'
+				sjValueOld: this.$store.getters.getPackageType,
+				sjValue: this.$store.getters.getPackageType,
 			}
 		},
 		components: {
 			NavModel
 		},
 		created() {
-			
+
 		},
 		mounted() {
+			if(this.$route.params.routerType) {
+				this.screenFlag = true
+			}
+			this.creatCountry()
 		},
 		methods: {
+			creatCountry() {
+				this.country = JSON.parse(JSON.stringify(this.$store.getters.getCountryList))
+				this.countryText = this.country.join(',')
+			},
 			moreCountry() {
 				this.$router.push("/chooseCountry");
 			},
 			vuetouch(s, e) {
 				this.name = s.name;
-				this.$router.push("/")
+				this.$router.push("/index")
 			},
-			deleteFunc(i){
-				this.areaList.splice(i,1)
+			deleteFunc(i) {
+				this.country.splice(i, 1)
 			},
-			addFunc(){
-				this.$router.push("/chooseCountry")
+			addFunc() {
+				this.$store.commit('setBackRouter', this.$route.name)
+				this.$router.replace("/chooseCountry")
 			},
-			screenFunc() {
+			showMask() {
+				this.sjValueOld = this.sjValue
 				this.screenFlag = !this.screenFlag
 			},
-			confirm(){
-				this.screenFunc()
+			hideMask() {
+				this.creatCountry()
+				this.sjValue = this.sjValueOld
+				this.screenFlag = !this.screenFlag
 			},
-
+			confirm() {
+				this.$store.commit('setCountryList', this.country)
+				this.$store.commit('setPackageType', this.sjValue)
+				this.creatCountry()
+				this.screenFlag = !this.screenFlag
+			},
+			toList() {
+				this.$router.push({
+					name: 'goodList'
+				})
+			}
 		}
 	}
 </script>

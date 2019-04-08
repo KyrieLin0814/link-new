@@ -46,6 +46,7 @@
 					return
 				}
 				var that = this
+				that.$tools.loading(that)
 				that.$post('/partnerLogin', {
 					tradeType: 'partnerLogin',
 					tradeData: {
@@ -54,6 +55,7 @@
 					}
 				}).then((res) => {
 					if(res.data.tradeRstCode == '0000') {
+						that.loading.hide()
 						that.$tools.toast(that, res.data.tradeRstMessage)
 						this.$store.commit('setToken', res.data.token)
 						setTimeout(function() {

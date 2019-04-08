@@ -6,18 +6,22 @@
 					<i @click="back"><img src="../../assets/image/left.png"/></i> {{$t("message.goodList")}}
 					<span>{{$t("message.gong")}}{{goodList.length}}{{$t("message.zhong")}}</span>
 				</a>
-				<span class="screen" @click="screenFunc"><img src="../../assets/image/screen.png"/></span>
+				<span class="screen" @click="showMask"><img src="../../assets/image/screen.png"/></span>
 			</div>
-			<div class="listContent">
+			<div class="listContent" v-if="goodList.length > 0">
 				<ul>
 					<li class="flex" v-for="i in goodList">
 						<div class="imgBox">
-							<img src="../../assets/image/goodlist.jpg" />
+							<img :src="i.picDetailspage">
 						</div>
 						<div class="content flex-1">
-							<p class="name text-1">{{i.name}}</p>
-							<p class="detail">{{i.detail}}</p>
-							<p class="price">{{$t("message.yuanFH")}}<span>{{i.price}}</span></p>
+							<p class="name text-2">{{i.packageName}}</p>
+							<!--<p class="detail">{{i.detail}}</p>-->
+							<div class="priceBox clearfix">
+								<p class="price">{{$t("message.yuanFH")}}<span>{{$tools.priceShow(i)}}</span></p>
+								<p class="oldPrice" v-if="i.originalPriceCNY">{{$t("message.yuanFH")}}{{$tools.priceShow(i,'yj')}}</p>
+							</div>
+
 						</div>
 						<div class="carBox">
 							<a class="carBtn" @click="addCar(i)"><img src="../../assets/image/car.png" /></a>
@@ -25,21 +29,22 @@
 					</li>
 				</ul>
 			</div>
+			<p class="noData" v-else>暂无套餐</p>
 		</div>
 
-		<div class="masker" v-if="screenFlag" @click="screenFunc"></div>
+		<div class="masker" v-if="screenFlag" @click="hideMask"></div>
 		<div class="maskBox" :class="{'show': screenFlag}">
-			<p class="til">已选择国家</p>
+			<p class="til">{{$t('message.yxzgj')}}</p>
 			<div class="countryChooses clearfix">
-				<span class="countryItem" v-for="(i,idx) in areaList">{{i}}<i @click="deleteFunc(idx)">x</i></span>
-				<span class="add" @click="addFunc">添加</span>
+				<span class="countryItem" v-for="(i,idx) in country">{{i}}<i @click="deleteFunc(idx)">x</i></span>
+				<span class="add" @click="addFunc">{{$t('message.add')}}</span>
 			</div>
-			<p class="til">已选择时间</p>
+			<p class="til">{{$t('message.yxzsj')}}</p>
 			<div class="radioBox three">
 				<cube-radio-group v-model="sjValue" :options="sjList" :horizontal="true" :hollowStyle="true" />
 			</div>
 			<div class="fixedBtns flex">
-				<cube-button class="gray flex-1" @click="screenFunc">{{$t('message.cancel')}}</cube-button>
+				<cube-button class="gray flex-1" @click="hideMask">{{$t('message.cancel')}}</cube-button>
 				<cube-button class="color flex-1" @click="confirm">{{$t("message.confirm")}}</cube-button>
 			</div>
 		</div>
@@ -53,57 +58,110 @@
 			return {
 				langType: this.$lang == 'cn',
 				screenFlag: false,
-				goodList: [{
-					name: '套餐11111套餐11111套餐11111',
-					detail: "50MB/月",
-					price: "90"
-				}, {
-					name: '套餐2222',
-					detail: "100MB/月",
-					price: "188"
-				}],
-				areaList: ['中国', '欧洲'],
+				goodList: [],
+				country: ['中国', '欧洲'],
 				sjList: this.$store.getters.getOptionSjList,
-				sjValue: '1',
+				sjValue: this.$store.getters.getPackageType,
+				sjValueOld: this.$store.getters.getPackageType,
 			}
 		},
 		created() {
-			var that = this
-			that.$post('/packageList', {
-				tradeType: 'packageList',
-				tradeData: {
-					partnerScope: that.$store.getters.getLoginType,
-					country:'',
-					continent:'',
-					packageType:''
-				}
-			}).then((res) => {
-				
-			}).catch(err => {
-				console.log(err)
-			})
-		},
-		mounted() {
 
 		},
+		mounted() {
+			this.country = JSON.parse(JSON.stringify(this.$store.getters.getCountryList))
+			if(this.$route.params.routerType) {
+				this.screenFlag = true
+			} else {
+				var that = this
+				let type = this.$route.params.type
+				let zhou = ''
+				let country = ''
+				let packageType = ''
+
+				if(type == 1) {
+					zhou = that.langType ? '亚洲' : 'Asia'
+				} else if(type == 2) {
+					zhou = that.langType ? '欧洲' : 'Europe'
+				} else if(type == 3) {
+					zhou = that.langType ? '非洲' : 'Africa'
+				} else if(type == 4) {
+					zhou = that.langType ? '南美洲' : 'SouthAmerica'
+				} else if(type == 5) {
+					zhou = that.langType ? '北美洲' : 'NorthAmerica'
+				} else if(type == 6) {
+					zhou = that.langType ? '大洋洲' : 'Oceania'
+				} else {
+					country = that.$store.getters.getCountryList.join(',')
+					packageType = that.$store.getters.getPackageType
+				}
+				that.getList(zhou, country, packageType)
+			}
+		},
 		methods: {
+			getList(z, g, t) {
+				var that = this
+				var sale = that.$route.params.sale ? that.$route.params.sale : ''
+				that.$post('/packageList', {
+					tradeType: 'packageList',
+					tradeData: {
+						continent: z ? z : '',
+						country: g ? g : '',
+						packageType: t ? t : '',
+						partnerScope: that.$store.getters.getLoginType,
+						salesType: sale
+					}
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000') {
+						that.goodList = that.cutFunc(res.data.tradeData)
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			cutFunc(arr){
+				var codes = []
+				var arrFinal = []
+				arr.map(function(i){
+					if(JSON.stringify(codes).indexOf(i.packageCode) == -1){
+						codes.push(i.packageCode)
+						arrFinal.push(i)
+					}
+				})
+				return arrFinal
+			},
 			back() {
 				history.go(-1)
 			},
 			addCar(obj) {
-				this.$router.push("/car")
+				this.$store.commit("setCurrentPackage", obj)
+				this.$router.push("/goodDetail")
 			},
 			deleteFunc(i) {
-				this.areaList.splice(i, 1)
+				this.country.splice(i, 1)
 			},
 			addFunc() {
-				this.$router.push("/chooseCountry")
+				this.$store.commit('setBackRouter', this.$route.name)
+				this.$router.replace("/chooseCountry")
 			},
-			screenFunc() {
+			showMask() {
+				this.sjValueOld = this.sjValue
+				this.screenFlag = !this.screenFlag
+			},
+			hideMask() {
+				this.country = JSON.parse(JSON.stringify(this.$store.getters.getCountryList))
+				this.sjValue = this.sjValueOld
 				this.screenFlag = !this.screenFlag
 			},
 			confirm() {
-				this.screenFunc()
+				this.$store.commit('setCountryList', this.country)
+				this.$store.commit('setPackageType', this.sjValue)
+				this.sjValueOld = this.sjValue
+				this.screenFlag = !this.screenFlag
+
+				var country = this.$store.getters.getCountryList.join(',')
+				var packageType = this.$store.getters.getPackageType
+				this.getList('', country, packageType)
 			},
 		}
 	}
@@ -158,7 +216,8 @@
 				li {
 					margin-bottom: 1rem;
 					.imgBox {
-						padding-right: 0.5rem;
+						margin-right: 0.5rem;
+						background: #f5f5f5;
 						img {
 							display: block;
 							width: 6rem;
@@ -175,6 +234,7 @@
 								color: #bfbfbf;
 							}
 							&.price {
+								float: left;
 								font-size: 0.7rem;
 								span {
 									vertical-align: bottom;
@@ -183,6 +243,13 @@
 									font-size: 1rem;
 									color: #f65200;
 								}
+							}
+							&.oldPrice {
+								float: left;
+								margin-left: 0.5rem;
+								color: #a0a0a0;
+								font-size: 0.7rem;
+								text-decoration: line-through;
 							}
 						}
 					}

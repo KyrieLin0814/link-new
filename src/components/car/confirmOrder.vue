@@ -37,16 +37,17 @@
 			<div class="meatchBox">
 				<div class="tcBox">
 					<ul class="contentList">
-						<li v-for="i in tcList">
+						<li v-for="(i,idx) in tcList">
 							<div class="top clearfix">
-								<p class="name text-1">{{i.name}}</p>
-								<p class="detail">{{i.detail}}</p>
-								<p class="price">{{$t('message.yuanFH')}}{{i.price}}</p>
+								<p class="name text-1">{{i.packageName}}</p>
+								<!--<p class="detail">{{i.detail}}</p>-->
+								<p class="price">{{$t('message.yuanFH')}}{{i.currentPrice}}<span>x {{i.currentNumber}}</span></p>
 							</div>
 							<div class="bottom">
-								<span class="card">{{i.card}}</span>
+								<span class="card" v-if="i.card">{{i.cardText.split("：")[0]}}</span>
+								<span class="noCard" v-else>{{$t("message.xzkp")}}</span>
 							</div>
-							<div class="chooseCard" @click="chooseCard">
+							<div class="chooseCard" @click="chooseCard(idx)">
 								<img src="../../assets/image/xiala.png" />
 							</div>
 						</li>
@@ -63,32 +64,38 @@
 							{{$t("message.yuanFH")}}{{tcTotal}}</span>
 						</div>
 					</li>
-					<li class="clearfix">
+					<li class="clearfix" v-show="kpValue == '0'">
 						<p class="thirdTil">{{$t("message.kdCost")}}</p>
 						<div class="total">
 							{{$t("message.yuanFH")}}<span>{{kd}} x 1</span>
 						</div>
 					</li>
-					<li class="clearfix">
+					<li class="clearfix" v-show="kpValue == '0'">
 						<p class="thirdTil">{{$t("message.kpCost")}}</p>
 						<div class="total">
-							{{$t("message.yuanFH")}}<span>{{kf}} x 1</span>
+							{{$t("message.yuanFH")}}<span>{{kf}} x {{kpNum}}</span>
 						</div>
 					</li>
 				</ul>
 			</div>
 		</div>
 
-		<div class="masker" v-if="payShow" @click="payShowFunc"></div>
+		<div class="masker" v-if="payShow" @click="payShow = !payShow"></div>
 		<div class="maskBox" :class="{'show': payShow}">
 			<p class="til">{{$t("message.payment")}}</p>
-			<p class="priceActive"><span>{{$t("message.yuanFH")}}</span>{{total}}</p>
+			<p class="priceActive">{{(payType == 3 ? '$':'￥') + finalPrice}}</p>
 			<ul class="pauType">
 				<li :class="{'active': payType == 1}" @click="payTypeFunc(1)">
 					<i class="wx"></i><span>{{$t("message.WxPay")}}</span>
 				</li>
+				<li :class="{'active': payType == 2}" @click="payTypeFunc(2)">
+					<i class="qh"></i><span>{{$t("message.QhPay")}}</span>
+				</li>
+				<li :class="{'active': payType == 3}" @click="payTypeFunc(3)">
+					<i class="py"></i><span>{{$t("message.PyPal")}}</span>
+				</li>
 			</ul>
-			<cube-button class="color">{{$t("message.confirm")}}</cube-button>
+			<cube-button class="color" @click="sendOrder()">{{$t("message.confirm")}}</cube-button>
 
 		</div>
 
@@ -108,97 +115,176 @@
 			return {
 				langType: this.$lang == 'cn',
 				payShow: false,
+				openId: this.$store.getters.getOpenId,
 				kpList: this.$store.getters.getOptionKpList,
 				kdList: [{
-					label: this.$t("message.ptkd") + this.$t("message.yuanFH") + 10,
-					value: '0'
-				}, {
-					label: this.$t("message.sf") + this.$t("message.yuanFH") + 15,
-					value: '1'
-				}],
-				cardList: [{
-					text: '卡1',
+					label: this.$t("message.ptkd") + this.$t("message.yuanFH") + this.$store.getters.getKDPrice,
 					value: '1'
 				}, {
-					text: '卡2',
+					label: this.$t("message.sf") + this.$t("message.yuanFH") + this.$store.getters.getSFPrice,
 					value: '2'
 				}],
-				tcList: [{
-					name: '套餐11111套餐11111套餐11111',
-					detail: "50MB/月",
-					price: "90",
-					card: '卡1'
-				}, {
-					name: '套餐2222',
-					detail: "100MB/月",
-					price: "188",
-					card: '卡1'
-				}],
-				kpValue: '1',
-				kdValue: '0',
+				cardList: [],
+				cardListHave: this.$store.getters.getCardListHave,
+				cardListNo: this.$store.getters.getCardListNo,
+				tcList: this.$store.getters.getCartList,
+				addressObj: this.$store.getters.getAddressObj,
+				kpValue: this.$store.getters.getKP,
+				kdValue: this.$store.getters.getKD,
+				kd: '0',
+				kf: this.$store.getters.getKPPrice,
+				kpNum: this.$store.getters.getKPNum,
+				kpSelect: this.$store.getters.getKPSelect,
 				address: '',
-				kd: '10',
-				kf: '0',
-				payType:1    //1微信  
+				payType: 1 //1微信      2//钱海    3//paypal
 			}
 		},
-		created() {
-
-		},
-		mounted() {},
 		watch: {
 			kpValue(newVal, oldVal) {
-				if(newVal == '1') {
-					this.kf = '0'
-				}
-				if(newVal == '0') {
-					this.kf = '10'
-				}
+				this.$store.commit("setKP", newVal)
+				this.tcList.map(function(item) {
+					delete item.card
+				})
+				this.$store.commit('setCartList', this.tcList)
+				this.haveOrNo(newVal)
+				this.kfFunc(0)
 			},
 			kdValue(newVal, oldVal) {
+				var sf = this.$store.getters.getSFPrice;
+				var kd = this.$store.getters.getKDPrice;
+				if(newVal == '2') {
+					this.kd = sf
+				}
 				if(newVal == '1') {
-					this.kd = '15'
+					this.kd = kd
 				}
-				if(newVal == '0') {
-					this.kd = '10'
-				}
+				this.$store.commit("setKD", newVal)
 			},
 		},
 		computed: {
 			total: function() {
 				if(this.kpValue == '0') {
-					return this.$tools.totalFunc(this.tcList, this.kd, this.kf)
+					return this.$tools.totalFunc(this.tcList, this.kd, this.kf, this.kpNum)
 				} else {
 					return this.$tools.totalFunc(this.tcList)
 				}
-
 			},
-			tcTotal:function(){
+			tcTotal: function() {
 				return this.$tools.totalFunc(this.tcList)
+			},
+			finalPrice: function() {
+				//根据支付方式重新计算最终价格
+				var kfCn = this.$store.state.kpPriceCn
+				var kfEn = this.$store.state.kpPriceEn
+				var kdCn = (this.kdValue == '1') ? this.$store.state.kdPriceCn : this.$store.state.sfPriceCn
+				var kdEn = (this.kdValue == '1') ? this.$store.state.kdPriceEn : this.$store.state.sfPriceEn
+
+				if(this.payType == 3) {
+					if(this.kpValue == '0') {
+						return this.$tools.totalFunc(this.tcList, kdEn, kfEn, this.kpNum, 'usd').toFixed(2)
+					} else {
+						return this.$tools.totalFunc(this.tcList, 0, 0, 0, 'usd').toFixed(2)
+					}
+				} else {
+					if(this.kpValue == '0') {
+						return this.$tools.totalFunc(this.tcList, kdCn, kfCn, this.kpNum, 'cny').toFixed(2)
+					} else {
+						return this.$tools.totalFunc(this.tcList, 0, 0, 0, 'cny').toFixed(2)
+					}
+				}
 			}
+		},
+		created() {},
+		mounted() {
+			this.address = this.addressObj.areaTxt + this.addressObj.addressTxt
+			this.kd = (this.kdValue == '1') ? this.$store.getters.getKDPrice : this.$store.getters.getSFPrice
+
+			//微信 && 获取卡片信息
+			if(this.openId && this.$store.getters.getCardListHave.length == 0) {
+				this.getCard()
+			} else {
+				this.cardListHave = this.$store.getters.getCardListHave
+				this.cardListNo = this.$store.getters.getCardListNo
+			}
+
+			this.haveOrNo(this.kpValue)
 		},
 		methods: {
 			back() {
 				history.go(-1)
 			},
-			payShowFunc() {
-				this.payShow = !this.payShow
+			kfFunc(type) {
+				var num = 0;
+				var cardNo = []
+				if(type) {
+					this.tcList.map(function(item) {
+						if(item.card && cardNo.indexOf(item.card) == -1) {
+							cardNo.push(item.card)
+						}
+					})
+					num = cardNo.length
+				}
+				this.kpNum = num
+				this.kpSelect = cardNo
+				this.$store.commit("setKPNum", num)
+				this.$store.commit("setKPSelect", cardNo)
+			},
+			haveOrNo(type) {
+				if(type == '0') {
+					this.cardList = this.cardListNo
+				}
+				if(type == '1') {
+					this.cardList = this.cardListHave
+				}
+				this.$forceUpdate()
+			},
+			getCard() {
+				var that = this
+				//卡片列表
+				that.$post('/queryDeviceCode', {
+					tradeType: 'queryDeviceCode',
+					openId: that.openId
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000') {
+						var cardArr = []
+						res.data.tradeData.map(function(item, idx) {
+							cardArr.push({
+								text: (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.deviceCode,
+								value: item.deviceCode
+							})
+						})
+						that.cardListHave = cardArr
+						that.$store.commit('setCardListHave', cardArr)
+						that.haveOrNo(that.kpValue)
+					}else{
+						that.$tools.alert(that, res.data.tradeRstMessage,that.$tools.toIndex)
+					}
+				}).catch(err => {
+					that.$tools.alert(that, res.data.tradeRstMessage)
+				})
 			},
 			addressFunc() {
 				this.$router.push("/addressEdit")
 			},
-			payTypeFunc(i){
+			payTypeFunc(i) {
 				this.payType = i
 			},
-			chooseCard() {
+			chooseCard(idx) {
 				var that = this
+				if(this.cardList.length == 0) {
+					this.$tools.alert(that, that.langType ? '请根据有无卡片情况，编辑卡片信息' : 'Please edit the card information according to whether there are cards or not')
+					return
+				}
 				this.picker = this.$createPicker({
 					title: that.langType ? '选择卡片' : 'Choose card',
 					data: [that.cardList],
 					onSelect: (selectedVal, selectedIndex, selectedText) => {
-						console.log(selectedVal)
-						console.log(selectedIndex)
-						console.log(selectedText)
+						that.tcList[idx].card = selectedVal[0]
+						that.tcList[idx].cardText = selectedText[0]
+						that.$store.commit('setCartList', that.tcList)
+						//无卡情况，计算卡片数量
+						that.kfFunc(1)
+						that.$forceUpdate()
 					},
 					onCancel: () => {}
 				})
@@ -211,6 +297,134 @@
 				if(this.kpValue == '1') {
 					this.$router.push('/myCard')
 				}
+			},
+			payShowFunc() {
+				var that = this
+				//检查卡片是否绑定
+				var cardFlag = false
+				that.tcList.map(function(item) {
+					if(!item.card) {
+						cardFlag = true
+					}
+				})
+				if(cardFlag) {
+					that.$tools.alert(that, this.langType ? '请给每个套餐匹配卡片' : 'Please assign the cards to the packages')
+					return
+				}
+				//检查个人信息
+				if(!that.addressObj.name && that.kpValue == '0') {
+					that.$tools.alert(that, this.langType ? '快递信息不完整' : 'Incomplete Express information')
+					return
+				}
+
+				//用户绑定接口
+				
+				this.$tools.loading(that)
+				var deviceCodeArr = []
+				this.cardList.map(function(item) {
+					deviceCodeArr.push({
+						deviceCode: item.value
+					})
+				})
+				that.$post('/userInfoReport ', {
+					tradeType: 'userInfoReport ',
+					tradeData: {
+						deviceCodeList: deviceCodeArr,
+						expressPrice: that.kd,
+						expressType: that.kdValue,
+						openId: that.$store.getters.getOpenId,
+						recipientAddress: that.addressObj.areaTxt + that.addressObj.addressTxt,
+						recipientCompany: that.addressObj.companyName,
+						recipientEmail: that.addressObj.email,
+						recipientName: that.addressObj.name,
+						recipientPhone: that.addressObj.tel,
+					}
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000') {
+						that.payShow = !that.payShow
+					}else{
+						that.$tools.alert(that, res.data.tradeRstMessage,that.$tools.toIndex)
+					}
+					that.loading.hide()
+				}).catch(err => {
+					that.loading.hide()
+					that.$tools.alert(that, res.data.tradeRstMessage)
+				})
+			},
+			sendBaseFunc(api) {
+				var that = this
+				this.$tools.loading(that)
+				//整理下单请求参数
+				var deviceListArr = []
+				that.kpSelect.map(function(item) {
+					deviceListArr.push({
+						deviceCode: item,
+						orderList: []
+					})
+				})
+				deviceListArr.map(function(i) {
+					that.tcList.map(function(j) {
+						if(i.deviceCode == j.card) {
+							for(let t = 0; t < Number(j.currentNumber); t++) {
+								let fee = null
+								//当前套餐，当前支付类型下价格
+								if(that.payType == 3) {
+									fee = j.currentPricePp
+								} else {
+									fee = j.currentPriceWx
+								}
+								let orderNo = that.$tools.getNo() + that.$tools.generate(5)
+								i.orderList.push({
+									cardFee: that.kf,
+									expressFee: that.kd,
+									globalOrder: '0',
+									orderNo: orderNo,
+									orderPeriod: j.orderPeriod,
+									packageCode: j.packageCode,
+									packageFee: fee,
+									packageName: j.packageName,
+									packageType: j.packageType,
+								})
+							}
+						}
+					})
+				})
+
+				let data = {
+					deviceList: deviceListArr,
+					partnerScope: that.$store.getters.getLoginType,
+					payAmount: that.finalPrice,
+					payCurrency: (that.payType == 3 ? 'USD' : 'CNY'),
+					payId: that.$store.getters.getPartnerCode + that.$tools.getNo() + that.$tools.generate(5),
+					requestOrderId: ''
+				}
+				that.$post('/' + api, {
+					tradeType: api,
+					tradeData: data
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000') {
+						that.loading.hide()
+						that.payFunc()
+					}else{
+						that.$tools.alert(that, res.data.tradeRstMessage,that.$tools.toIndex)
+					}
+				}).catch(err => {
+					that.loading.hide()
+				})
+
+			},
+			sendOrder() {
+				var that = this
+				if(that.kpValue == '0') {
+					//无卡下单
+					that.sendBaseFunc('userNoCardOrder')
+				} else {
+					//有卡下单
+					that.sendBaseFunc('userCardOrder')
+				}
+			},
+			payFunc() {
+				alert(1)
 			}
 		}
 	}
@@ -273,25 +487,31 @@
 								font-size: 0.7rem;
 								line-height: 1.2rem;
 								&.name {
-									width: 40%;
+									width: 70%;
 									padding-bottom: 0.3rem;
 								}
 								&.detail {
 									width: 30%;
 									text-align: center;
-									font-size:0.6rem;
-									color:#a0a0a0;
+									font-size: 0.6rem;
+									color: #a0a0a0;
 								}
 								&.price {
-									width: 30%;
+									width: 28%;
 									text-align: right;
+									padding-right: 2%;
 									color: #F65200;
 									font-size: 1rem;
+									span {
+										color: #a0a0a0;
+										font-size: 0.8rem;
+										padding-left: 0.3rem;
+									}
 								}
 							}
 						}
 						.bottom {
-							span {
+							span.card {
 								background: #F65200;
 								font-size: 0.7rem;
 								color: #fff;
@@ -299,6 +519,10 @@
 								height: 1.4rem;
 								border-radius: 0.7rem;
 								padding: 0 0.5rem;
+							}
+							span.noCard {
+								font-size: 0.7rem;
+								color: #999;
 							}
 						}
 						.chooseCard {
@@ -378,19 +602,29 @@
 							background: url(../../assets/image/wx.png) no-repeat center;
 							background-size: 1.2rem;
 						}
+						&.qh {
+							/*background: url(../../assets/image/wx.png) no-repeat center;
+							background-size: 1.2rem;*/
+							background: #42B983;
+						}
+						&.py {
+							/*background: url(../../assets/image/wx.png) no-repeat center;
+							background-size: 1.2rem;*/
+							background: #007AFF;
+						}
 					}
-					&.active:after{
-						content:'';
+					&.active:after {
+						content: '';
 						display: inline-block;
 						position: absolute;
 						right: 1rem;
-						top:0.6rem;
-						width:0.9rem;
-						height:0.5rem;
-						border-bottom:2px solid #a0a0a0;
-						border-left:2px solid #a0a0a0;
-						transform:rotate(-45deg);
-						-webkit-transform:rotate(-45deg);
+						top: 0.6rem;
+						width: 0.9rem;
+						height: 0.5rem;
+						border-bottom: 2px solid #a0a0a0;
+						border-left: 2px solid #a0a0a0;
+						transform: rotate(-45deg);
+						-webkit-transform: rotate(-45deg);
 					}
 				}
 			}

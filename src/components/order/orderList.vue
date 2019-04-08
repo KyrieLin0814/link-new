@@ -58,7 +58,24 @@
 			}
 		},
 		created() {
-
+			var that = this
+			that.$tools.loading(that)
+			that.$post('/myOrder ', {
+				tradeType: 'myOrder ',
+				tradeData: {
+					deviceCode: that.$store.getters.getDeviceCode,
+					orderId:"",
+					orderStatus:"",
+					orderType: "",
+				}
+			}).then((res) => {
+				if(res.data.tradeRstCode == '0000') {
+					
+					that.loading.hide()
+				}
+			}).catch(err => {
+				that.loading.hide()
+			})
 		},
 		mounted() {
 

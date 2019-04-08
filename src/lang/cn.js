@@ -88,6 +88,16 @@ module.exports = {
 		timeChoose:'时间选择',
 		yue:'个月',
 		day:'天',
+		qbgj: '全部国家',
+		zw:'暂无',
+		yxzgj:'已选择国家',
+		yxzsj:'已选择时间',
+		add:'添加',
+		fggj:'覆盖国家',
+		sysm:'使用说明',
+		
+		
+		
 
 //		car
 	 	car:'购物车',
@@ -95,6 +105,7 @@ module.exports = {
 	 	addCar:'加入购物车',
 		buyNow:'立即购买',
 		buyNum:'购买数量',
+		orderPeriod:'订购周期',
 		qrdd:'确认订单',
 		kpxx:'卡片信息',
 		kdxx:'快递信息',
@@ -112,6 +123,11 @@ module.exports = {
 	 	tixing:'提醒：可添加多张卡片，进行套餐匹配充值。',
 		payment:'确认支付',
 		WxPay:'微信支付',
+		QhPay:'钱海支付',
+		PyPal:'Paypal支付',
+	 	jixu:'继续购买',
+	 	empty:'购物车为空',
+	 	xzkp:'请选择卡片',
 
 //		address
 	 	name:'姓名',
@@ -155,8 +171,6 @@ module.exports = {
 	 	mealCost:'套餐费',
 	 	mealDetail:'商品详情',
 	 	cost:'需支付',
-	 	continue:'继续购买',
-	 	empty:'购物车为空',
 	 	recharge:'充值到已有物联网卡',
 	 	scan:'扫描卡片背面',
 	 	placeholder:'( 输入文本框 )',

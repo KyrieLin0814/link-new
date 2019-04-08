@@ -10,11 +10,11 @@
 			</div>
 
 			<div class="cardAddBox">
-				<ul>
+				<ul v-if="cardList.length>0">
 					<li class="flex" v-for="(i,idx) in cardList">
-						<div class="card">{{$t("message.card")}}{{idx + 1}}</div>
+						<div class="card">{{i.text.split('：')[0]}}</div>
 						<div class="inputBox flex-1">
-							<input type="text" v-model="i.card" :placeholder="placeholder" />
+							<input type="text" v-model="i.value" :placeholder="placeholder" />
 							<span class="screenBtn" @click="screenFunc()"></span>
 						</div>
 					</li>
@@ -38,30 +38,38 @@
 			return {
 				langType: this.$lang == 'cn',
 				placeholder: this.$t("message.inputTxt"),
-				cardList: [{
-					card: '886541235',
-
-				},{
-					card: '',
-
-				}],
+				cardList: this.$store.getters.getCardListHave
 			}
 		},
 		created() {
 
 		},
 		mounted() {
+
 		},
+
 		methods: {
 			back() {
 				history.go(-1)
 			},
 			confirm() {
-				this.$router.push("/confirmOrder")
+				var that = this
+				this.cardList.map(function(item, idx) {
+					item.text = (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.value
+				})
+				this.$store.commit('setCardList', that.cardList)
+				this.$router.replace("/confirmOrder")
 			},
 			addCard() {
+				if(this.cardList.length > 0) {
+					if(!this.cardList[this.cardList.length - 1].value) {
+						return
+					}
+				}
+
 				this.cardList.push({
-					card:''
+					text: (this.langType ? '卡' : 'Card') + (this.cardList.length + 1) + "：",
+					value: ''
 				})
 			}
 		}
@@ -100,7 +108,7 @@
 			ul {
 				padding: 0.8rem 0;
 				li {
-					margin-bottom:1rem;
+					margin-bottom: 1rem;
 					font-size: 0.7rem;
 					line-height: 1.8rem;
 					.card {
@@ -125,10 +133,10 @@
 					}
 				}
 			}
-			.tip{
+			.tip {
 				padding-top: 1rem;
-				font-size:0.6rem;
-				color:#dedede;
+				font-size: 0.6rem;
+				color: #dedede;
 				text-align: center;
 			}
 		}

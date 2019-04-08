@@ -4,39 +4,46 @@
 			<p class="title">{{$t("message.chooseCountry")}}</p>
 			<div class="inputBox flex">
 				<input class="flex-1" type="text" :placeholder="placeholder" v-model="param" />
-				<cube-button class="color">{{$t("message.search")}}</cube-button>
+				<cube-button class="color" @click="find()">{{$t("message.search")}}</cube-button>
 			</div>
 			<div class="myCountries">
 				<div class="top clearfix">
 					<p class="til">{{$t("message.choosedCountry")}}</p>
-					<a class="clean"></a>
+					<a class="clean" @click="cleanFunc"></a>
 				</div>
-				<ul class="clearfix">
-					<li class="color" v-for="item in countryList">{{item}}</li>
+				<ul class="clearfix" v-if="countryListSeleted.length > 0">
+					<li class="color" v-for="(item,idx) in countryListSeleted">
+						{{item}}
+						<i @click="del(idx)">X</i>
+					</li>
 				</ul>
+				<p class="zw" v-else>{{$t("message.zw")}}</p>
 			</div>
 		</div>
 		<div class="list">
 			<p class="til">{{$t("message.flxz")}}</p>
-			<cube-tab-bar v-model="selectedLabel" show-slider>
-				<cube-tab v-for="(item, index) in tabs" :icon="item.icon" :label="item.label" :key="item.label">
-				</cube-tab>
-			</cube-tab-bar>
-			<div class="scrollContent">
-				<cube-tab-panels v-model="selectedLabel">
-					<cube-tab-panel v-for="(item, index) in tabs" :label="item.label" :key="item.label">
-						<ul>
-							<li class="tab-panel-li" v-for="(hero, index) in item.heroes">
-								{{hero}}
-							</li>
-						</ul>
-					</cube-tab-panel>
-				</cube-tab-panels>
-				<div class="fixedBtns flex">
-					<cube-button class="gray flex-1" @click="back">{{$t("message.cancel")}}</cube-button>
-					<cube-button class="color flex-1" @click="confirm">{{$t("message.confirm")}}</cube-button>
+
+			<div class="tabBar">
+				<div class="scroll">
+					<div class="tabContent">
+						<span :class="{'active': avtiveTab == '-1'}" @click="tabFunc('-1')">{{$t('message.qbgj')}}</span>
+						<span :class="{'active': avtiveTab == idx}" v-for="(i,idx) in areaList" @click="tabFunc(idx, i.continentName)">{{i.continentName}}</span>
+					</div>
 				</div>
 			</div>
+			<div class="countriesBox">
+				<div class="countriesScroll">
+					<ul class="countriesList">
+						<li v-for="i in countryList" @click="chooseFunc(i)">{{i.countryName}}</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="fixedBtns flex">
+			<cube-button class="gray flex-1" @click="back">{{$t('message.cancel')}}</cube-button>
+			<cube-button class="color flex-1" @click="confirm">{{$t("message.confirm")}}</cube-button>
 		</div>
 
 	</div>
@@ -49,59 +56,129 @@
 			return {
 				langType: this.$lang == 'cn',
 				param: '',
-				placeholder:'',
-				countryList: ['中国', '欧洲'],
-				selectedLabel: '全部国家',
-				tabs: [{
-					label: '全部国家',
-					heroes: ['中国', '法国', '美国', '韩国', '日本', '幻影长矛手', '复仇之魂', '力丸', '矮人狙击手', '圣堂刺客', '露娜', '赏金猎人', '熊战士', '法国', '美国', '韩国', '日本', '幻影长矛手', '复仇之魂', '力丸', '矮人狙击手', '圣堂刺客', '露娜', '赏金猎人', '熊战士']
-				}, {
-					label: '亚洲',
-					heroes: ['血魔', '影魔', '剃刀', '剧毒术士', '虚空假面', '幻影刺客', '冥界亚龙', '克林克兹', '育母蜘蛛', '编织者', '幽鬼', '司夜刺客', '米波']
-				}, {
-					label: '欧洲',
-					heroes: ['血魔', '影魔', '剃刀', '剧毒术士', '虚空假面', '幻影刺客', '冥界亚龙', '克林克兹', '育母蜘蛛', '编织者', '幽鬼', '司夜刺客', '米波']
-				}, {
-					label: '大洋洲',
-					heroes: ['血魔', '影魔', '剃刀', '剧毒术士', '虚空假面', '幻影刺客', '冥界亚龙', '克林克兹', '育母蜘蛛', '编织者', '幽鬼', '司夜刺客', '米波']
-				}, {
-					label: '南美洲',
-					heroes: ['血魔', '影魔', '剃刀', '剧毒术士', '虚空假面', '幻影刺客', '冥界亚龙', '克林克兹', '育母蜘蛛', '编织者', '幽鬼', '司夜刺客', '米波']
-				}, {
-					label: '北美洲',
-					heroes: ['血魔', '影魔', '剃刀', '剧毒术士', '虚空假面', '幻影刺客', '冥界亚龙', '克林克兹', '育母蜘蛛', '编织者', '幽鬼', '司夜刺客', '米波']
-				}, {
-					label: '非洲',
-					heroes: ['血魔', '影魔', '剃刀', '剧毒术士', '虚空假面', '幻影刺客', '冥界亚龙', '克林克兹', '育母蜘蛛', '编织者', '幽鬼', '司夜刺客', '米波']
-				}]
+				placeholder: '',
+				countryListSeleted: this.$store.getters.getCountryList,
+				avtiveTab: '-1',
+				areaList: [],
+				countryList: [],
 
 			}
 		},
 		created() {
 			//国家列表
 			var that = this
-				that.$post('/continentList', {
-					tradeType: 'continentList'
-				}).then((res) => {
-					
-				}).catch(err => {
-					console.log(err)
-				})			
+			that.$post('/continentList', {
+				tradeType: 'continentList'
+			}).then((res) => {
+				if(res.data.tradeRstCode == '0000') {
+					that.areaList = res.data.tradeData
+				}
+			}).catch(err => {
+				console.log(err)
+			})
+
+			that.getCountry()
+
 		},
-		mounted() {
-			if(this.countryList.length > 0){
-				this.placeholder = this.countryList.join('/')
-			}else{
-				this.placeholder = this.langType? '请选择国家' : 'Please select countries'
+		watch: {
+			countryListSeleted() {
+				this.$nextTick(function() {
+					this.cssFunc()
+				})
 			}
 		},
+		mounted() {
+			if(this.countryListSeleted.length > 0) {
+				this.placeholder = this.countryListSeleted.join('/')
+			} else {
+				this.placeholder = this.langType ? '请选择国家' : 'Please select countries'
+			}
+			this.cssFunc()
+		},
 		methods: {
-			back(){
-				history.go(-1)
+			cssFunc() {
+				var t = $(".list")[0].offsetTop;
+				$(".list").css('height', '100%').css('height', '-=' + t + 'px');
+				var h = $(".til").height() + $(".tabBar").height() + $(".fixedBtns").height() + 15;
+				$(".countriesBox").css('height', '100%').css('height', '-=' + h + 'px');
 			},
-			confirm(){
-				
-				this.$router.replace("/screenCountry")
+			tabFunc(idx, txt) {
+				this.avtiveTab = idx
+				this.getCountry(txt ? txt : '')
+			},
+			getCountry(p, func) {
+				var that = this
+				that.$post('/countryList', {
+					tradeType: 'countryList',
+					tradeData: {
+						continentName: p
+					}
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000') {
+						that.countryList = res.data.tradeData
+						if(typeof(func) == 'function') {
+							func()
+						}
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			find() {
+				var that = this
+				this.avtiveTab = '-1'
+				if(!this.param) {
+					this.getCountry()
+				} else {
+					var countryParam = []
+					that.getCountry('', function() {
+						that.countryList.map(function(item) {
+							if(item.countryName.indexOf(that.param) > -1) {
+								countryParam.push(item)
+							}
+						})
+						that.countryList = countryParam
+					})
+				}
+
+			},
+			chooseFunc(obj) {
+				var have = false
+				this.countryListSeleted.map(function(item) {
+					if(obj.countryName == item) {
+						have = true
+					}
+				})
+				if(have) {
+					this.$tools.toast(this, this.langType ? '已选择该国家' : 'The country has been selected')
+				} else {
+					this.countryListSeleted.push(obj.countryName)
+				}
+			},
+			del(i) {
+				this.countryListSeleted.splice(i, 1)
+			},
+			cleanFunc() {
+				this.countryListSeleted = []
+			},
+			back() {
+//				console.log( this.$store.getters.getBackRouter)
+				var backRouter = this.$store.getters.getBackRouter
+				if(backRouter) {
+					this.$store.commit('setBackRouter', '')
+					this.$router.replace({
+						name: backRouter,
+						params: {
+							routerType: true
+						}
+					})
+				} else {
+					history.go(-1)
+				}
+			},
+			confirm() {
+				this.$store.commit('setCountryList', this.countryListSeleted)
+				this.back()
 			}
 
 		}
@@ -120,7 +197,7 @@
 					display: block;
 					padding: 0 0.5rem;
 					background: #f3f3f3;
-					color: #b5b5b5;
+					color: #666;
 					border-radius: 5px;
 				}
 				button {
@@ -148,35 +225,71 @@
 			ul {
 				li {
 					float: left;
+					font-size: 0.7rem;
 					margin: 0 0.4rem 0.3rem 0;
 					background: #f65200;
 					color: #fff;
-					line-height: 1.4rem;
+					line-height: 1.35rem;
 					height: 1.4rem;
 					border-radius: 0.7rem;
 					padding: 0 0.8rem;
+					i {
+						margin-right: -0.2rem;
+						margin-left: 0.1rem;
+						color: #fff;
+						display: inline-block;
+						font-style: normal;
+						font-size: 0.6rem;
+					}
 				}
+			}
+			.zw {
+				color: #999;
+				padding-left: 0.5rem;
 			}
 		}
 		.list {
 			margin-top: 0.5rem;
+			overflow: hidden;
 			.til {
 				font-size: 0.8rem;
 				line-height: 2rem;
 				padding-left: 0.8rem;
 			}
-			.cube-tab-bar {
-				.cube-tab {
-					font-size: 0.7rem;
+			.tabBar {
+				width: 100%;
+				.scroll {
+					overflow: scroll;
+					border-bottom: 4px solid #ccc;
+					.tabContent {
+						position: relative;
+						z-index: 9;
+						font-size: 0;
+						white-space: nowrap;
+						margin-bottom: 4px;
+						span {
+							display: inline-block;
+							font-size: 0.7rem;
+							padding: 0 0.3rem;
+							line-height: 1.5rem;
+							&.active {
+								color: #f65200;
+								border-bottom: 4px solid #f65200;
+								margin-bottom: -4px;
+							}
+						}
+					}
 				}
 			}
-			.scrollContent {
-				padding-bottom: 3rem;
-				.cube-tab-panel {
-					.tab-panel-li {
-						font-size: 0.7rem;
-						text-indent: 2em;
-						line-height: 1.4rem;
+			.countriesBox {
+				overflow: scroll;
+				.countriesScroll {
+					.countriesList {
+						padding: 0.3rem 0.7rem;
+						li {
+							font-size: 0.7rem;
+							line-height: 1.4rem;
+						}
 					}
 				}
 			}

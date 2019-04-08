@@ -2,15 +2,18 @@
 	<div class="body-container bg goodDetail">
 		<div class="scrollContent">
 			<div class="head">
-				<div class="back" @click="back">返回</div>
-				<img :src="obj.picDetailspage" />
+				<!--<div class="back" @click="back">{{$t("message.back")}}</div>-->
+				<img :src="obj.picDetailspage ? obj.picDetailspage: $store.getters.getBaseBg " />
 			</div>
 
 			<div class="content">
 				<div class="tcDetail">
 					<p class="title">{{obj.packageName}}</p>
 					<div class="tcText clearfix">
-						<div class="price">{{$t("message.yuanFH")}}<span>{{langType ? obj.originalPriceCNY : obj.originalPriceUSD}}</span></div>
+						<div class="price">
+							{{$t("message.yuanFH")}}<span>{{currentPrice}}</span>
+						</div>
+						<div class="oldPrice" v-if="obj.specialPriceCNY">{{$t("message.yuanFH")}}{{currentOldPrice}}</div>
 						<!--<div class="detail">{{obj.packageFlow}}MB/{{$t("message.day")}}</div>-->
 					</div>
 
@@ -30,11 +33,11 @@
 				</div>
 				<div class="useOption">
 					<div class="model">
-						<p class="modelTitle country">覆盖国家</p>
+						<p class="modelTitle country">{{$t("message.fggj")}}</p>
 						<p class="countriesTxt">{{obj.coverCountry}}</p>
 					</div>
 					<div class="model">
-						<p class="modelTitle useTxt">使用说明</p>
+						<p class="modelTitle useTxt">{{$t('message.sysm')}}</p>
 						<img src="../../assets/image/useOption.jpg" />
 					</div>
 
@@ -51,8 +54,8 @@
 				</div>
 			</div>
 			<div class="btns flex">
-				<cube-button class="gray flex-1" @click="addCart">{{$t('message.addCar')}}</cube-button>
-				<cube-button class="color flex-1" @click="buyNow">{{$t('message.buyNow')}}</cube-button>
+				<cube-button class="gray flex-1" @click="back">{{$t('message.back')}}</cube-button>
+				<cube-button class="color flex-1" @click="addCart">{{$t('message.addCar')}}</cube-button>
 			</div>
 		</div>
 	</div>
@@ -86,21 +89,28 @@
 						value: '12',
 						text: '12'
 					}
-				]
+				],
+				currentPrice: null,
+				currentOldPrice: null,
+				currentPriceWx: null,
+				currentPricePp: null,
 			}
 		},
 		components: {
 			NumberBar
 		},
 		watch: {
-			timeValue: function() {
+			timeValue: function(newVal) {
 				this.$nextTick(function() {
 					this.orderPeriod = this.timeValue
+					this.currentPrice = this.$tools.priceFinal(this.obj, newVal)
+					this.currentOldPrice = this.$tools.priceFinal(this.obj, newVal, 'yj')
+					this.currentPriceWx = this.$tools.priceWx(this.obj, newVal)
+					this.currentPricePp = this.$tools.pricePp(this.obj, newVal)
 				})
 			}
 		},
 		created() {
-			console.log(this.$store.getters.getCurrentPackage)
 			var that = this
 			var meal = that.$store.getters.getCurrentPackage
 			that.$post('/packageDetails', {
@@ -112,11 +122,23 @@
 			}).then((res) => {
 				if(res.data.tradeRstCode == '0000') {
 					that.obj = res.data.tradeData[0]
-					let packageType = res.data.tradeData[0].packageType
+					let packageType = that.obj.packageType
 					if(packageType == '0') {
-						that.orderPeriod = res.data.tradeData[0].minOrderPeriod
+						//默认订购周期
+						that.orderPeriod = that.obj.minOrderPeriod
+						//新老显示价格 & 微信 /paypal价格
+						that.currentPrice = that.$tools.priceShow(that.obj)
+						that.currentOldPrice = that.$tools.priceShow(that.obj, 'yj')
+						that.currentPriceWx = that.$tools.priceWx(that.obj, 0, 1)
+						that.currentPricePp = that.$tools.pricePp(that.obj, 0, 1)
 					} else if(packageType == '1' || packageType == '5') {
+						//默认订购周期
 						that.orderPeriod = '1'
+						//新老显示价格 & 微信 /paypal价格
+						that.currentPrice = that.$tools.priceShow(that.obj)
+						that.currentOldPrice = that.$tools.priceShow(that.obj, 'yj')
+						that.currentPriceWx = that.$tools.priceWx(that.obj, 0, 1)
+						that.currentPricePp = that.$tools.pricePp(that.obj, 0, 1)
 					} else {
 						if(packageType == '3') {
 							that.options.splice(0, 1)
@@ -144,10 +166,35 @@
 				this.currentNumber = num
 			},
 			addCart() {
+				var currentObj = JSON.parse(JSON.stringify(this.obj))
+				currentObj.orderPeriod = this.orderPeriod
+				currentObj.currentNumber = this.currentNumber
+				currentObj.currentPrice = this.currentPrice
+				currentObj.currentOldPrice = this.currentOldPrice
+				currentObj.currentPriceWx = this.currentPriceWx
+				currentObj.currentPricePp = this.currentPricePp
+
+				var cartList = this.$store.getters.getCartList
+				//购物车是否存在该套餐
+				var have = false
+				var haveIdx = null
+				cartList.map(function(item, idx) {
+					if(currentObj.packageCode == item.packageCode && currentObj.orderPeriod == item.orderPeriod) {
+						haveIdx = idx
+						have = true
+					}
+				})
+				if(have) {
+					cartList[haveIdx].currentNumber = cartList[haveIdx].currentNumber + currentObj.currentNumber
+				} else {
+					cartList.push(currentObj)
+				}
+
+				this.$store.commit('setCartList', cartList)
 				this.$router.push('/car')
 			},
 			buyNow() {
-				this.$router.push('/car')
+				this.$router.push('/confirmOrder')
 			}
 		}
 	}
@@ -187,6 +234,8 @@
 				.title {
 					font-size: 0.8rem;
 					font-weight: normal;
+					line-height: 1.2rem;
+					padding: 0.4rem 0;
 				}
 				.tcText {
 					line-height: 1.4rem;
@@ -200,6 +249,13 @@
 							font-size: 1.2rem;
 							font-weight: bold;
 						}
+					}
+					.oldPrice {
+						float: left;
+						margin-left: 1rem;
+						color: #a0a0a0;
+						font-size: 0.8rem;
+						text-decoration: line-through;
 					}
 					.detail {
 						font-size: 0.6rem;
@@ -233,8 +289,8 @@
 			.model {
 				border-bottom: 2px dotted #e7e7e7;
 				margin-bottom: 0.5rem;
-				&:last-child{
-					border-bottom:none;
+				&:last-child {
+					border-bottom: none;
 				}
 				.modelTitle {
 					font-size: 0.7rem;
@@ -257,7 +313,7 @@
 				img {
 					display: block;
 					width: 100%;
-					margin-top:0.5rem;
+					margin-top: 0.5rem;
 				}
 			}
 		}

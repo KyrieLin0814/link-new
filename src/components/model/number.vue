@@ -12,10 +12,14 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
-				num: 1,
+				num:1
 			}
 		},
 		props: {
+			currentNumber:{
+				type:Number,
+				default:1
+			}
 //			max: {
 //				type: String,
 //				default: '9999',
@@ -26,6 +30,7 @@
 //			}
 		},
 		mounted(){
+			this.num = this.currentNumber
 //			if(this.max != '-1'){
 //				this.large = this.max
 //			}

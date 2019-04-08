@@ -34,7 +34,7 @@
 
 		},
 		mounted() {
-			
+
 		},
 		methods: {
 			goShoper() {
@@ -49,6 +49,7 @@
 					return
 				}
 				var that = this
+				that.$tools.loading(that)
 				that.$post('/userLogin', {
 					tradeType: 'userLogin',
 					tradeData: {
@@ -56,18 +57,20 @@
 						partnerScope: that.$store.getters.getLoginType
 					}
 				}).then((res) => {
-					if(res.data.tradeRstCode == '0000'){
+					if(res.data.tradeRstCode == '0000') {
 						that.$tools.toast(that, res.data.tradeRstMessage)
 						that.$store.commit('setToken', res.data.token)
 						that.$store.commit('setDeviceCode', that.cardNum)
-						setTimeout(function(){
+						setTimeout(function() {
+							that.loading.hide()
 							that.$router.replace("/index")
-						},1000)
-					}else{
+						}, 1000)
+					} else {
+						that.loading.hide()
 						that.$tools.alert(that, res.data.tradeRstMessage)
 					}
 				}).catch(err => {
-					console.log(err)
+					that.loading.hide()
 				})
 			},
 			loginLook() {
