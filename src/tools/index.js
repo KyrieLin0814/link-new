@@ -205,7 +205,7 @@ const tools = {
 		if(sec >= 0 && sec <= 9) {
 			sec = "0" + sec;
 		}
-		let No  = date.getFullYear() + month + strDate + hour + minute + sec
+		let No = date.getFullYear() + month + strDate + hour + minute + sec
 		return No
 	},
 	//生成P位随机数
@@ -226,9 +226,23 @@ const tools = {
 		}
 		return newObj;
 	},
+	//时间显示格式
+	timeShow(t, type) {
+		let year = t.substring(0, 4)
+		let month = t.substring(4, 6)
+		let day = t.substring(6, 8)
+		let hour = t.substring(8, 10)
+		let min = t.substring(10, 12)
+		let sec = t.substring(12, 14)
+		if(type) {
+			return year + '-' + month + '-' + day + " "+ hour + ':' + min + ':' + sec 
+		} else {
+			return year + '-' + month + '-' + day
+		}
+	},
 	//回到首页
-	toIndex(){
-		window.location.href='/#/'
+	toIndex() {
+		window.location.href = '/#/'
 	}
 
 };

@@ -63,7 +63,10 @@ module.exports = {
 	 	startTime:'启用时间',
 	 	endTime:'套餐截止时间',
 	 	cTime:'实际结束时间',
-	 	
+	 	jyfs:'交易方式',
+	 	jyhm:'交易号码',
+	 	jyls:'交易流水',
+	 	orderSuccess:'订单已完成，感谢！',	 	
 
 	 	
 	 	
@@ -87,6 +90,7 @@ module.exports = {
 		zhong:'种',
 		timeChoose:'时间选择',
 		yue:'个月',
+		nian:'年',
 		day:'天',
 		qbgj: '全部国家',
 		zw:'暂无',
@@ -127,6 +131,7 @@ module.exports = {
 		PyPal:'Paypal支付',
 	 	jixu:'继续购买',
 	 	empty:'购物车为空',
+	 	emptyOrder:'暂无订单',
 	 	xzkp:'请选择卡片',
 
 //		address
@@ -143,7 +148,8 @@ module.exports = {
 	 	pleaseChoose:'请选择',
 	 	save:'保存',
 
-		
+		//支付方式
+		payArr :['第三方自行支付','微信支付','Paypal支付','Oceanpay支付'],
 
 
 

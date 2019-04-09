@@ -64,6 +64,10 @@ module.exports = {
 	 	startTime:'Start time',
 	 	endTime:'End time',
 	 	cTime:'Actual end',
+	 	jyfs:'Payment type',
+	 	jyhm:'Payment number',
+	 	jyls:'Payment flow',
+	 	orderSccess:'The order has been completed. Thank you!',	 
 	 	
 	 	
 //		index	 	
@@ -85,7 +89,8 @@ module.exports = {
 		goodList:'List of Goods',
 		zhong:' species',
 		timeChoose:'Time choice',
-		yue:' months',
+		yue:' month',
+		nian:'year',
 		day:'day',
 		qbgj: 'All countries',
 		zw:'No choice',
@@ -126,6 +131,7 @@ module.exports = {
 		PyPal:'Paypal payment',
 	 	jixu:'Continue',
 	 	empty:'The shopping cart is empty',
+	 	emptyOrder:'No order',
 	 	xzkp:'Please choose your card',
 
 		

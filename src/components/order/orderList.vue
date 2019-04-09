@@ -3,34 +3,35 @@
 		<div class="scrollContent">
 			<p class="title">
 				<i @click="back"><img src="../../assets/image/left.png"/></i> {{$t("message.myOrder")}}
-				<span>{{$t("message.gong")}}{{total}}{{$t("message.geOrder")}}</span>
+				<span>{{$t("message.gong")}}{{list.length}}{{$t("message.geOrder")}}</span>
 			</p>
 
-			<ul class="list">
+			<ul class="list" v-if="list.length > 0">
 				<li class="item" v-for="i in list">
 					<div class="top clearfix">
-						<p>{{$t("message.order")}} {{i.orderCode}}</p>
-						<span>2019-01-07 13:00</span>
+						<p>{{$t("message.order")}} {{i.orderId}}</p>
+						<span>{{$tools.timeShow(i.orderTime)}}</span>
 					</div>
 					<p class="til">{{$t("message.tcCost")}}</p>
 					<ul class="content">
 						<li class="clearfix">
 							<p class="costTxt">{{$t("message.tcCost")}}</p>
-							<p class="costNum">x{{i.TCnum}}</p>
+							<p class="costNum">{{$t("message.yuanFH")}}{{i.packageFee}}</p>
 						</li>
 						<li class="clearfix">
 							<p class="costTxt">{{$t("message.kdCost")}}</p>
-							<p class="costNum">x{{i.KDnum}}</p>
+							<p class="costNum">{{$t("message.yuanFH")}}{{i.expressFee}}</p>
 						</li>
 						<li class="clearfix">
 							<p class="costTxt">{{$t("message.kpCost")}}</p>
-							<p class="costNum">x{{i.KPnum}}</p>
+							<p class="costNum">{{$t("message.yuanFH")}}{{i.cardFee}}</p>
 						</li>
 					</ul>
-					<div class="totalCost">{{$t("message.heji")}}：<span>{{$t("message.yuanFH")}}{{i.total}}</span></div>
+					<div class="totalCost">{{$t("message.heji")}}：<span>{{$t("message.yuanFH")}}{{i.paymentAmount}}</span></div>
 					<cube-button class="color" @click="toInfo(i)">{{$t("message.clickToInfo")}}</cube-button>
 				</li>
 			</ul>
+			<p class="noData" v-else>{{$t("message.emptyOrder")}}</p>
 		</div>
 	</div>
 </template>
@@ -41,20 +42,7 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
-				total: '2',
-				list: [{
-					orderCode: '000025692',
-					TCnum: '2',
-					KDnum: '1',
-					KPnum: '1',
-					total: '180'
-				}, {
-					orderCode: '000025692',
-					TCnum: '2',
-					KDnum: '1',
-					KPnum: '1',
-					total: '180'
-				}]
+				list: []
 			}
 		},
 		created() {
@@ -70,7 +58,7 @@
 				}
 			}).then((res) => {
 				if(res.data.tradeRstCode == '0000') {
-					
+					that.list = res.data.tradeData
 					that.loading.hide()
 				}
 			}).catch(err => {
@@ -85,6 +73,7 @@
 				history.go(-1)
 			},
 			toInfo(obj) {
+				this.$store.commit('setCurrentPackage',obj)
 				this.$router.push("/orderInfo")
 			}
 		}

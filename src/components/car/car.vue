@@ -15,7 +15,10 @@
 							</div>
 							<div class="content flex-1">
 								<p class="name text-2">{{i.packageName}}</p>
-								<p class="detail">{{$t("message.orderPeriod")}}:{{i.orderPeriod}}{{$t("message.yue")}}</p>
+								<p class="detail">
+									{{$t("message.orderPeriod")}}:{{i.orderPeriod}}
+									{{(i.packageType == '0' || i.packageType == '1')? $t("message.day") : (i.packageType == '5' ? $t("message.nian") : $t("message.yue") ) }}
+								</p>
 								<p class="price">{{$t("message.yuanFH")}}<span>{{i.currentPrice}}</span></p>
 							</div>
 
@@ -82,7 +85,7 @@
 		},
 		methods: {
 			back() {
-				history.go(-2)
+				this.$router.push("/index")
 			},
 			totalFunc() {
 				var that = this

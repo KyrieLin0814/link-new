@@ -12,49 +12,49 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
-				num:1
+				num: 1
 			}
 		},
 		props: {
-			currentNumber:{
-				type:Number,
-				default:1
+			currentNumber: {
+				type: Number,
+				default: 1
 			}
-//			max: {
-//				type: String,
-//				default: '9999',
-//			},
-//			mix: {
-//				type: String,
-//				default: '1',
-//			}
+			//			max: {
+			//				type: String,
+			//				default: '9999',
+			//			},
+			//			mix: {
+			//				type: String,
+			//				default: '1',
+			//			}
 		},
-		mounted(){
+		mounted() {
 			this.num = this.currentNumber
-//			if(this.max != '-1'){
-//				this.large = this.max
-//			}
+			//			if(this.max != '-1'){
+			//				this.large = this.max
+			//			}
 		},
 		methods: {
 			del() {
-//				if(this.num > Number(this.mix)) {
-//					this.num--
-//				}else{
-//					this.$tools.toast(this, this.langType ? '不能再少了':'No less')
-//				}
+				//				if(this.num > Number(this.mix)) {
+				//					this.num--
+				//				}else{
+				//					this.$tools.toast(this, this.langType ? '不能再少了':'No less')
+				//				}
 				if(this.num > 1) {
 					this.num--
 				}
-				this.$emit('currentNum',this.num);
+				this.$emit('currentNum', this.num);
 			},
 			add() {
-//				if(this.num < Number(this.large)) {
-//					this.num++
-//				}else{
-//					this.$tools.toast(this, this.langType ? '不能再多了':'No more')
-//				}
+				//				if(this.num < Number(this.large)) {
+				//					this.num++
+				//				}else{
+				//					this.$tools.toast(this, this.langType ? '不能再多了':'No more')
+				//				}
 				this.num++
-				this.$emit('currentNum',this.num);
+					this.$emit('currentNum', this.num);
 			}
 		}
 	}
@@ -66,24 +66,24 @@
 		display: inline-block;
 		z-index: 999;
 		border: 1px solid #ccc;
-		font-size: 0.8rem;
+		font-size: 0.7rem;
 		a {
-		float:left;
-			height: 1.6rem;
+			float: left;
+			height: 1.2rem;
 			display: inline-block;
-			line-height: 1.5rem;
-			padding: 0 0.4rem;
+			line-height: 1.15rem;
+			padding: 0 0.3rem;
 			&.add {}
 			&.del {
 				font-size: 1rem;
-				padding: 0 0.45rem;
+				padding: 0 0.35rem;
 			}
 		}
 		span {
-		float:left;
+			float: left;
 			display: inline-block;
-			height: 1.6rem;
-			line-height: 1.5rem;
+			height: 1.2rem;
+			line-height: 1.15rem;
 			padding: 0 0.5rem;
 			border-left: 1px solid #ccc;
 			border-right: 1px solid #ccc;

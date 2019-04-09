@@ -9,8 +9,11 @@
 			<div class="content">
 
 				<div class="okBox">
-					<p class="wc">订单已完成，感谢！</p>
-					<p class="code"><span>编号：0000025621</span><span class="date">2019-03-09 13:05</span></p>
+					<p class="wc">{{$t("message.orderSuccess")}}</p>
+					<p class="code">
+						<span>{{$t("message.order")}}:{{currentObj.orderId}}</span>
+						<span class="date">{{$tools.timeShow(currentObj.orderTime,1)}}</span>
+					</p>
 				</div>
 
 				<div class="contentBg">
@@ -19,15 +22,15 @@
 
 					<div class="tcBox">
 						<p class="secondTil">{{$t("message.meatch")}}</p>
-						<ul class="contentList">
+						<ul class="contentList" v-if="tcList.length > 0">
 							<li v-for="i in tcList">
-								<div class="top clearfix">
-									<p class="name text-1">{{i.name}}</p>
-									<p class="detail">{{i.detail}}</p>
-									<p class="price">{{$t('message.yuanFH')}}{{i.price}}</p>
+								<div class="top flex">
+									<p class="name flex-1 text-2">{{i.packageName}}</p>
+									<!--<p class="detail">{{i.detail}}</p>-->
+									<p class="price">{{$t('message.yuanFH')}}{{i.paymentAmount}}</p>
 								</div>
 								<div class="bottom">
-									<span class="card">{{i.card}}</span>
+									<span class="card">{{$t("message.card")}}{{i.cardNum}}</span>
 								</div>
 							</li>
 						</ul>
@@ -35,42 +38,42 @@
 
 					<div class="costBox">
 						<p class="secondTil">{{$t("message.costDetail")}}</p>
-						<ul class="contentList">
+						<ul class="contentList" v-if="costDetails">
 							<li class="clearfix">
 								<p class="thirdTil">{{$t("message.tcCost")}}</p>
 								<div class="total">
-									{{$t("message.yuanFH")}}<span v-for="(i,idx) in tcList">{{i.price}}<i v-if="idx != tcList.length-1">+</i>
-								</span>
+									{{$t("message.yuanFH")}}{{costDetails.packageFee}}
+									</span>
 								</div>
 							</li>
 							<li class="clearfix">
 								<p class="thirdTil">{{$t("message.kdCost")}}</p>
 								<div class="total">
-									{{$t("message.yuanFH")}}<span>{{kd}} x 1</span>
+									{{$t("message.yuanFH")}}<span>{{costDetails.expressFee}}</span>
 								</div>
 							</li>
 							<li class="clearfix">
 								<p class="thirdTil">{{$t("message.kpCost")}}</p>
 								<div class="total">
-									{{$t("message.yuanFH")}}<span>{{kf}} x 1</span>
+									{{$t("message.yuanFH")}}<span>{{costDetails.cardFee}}</span>
 								</div>
 							</li>
 						</ul>
 					</div>
 
-					<div class="payBox">
+					<div class="payBox" v-if="payDetails">
 						<p class="secondTil">{{$t("message.payDetail")}}</p>
 						<ul class="contentList">
-							<li>交易方式：支付宝</li>
-							<li>交易号码：20215532645820003620</li>
-							<li>交易流水：20215532640036452</li>
+							<li>{{$t("message.jyfs")}}：{{$t("message.payArr")[payDetails.paymentType]}}</li>
+							<li>{{$t("message.jyhm")}}：{{payDetails.transactionId}}</li>
+							<li>{{$t("message.jyls")}}：{{payDetails.orderId}}</li>
 						</ul>
 					</div>
 
 					<div class="tcBox">
 						<p class="secondTil">{{$t("message.tcDetail")}}</p>
 						<div class="cards clearfix">
-							<span class="cardItem" v-for="i in cardList" :class="{'active': i.id == activeCard}" @click="alertFunc(i)">{{i.text}}</span>
+							<span class="cardItem" v-for="(i,idx) in packageUsingDetails" :class="{'active': i.deviceCode == activeCard}" @click="alertFunc(i)">{{$t("message.card")}}{{idx+1}}</span>
 						</div>
 					</div>
 
@@ -79,10 +82,29 @@
 			</div>
 		</div>
 
+		<div class="masker" v-if="payShow" @click="payShow = !payShow"></div>
+		<div class="maskBox payBox" :class="{'show': payShow}">
+			<p class="til">{{$t("message.payment")}}</p>
+			<p class="priceActive">{{(payType == 3 ? ('$' + xdPriceUSD):('￥' + xdPriceCNY))}}</p>
+			<ul class="pauType">
+				<li :class="{'active': payType == 1}" @click="payTypeFunc(1)">
+					<i class="wx"></i><span>{{$t("message.WxPay")}}</span>
+				</li>
+				<li :class="{'active': payType == 2}" @click="payTypeFunc(2)">
+					<i class="qh"></i><span>{{$t("message.QhPay")}}</span>
+				</li>
+				<li :class="{'active': payType == 3}" @click="payTypeFunc(3)">
+					<i class="py"></i><span>{{$t("message.PyPal")}}</span>
+				</li>
+			</ul>
+			<cube-button class="color" @click="sendOrder()">{{$t("message.confirm")}}</cube-button>
+		</div>
+
 		<div class="fixedBtns flex">
-			<cube-button class="gray flex-1" @click="back">{{$t('message.cancel')}}</cube-button>
-			<cube-button class="color flex-1">
-				<span>{{$t("message.yuanFH")}}{{total}}</span> {{$t("message.nextBuy")}}
+			<cube-button class="gray flex-1" @click="back">{{$t('message.back')}}</cube-button>
+			<cube-button class="color flex-1" @click="buyNext()">
+				<!--<span>{{$t("message.yuanFH")}}{{total?total:0}}</span>--> 
+				{{$t("message.nextBuy")}}
 			</cube-button>
 		</div>
 	</div>
@@ -94,90 +116,163 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
-				kd: '10',
-				kf: '10',
+				currentObj: this.$store.getters.getCurrentPackage,
 				total: 0,
-				tcList: [{
-					name: '套餐11111套餐11111套餐11111',
-					detail: "50MB/月",
-					price: "90",
-					card: '卡1'
-				}, {
-					name: '套餐2222',
-					detail: "100MB/月",
-					price: "188",
-					card: '卡1'
-				}],
-				cardList: [{
-					text: '卡1',
-					id: '1',
-					num: '800005231452',
-					total: '300MB',
-					used: '300MB',
-					startTime: '2019-03-05 12:05:31',
-					endTime: '2019-09-05 12:05:31',
-					shiji: '',
-				}, {
-					text: '卡2',
-					id: '2',
-					num: '800005231452',
-					total: '300MB',
-					used: '300MB',
-					startTime: '2019-03-05 12:05:31',
-					endTime: '2019-09-05 12:05:31',
-					shiji: '',
-				}, {
-					text: '卡3',
-					id: '3',
-					num: '800005231452',
-					total: '300MB',
-					used: '300MB',
-					startTime: '2019-03-05 12:05:31',
-					endTime: '2019-09-05 12:05:31',
-					shiji: '',
-				}],
-				activeCard:null
+				tcList: [],
+				costDetails: null,
+				payDetails: null,
+				packageUsingDetails: [],
+				activeCard: null,
+				payType: 1,
+				payShow: false,
+				xdPriceCNY: null,
+				xdPriceUSD: null,
 			}
 		},
 		created() {
+			var that = this
+			that.$tools.loading(that)
+			that.$post('/myOrderDetails ', {
+				tradeType: 'myOrderDetails ',
+				tradeData: {
+					deviceCode: that.$store.getters.getDeviceCode,
+					orderId: that.currentObj.orderId
+				}
+			}).then((res) => {
+				if(res.data.tradeRstCode == '0000') {
+					that.tcList = res.data.packageMatch
+					that.costDetails = res.data.costDetails[0]
+					that.payDetails = res.data.payDetails[0]
+					that.total = Number(that.costDetails.cardFee) + Number(that.costDetails.expressFee) + Number(that.costDetails.packageFee)
+					that.packageUsingDetails = res.data.packageUsingDetails
+					that.activeCard = that.packageUsingDetails[0].deviceCode
+					that.xdPriceCNY = res.data.xdPriceCNY
+					that.xdPriceUSD = res.data.xdPriceUSD
 
+					for(let i = 0; i < that.packageUsingDetails.length; i++) {
+						for(let j = 0; j < that.tcList.length; j++) {
+							if(that.packageUsingDetails[i].deviceCode == that.tcList[j].deviceCode) {
+								that.tcList[j].cardNum = i + 1
+							}
+						}
+					}
+
+					that.loading.hide()
+				} else {
+					that.$tools.alert(that, res.data.tradeRstMessage)
+					that.loading.hide()
+				}
+			}).catch(err => {
+				that.loading.hide()
+			})
 		},
 		mounted() {
-			this.total = this.$tools.totalFunc(this.tcList, this.kd, this.kf)
-			
-			this.activeCard = this.cardList[0].id
+
 		},
 		methods: {
 			back() {
 				history.go(-1)
 			},
+			buyNext() {
+				var that = this
+				if(that.tcList.length != 0 && that.xdPriceCNY && that.xdPriceUSD) {
+					that.payShow = !that.payShow
+				} else {
+					that.$tools.alert(that, that.langType ? '订单异常！' : 'Order exception！', that.$tools.toIndex)
+				}
+			},
 			alertFunc(i) {
 				var that = this
-				that.activeCard = i.id
-				this.$createDialog({
-					type: 'alert',
-					title: that.$t("message.tcDetail"),
-					confirmBtn: {
-						text: that.$t("message.confirm"),
-						active: true
+				that.$tools.loading(that)
+				that.activeCard = i.deviceCode
+				that.$post('/usedPackageDetails  ', {
+					tradeType: 'usedPackageDetails  ',
+					tradeData: {
+						deviceCode: i.deviceCode,
+						orderId: that.currentObj.orderId
 					}
-				}, (createElement) => {
-					return [
-						createElement('div', {
-							'class': {
-								'tcContent': true
-							},
-							slot: 'content'
-						}, [
-							createElement('p', that.$t('message.cardId') + '：' + i.num),
-							createElement('p', that.$t('message.totalLL') + '：' + i.total),
-							createElement('p', that.$t('message.usedLL') + '：' + i.used),
-							createElement('p', that.$t('message.startTime') + '：' + i.startTime),
-							createElement('p', that.$t('message.endTime') + '：' + i.endTime),
-							createElement('p', that.$t('message.cTime') + '：' + (i.shiji ? i.shiji : '——')),
-						])
-					]
-				}).show()
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000') {
+						var cardObj = res.data.tradeData
+						that.$createDialog({
+							type: 'alert',
+							title: that.$t("message.tcDetail"),
+							confirmBtn: {
+								text: that.$t("message.confirm"),
+								active: true
+							}
+						}, (createElement) => {
+							return [
+								createElement('div', {
+									'class': {
+										'tcContent': true
+									},
+									slot: 'content'
+								}, [
+									createElement('p', that.$t('message.cardId') + '：' + (cardObj.deviceCode ? cardObj.deviceCode : '——')),
+									createElement('p', that.$t('message.totalLL') + '：' + (cardObj.totalFlow ? (cardObj.totalFlow + 'MB') : '——')),
+									createElement('p', that.$t('message.usedLL') + '：' + (cardObj.usedFlow ? (cardObj.usedFlow + 'MB') : '——')),
+									createElement('p', that.$t('message.startTime') + '：' + (cardObj.activeTime ? that.$tools.timeShow(cardObj.activeTime) : '——')),
+									createElement('p', that.$t('message.endTime') + '：' + (cardObj.deadlineTime ? that.$tools.timeShow(cardObj.deadlineTime) : '——')),
+									createElement('p', that.$t('message.cTime') + '：' + (cardObj.actualEndTime ? that.$tools.timeShow(cardObj.actualEndTime) : '——')),
+								])
+							]
+						}).show()
+						that.loading.hide()
+					} else {
+						that.$tools.alert(that, res.data.tradeRstMessage)
+						that.loading.hide()
+					}
+				}).catch(err => {
+					that.loading.hide()
+				})
+			},
+			payTypeFunc(i) {
+				this.payType = i
+			},
+			sendOrder() {
+				var that = this
+				that.$tools.loading(that)
+				let orderNo = that.$tools.getNo() + that.$tools.generate(5)
+				let deviceListArr = [{
+					deviceCode: that.costDetails.deviceCode,
+					orderList: [{
+						cardFee: that.costDetails.cardFee,
+						expressFee: that.costDetails.expressFee,
+						globalOrder: '0',
+						orderNo: orderNo,
+						orderPeriod: '1',
+						packageCode: that.tcList[0].packageCode,
+						packageFee: (that.payType == 3) ? that.xdPriceUSD : that.xdPriceCNY,
+						packageName: that.tcList[0].packageName,
+						packageType: that.tcList[0].packageType,
+					}]
+				}]
+
+				let data = {
+					deviceList: deviceListArr,
+					partnerScope: that.$store.getters.getLoginType,
+					payAmount: (that.payType == 3) ? that.xdPriceUSD : that.xdPriceCNY,
+					payCurrency: (that.payType == 3) ? 'USD' : 'CNY',
+					payId: that.$store.getters.getPartnerCode + that.$tools.getNo() + that.$tools.generate(5),
+					requestOrderId: ''
+				}
+				that.$post('/userCardOrder', {
+					tradeType: 'userCardOrder',
+					tradeData: data
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000') {
+						that.loading.hide()
+						that.payFunc()
+					} else {
+						that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+					}
+				}).catch(err => {
+					that.loading.hide()
+				})
+			},
+			payFunc(){
+				alert(11111)
 			}
 		}
 	}
@@ -185,6 +280,7 @@
 
 <style lang="less" scoped>
 	.orderInfo {
+		overflow: hidden;
 		.head {
 			position: relative;
 			margin: 0 -0.7rem;
@@ -214,10 +310,11 @@
 				.code {
 					margin-top: 0.5rem;
 					span {
+						display: block;
 						font-size: 0.7rem;
 						&.date {
 							font-size: 0.6rem;
-							padding-left: 1rem;
+							padding-top: 0.5rem;
 						}
 					}
 				}
@@ -254,11 +351,11 @@
 							margin-bottom: 0.5rem;
 							.top {
 								p {
-									float: left;
 									font-size: 0.7rem;
-									line-height: 1.2rem;
 									&.name {
-										width: 40%;
+										line-height: 1rem;
+										padding: 0.15rem 0;
+										margin-right: 1rem;
 									}
 									&.detail {
 										width: 30%;
@@ -267,7 +364,6 @@
 										font-size: 0.6rem;
 									}
 									&.price {
-										width: 30%;
 										text-align: right;
 										color: #F65200;
 										font-size: 1rem;

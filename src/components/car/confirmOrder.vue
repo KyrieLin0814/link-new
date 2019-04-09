@@ -81,7 +81,7 @@
 		</div>
 
 		<div class="masker" v-if="payShow" @click="payShow = !payShow"></div>
-		<div class="maskBox" :class="{'show': payShow}">
+		<div class="maskBox payBox" :class="{'show': payShow}">
 			<p class="til">{{$t("message.payment")}}</p>
 			<p class="priceActive">{{(payType == 3 ? '$':'￥') + finalPrice}}</p>
 			<ul class="pauType">
@@ -96,7 +96,6 @@
 				</li>
 			</ul>
 			<cube-button class="color" @click="sendOrder()">{{$t("message.confirm")}}</cube-button>
-
 		</div>
 
 		<div class="fixedBtns flex">
@@ -424,7 +423,7 @@
 				}
 			},
 			payFunc() {
-				alert(1)
+				alert(22222)
 			}
 		}
 	}
@@ -565,70 +564,7 @@
 				}
 			}
 		}
-		.maskBox {
-			padding: 1rem 0.7rem;
-			.priceActive {
-				padding: 0 0.7rem;
-				margin: 0.7rem -0.7rem 0;
-				border-top: 1px solid #eee;
-				border-bottom: 1px solid #eee;
-				font-size: 1.4rem;
-				text-align: center;
-				color: #F65200;
-				line-height: 3rem;
-				span {
-					font-size: 1rem;
-				}
-			}
-			ul.pauType {
-				margin: 0 -0.7rem 0.7rem;
-				li {
-					position: relative;
-					padding: 0 0.7rem;
-					border-bottom: 1px solid #eee;
-					span {
-						display: inline-block;
-						font-size: 0.7rem;
-						line-height: 2.2rem;
-						vertical-align: top;
-					}
-					i {
-						display: inline-block;
-						vertical-align: top;
-						width: 1.2rem;
-						height: 2.2rem;
-						margin-right: 0.5rem;
-						&.wx {
-							background: url(../../assets/image/wx.png) no-repeat center;
-							background-size: 1.2rem;
-						}
-						&.qh {
-							/*background: url(../../assets/image/wx.png) no-repeat center;
-							background-size: 1.2rem;*/
-							background: #42B983;
-						}
-						&.py {
-							/*background: url(../../assets/image/wx.png) no-repeat center;
-							background-size: 1.2rem;*/
-							background: #007AFF;
-						}
-					}
-					&.active:after {
-						content: '';
-						display: inline-block;
-						position: absolute;
-						right: 1rem;
-						top: 0.6rem;
-						width: 0.9rem;
-						height: 0.5rem;
-						border-bottom: 2px solid #a0a0a0;
-						border-left: 2px solid #a0a0a0;
-						transform: rotate(-45deg);
-						-webkit-transform: rotate(-45deg);
-					}
-				}
-			}
-		}
+		
 		.fixedBtns {
 			span {
 				font-size: 0.6rem;
