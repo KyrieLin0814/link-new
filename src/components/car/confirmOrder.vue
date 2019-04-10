@@ -126,7 +126,7 @@
 				cardList: [],
 				cardListHave: this.$store.getters.getCardListHave,
 				cardListNo: this.$store.getters.getCardListNo,
-				tcList: this.$store.getters.getCartList,
+				tcList: this.$store.getters.getCartSelect,
 				addressObj: this.$store.getters.getAddressObj,
 				kpValue: this.$store.getters.getKP,
 				kdValue: this.$store.getters.getKD,

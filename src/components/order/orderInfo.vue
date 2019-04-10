@@ -103,7 +103,7 @@
 		<div class="fixedBtns flex">
 			<cube-button class="gray flex-1" @click="back">{{$t('message.back')}}</cube-button>
 			<cube-button class="color flex-1" @click="buyNext()">
-				<!--<span>{{$t("message.yuanFH")}}{{total?total:0}}</span>--> 
+				<!--<span>{{$t("message.yuanFH")}}{{total?total:0}}</span>-->
 				{{$t("message.nextBuy")}}
 			</cube-button>
 		</div>
@@ -123,7 +123,7 @@
 				payDetails: null,
 				packageUsingDetails: [],
 				activeCard: null,
-				payType: 1,
+				payType: 1, //1微信      2//钱海    3//paypal
 				payShow: false,
 				xdPriceCNY: null,
 				xdPriceUSD: null,
@@ -263,7 +263,7 @@
 				}).then((res) => {
 					if(res.data.tradeRstCode == '0000') {
 						that.loading.hide()
-						that.payFunc()
+						that.payFunc(data.payId, data.payAmount)
 					} else {
 						that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
 					}
@@ -271,8 +271,62 @@
 					that.loading.hide()
 				})
 			},
-			payFunc(){
-				alert(11111)
+			payFunc(pId, total) {
+				var that = this
+				if(that.payType == 1) {
+					if(that.$store.getters.getOpenId) {
+						//wx公众号支付
+						let data = {
+							appid: '',
+							body: '',
+							KEY: '',
+							mch_id: '',
+							openId: that.$store.getters.getOpenId,
+							payAmount: total,
+							payId: pId
+						}
+						that.$tools.wxPay(that, data)
+					} else {
+						let appFlag = '';
+						if(appFlag) {
+							//wxApp支付
+							let data = {
+								APPID: '',
+								body: '',
+								KEY: '',
+								MCH_ID: '',
+								payAmount: total,
+								payId: pId
+							}
+							that.$tools.weixinApp(that, data)
+						} else {
+							//wxH5支付
+							let data = {
+								appid: '',
+								body: '',
+								KEY: '',
+								mch_id: '',
+								payAmount: total,
+								payId: pId,
+								scene_info: ''
+							}
+							that.$tools.wxPayH5(that, data)
+						}
+					}
+				} else if(that.payType == 2) {
+					//钱海支付
+					that.$tools.oceanPay(that, data)
+				} else {
+					//paypal支付
+					let data = {
+						clientId: '',
+						clientSecret: '',
+						mode: '',
+						payAmount: total,
+						payId: pId
+					}
+					that.$tools.paypalPay(that, data)
+				}
 			}
 		}
 	}

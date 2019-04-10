@@ -9,7 +9,7 @@ const state = {
 	partnerCode: sessionStorage.getItem("partnerCode") ? sessionStorage.getItem("partnerCode") : 'P000270',
 	token: sessionStorage.getItem("token") ? sessionStorage.getItem("token") : '',
 	deviceCode: sessionStorage.getItem("deviceCode") ? sessionStorage.getItem("deviceCode") : '',
-	openId: sessionStorage.getItem("openId") ? sessionStorage.getItem("openId") : 'oc07A071Sr3kVbqqIWLGtTlwGIac', //oc07A071Sr3kVbqqIWLGtTlwGIac
+	openId: sessionStorage.getItem("openId") ? sessionStorage.getItem("openId") : '', //oc07A071Sr3kVbqqIWLGtTlwGIac
 	connSeqNo: '',
 	version: '2.0',
 	baseBg: require('../assets/image/goodlist.jpg'),
@@ -25,6 +25,7 @@ const state = {
 	//购物车数组
 	cartList: sessionStorage.getItem("cartList") ? JSON.parse(sessionStorage.getItem("cartList")) : [],
 	checkList: sessionStorage.getItem("checkList") ? JSON.parse(sessionStorage.getItem("checkList")) : [],
+	cartSelect: sessionStorage.getItem("cartSelect") ? JSON.parse(sessionStorage.getItem("cartSelect")) : [],
 
 	//卡片列表
 	cardListHave: sessionStorage.getItem("cardListHave") ? JSON.parse(sessionStorage.getItem("cardListHave")) : [],
@@ -164,6 +165,9 @@ const getters = {
 	getCheckList(state) {
 		return state.checkList
 	},
+	getCartSelect(state) {
+		return state.cartSelect
+	},
 	getCardListHave(state) {
 		return state.cardListHave
 	},
@@ -260,6 +264,10 @@ const mutations = {
 	setCheckList(state, param) {
 		state.checkList = param;
 		sessionStorage.setItem("checkList", JSON.stringify(param));
+	},
+	setCartSelect(state, param) {
+		state.cartSelect = param;
+		sessionStorage.setItem("cartSelect", JSON.stringify(param));
 	},
 	setCardListHave(state, param) {
 		state.cardListHave = param;

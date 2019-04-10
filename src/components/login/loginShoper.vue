@@ -30,7 +30,7 @@
 			}
 		},
 		created() {
-
+			
 		},
 		methods: {
 			goUser() {

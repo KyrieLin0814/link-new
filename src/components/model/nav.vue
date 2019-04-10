@@ -3,7 +3,7 @@
 		<a class="navBtn" @click="navFunc($event)"><img src="../../assets/image/nav.png"></a>
 		<div class="navMask" :class="{'show': !showNav}" @click="navFunc($event)"></div>
 		<ul class="nav" :class="{'hide': showNav}" @click="navFunc($event)">
-			<li class="logo colorBg"><img src="../../assets/image/navLogo.png"></li>
+			<li class="logo"><img :src="logoUrl"></li>
 			<li class="navItem" @click="router('/orderList')"><i class="nav1"></i>{{$t("message.orderNav")}}</li>
 			<li class="navItem" @click="router('/car')"><i class="nav2"></i>{{$t("message.car")}}</li>
 			<li class="navItem" @click="contactFunc()"><i class="nav3"></i>{{$t("message.contactNav")}}</li>
@@ -19,8 +19,25 @@
 			return {
 				showNav: true,
 				showTel: false,
-				langType: this.$lang == 'cn'
+				langType: this.$lang == 'cn',
+				logoUrl:require('../../assets/image/navLogo.png')
 			}
+		},
+		created(){
+			var that = this
+			that.$tools.loading(that)
+			that.$post('/partnerShowInfo', {
+				tradeType: 'partnerShowInfo'
+			}).then((res) => {
+				if(res.data.tradeRstCode == '0000') {
+					that.loading.hide()
+					that.logoUrl = res.data.tradeData.companylogo
+				} else {
+					that.loading.hide()
+				}
+			}).catch(err => {
+				console.log(err)
+			})
 		},
 		methods: {
 			navFunc(event) {
@@ -102,12 +119,13 @@
 			border-top-left-radius: 10px;
 			transition: all 0.3s;
 			li.logo {
-				padding: 0.8rem 0;
 				margin: 0 0 0.5rem;
+				font-size:0;
+				padding:0;
 				img {
 					display: block;
-					width: 84%;
-					margin: 0 auto;
+					width: 100%;
+					margin: 0;
 				}
 			}
 			li {

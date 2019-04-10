@@ -16,8 +16,7 @@
 							<div class="content flex-1">
 								<p class="name text-2">{{i.packageName}}</p>
 								<p class="detail">
-									{{$t("message.orderPeriod")}}:{{i.orderPeriod}}
-									{{(i.packageType == '0' || i.packageType == '1')? $t("message.day") : (i.packageType == '5' ? $t("message.nian") : $t("message.yue") ) }}
+									{{$t("message.orderPeriod")}}:{{i.orderPeriod}} {{(i.packageType == '0' || i.packageType == '1')? $t("message.day") : (i.packageType == '5' ? $t("message.nian") : $t("message.yue") ) }}
 								</p>
 								<p class="price">{{$t("message.yuanFH")}}<span>{{i.currentPrice}}</span></p>
 							</div>
@@ -57,7 +56,8 @@
 				langType: this.$lang == 'cn',
 				total: 0,
 				checkList: this.$store.getters.getCheckList,
-				tcList: this.$store.getters.getCartList
+				tcList: this.$store.getters.getCartList,
+				cartSelect: this.$store.getters.getCartSelect
 			}
 		},
 		components: {
@@ -75,7 +75,8 @@
 		watch: {
 			checkList(newVal) {
 				this.$nextTick(function() {
-					this.$store.commit('setCheckList', this.checkList)
+					var that = this
+					this.$store.commit('setCheckList', that.checkList)
 					this.totalFunc()
 				})
 			}
@@ -97,6 +98,8 @@
 						}
 					})
 				})
+				this.cartSelect = selectList
+				this.$store.commit('setCartSelect', selectList)
 				this.total = this.$tools.totalFunc(selectList)
 			},
 			delFunc(idx, obj) {
@@ -121,7 +124,7 @@
 				this.totalFunc()
 			},
 			confirmOrder() {
-				if(!this.checkList.length){
+				if(!this.checkList.length) {
 					return
 				}
 				this.$router.push("/confirmOrder")

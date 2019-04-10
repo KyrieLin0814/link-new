@@ -8,7 +8,7 @@ import Qs from 'qs'
 
 Vue.use(Dialog)
 //axios配置全局参数
-axios.defaults.timeout = 5000;
+axios.defaults.timeout = 50000;
 axios.defaults.baseURL = 'https://wx.linksfield.net/vshop';
 
 const Axios = axios.create({
@@ -55,7 +55,7 @@ Axios.interceptors.response.use(
 		return response;
 	},
 	error => {
-		var lang = store.state.langType == 'en' ? true : false
+		var lang = store.state.langType == 'en' ? false : true
 		if(error && error.response) {
 			switch(error.response.status) {
 				case 400:
@@ -108,15 +108,15 @@ Axios.interceptors.response.use(
 		} else {
 			error.message = lang ? '连接服务器失败!' : 'Connection server failed'
 		}
-
-		Dialog.$create({
-			type: 'alert',
-			title: lang? '提示': 'Prompt',
-			content: error.message,
-			onConfirm: () => {
-				tools.toIndex()
-			}
-		}).show()
+		console.log(error)
+//		Dialog.$create({
+//			type: 'alert',
+//			title: lang? '提示': 'Prompt',
+//			content: error.message,
+//			onConfirm: () => {
+//				//tools.toIndex()
+//			}
+//		}).show()
 		return Promise.reject(error)
 	})
 

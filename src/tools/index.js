@@ -235,7 +235,7 @@ const tools = {
 		let min = t.substring(10, 12)
 		let sec = t.substring(12, 14)
 		if(type) {
-			return year + '-' + month + '-' + day + " "+ hour + ':' + min + ':' + sec 
+			return year + '-' + month + '-' + day + " " + hour + ':' + min + ':' + sec
 		} else {
 			return year + '-' + month + '-' + day
 		}
@@ -243,6 +243,84 @@ const tools = {
 	//回到首页
 	toIndex() {
 		window.location.href = '/#/'
+	},
+	//支付
+	wxPay(v, obj) {
+		v.$post('https://wx.linksfield.net/payment/weixinPublic', {
+			tradeType: 'weixinPublic',
+			tradeData: obj
+		}).then((res) => {
+			if(res.data.tradeRstCode == '0000') {
+				that.loading.hide()
+
+			} else {
+				that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+			}
+		}).catch(err => {
+			that.loading.hide()
+		})
+	},
+	wxPayH5(v, obj) {
+		console.log(obj);
+		return
+		v.$post('https://wx.linksfield.net/payment/weixinWeb', {
+			tradeType: 'weixinWeb',
+			tradeData: obj
+		}).then((res) => {
+			if(res.data.tradeRstCode == '0000') {
+				that.loading.hide()
+
+			} else {
+				that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+			}
+		}).catch(err => {
+			that.loading.hide()
+		})
+	},
+	weixinApp(v, obj) {
+		v.$post('https://wx.linksfield.net/payment/weixinApp', {
+			tradeType: 'weixinApp',
+			tradeData: obj
+		}).then((res) => {
+			if(res.data.tradeRstCode == '0000') {
+				that.loading.hide()
+
+			} else {
+				that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+			}
+		}).catch(err => {
+			that.loading.hide()
+		})
+	},
+	oceanPay(v, obj) {
+		v.$post('https://wx.linksfield.net/payment/oceanPay', {
+			tradeType: 'oceanPay',
+			tradeData: obj
+		}).then((res) => {
+			if(res.data.tradeRstCode == '0000') {
+				that.loading.hide()
+
+			} else {
+				that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+			}
+		}).catch(err => {
+			that.loading.hide()
+		})
+	},
+	paypalPay(v, obj) {
+		v.$post('https://wx.linksfield.net/payment/paypal', {
+			tradeType: 'paypal',
+			tradeData: obj
+		}).then((res) => {
+			if(res.data.tradeRstCode == '0000') {
+				that.loading.hide()
+
+			} else {
+				that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+			}
+		}).catch(err => {
+			that.loading.hide()
+		})
 	}
 
 };
