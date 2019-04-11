@@ -29,7 +29,8 @@ const Axios = axios.create({
 			//加密
 			let sign = md5(JSON.stringify(param.data))
 			param.sign = sign
-
+			
+			
 			console.log(param)
 			data = JSON.stringify(param)
 		}
@@ -108,15 +109,14 @@ Axios.interceptors.response.use(
 		} else {
 			error.message = lang ? '连接服务器失败!' : 'Connection server failed'
 		}
-		console.log(error)
-//		Dialog.$create({
-//			type: 'alert',
-//			title: lang? '提示': 'Prompt',
-//			content: error.message,
-//			onConfirm: () => {
-//				//tools.toIndex()
-//			}
-//		}).show()
+		Dialog.$create({
+			type: 'alert',
+			title: lang? '提示': 'Prompt',
+			content: error.message,
+			onConfirm: () => {
+				tools.toIndex()
+			}
+		}).show()
 		return Promise.reject(error)
 	})
 

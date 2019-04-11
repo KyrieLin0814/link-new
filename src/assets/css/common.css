@@ -623,13 +623,13 @@ input {
 }
 
 .maskBox.payBox ul.pauType li i.qh {
-	background: url(../../assets/image/oceanpay.png) no-repeat center left;
-	background-size: 100%;
+	background: url(../../assets/image/ocean.png) no-repeat center left;
+	background-size: 90%;
 }
 
 .maskBox.payBox ul.pauType li i.py {
 	background: url(../../assets/image/paypalpay.png) no-repeat center left;
-	background-size: 70%;
+	background-size: 60%;
 }
 
 .maskBox.payBox ul.pauType li.active:after {

@@ -246,50 +246,74 @@ const tools = {
 	},
 	//支付
 	wxPay(v, obj) {
+		var lang = localStorage.getItem("lang") == 'en' ? false : true
+
 		v.$post('https://wx.linksfield.net/payment/weixinPublic', {
 			tradeType: 'weixinPublic',
 			tradeData: obj
 		}).then((res) => {
 			if(res.data.tradeRstCode == '0000') {
-				that.loading.hide()
+				v.loading.hide()
+				let appIdVal = res.data.tradeData.appId;
+				let timeStampVal = res.data.tradeData.timeStamp;
+				let nonceStrVal = res.data.tradeData.nonceStr;
+				let packageVal = res.data.tradeData.packageStr;
+				let signTypeVal = res.data.tradeData.signType;
+				let paySignVal = res.data.tradeData.paySign;
 
+				onBridgeReady()　　　　
+				function onBridgeReady() {
+					WeixinJSBridge.invoke('getBrandWCPayRequest', {　　　　　　　　　　
+						appId: appIdVal,
+						timeStamp: timeStampVal,
+						nonceStr: nonceStrVal,
+						package: packageVal,
+						signType: signTypeVal,
+						paySign: paySignVal
+					}, function(res) {
+						if(res.err_msg === 'get_brand_wcpay_request:ok') {
+							v.$tools.alert(v, lang ? '支付成功' : 'Successful payment', function() {
+								v.$router.push("/index")
+							})
+							v.$store.commit('setCartList', [])
+						} else if(res.err_msg === 'get_brand_wcpay_request:cancel') {
+							v.$tools.alert(v, lang ? '支付已取消' : 'Payment has been cancelled')
+						} else if(res.err_msg === 'get_brand_wcpay_request:fail') {
+							v.$tools.alert(v, lang ? '支付失败' : 'Failure payment')
+						}
+					})　
+				}　
+				if(typeof WeixinJSBridge == "undefined") {　　　　　　　　
+					if(document.addEventListener) {　　　　　　　　　　
+						document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);　　　　　　　　
+					} else if(document.attachEvent) {　　　　　　　　　　
+						document.attachEvent('WeixinJSBridgeReady', onBridgeReady);　　　　　　　　　　
+						document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);　　　　　　　　
+					}　　　　
+				} else {　　　　　　
+					onBridgeReady();　　　　
+				}
 			} else {
-				that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+				v.$tools.alert(v, res.data.tradeRstMessage, v.$tools.toIndex)
 			}
 		}).catch(err => {
-			that.loading.hide()
+			v.loading.hide()
 		})
 	},
-	wxPayH5(v, obj) {
-		console.log(obj);
-		return
+	wxPayH5(v, obj, url) {
 		v.$post('https://wx.linksfield.net/payment/weixinWeb', {
 			tradeType: 'weixinWeb',
 			tradeData: obj
 		}).then((res) => {
 			if(res.data.tradeRstCode == '0000') {
-				that.loading.hide()
-
+				v.loading.hide()
+				let wxPayUrl = res.data.tradeData.mweb_url + '&redirect_url=' + encodeURIComponent(url)
+				window.location.href = wxPayUrl
 			} else {
-				that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+				v.$tools.alert(v, res.data.tradeRstMessage, v.$tools.toIndex)
 			}
 		}).catch(err => {
-			that.loading.hide()
-		})
-	},
-	weixinApp(v, obj) {
-		v.$post('https://wx.linksfield.net/payment/weixinApp', {
-			tradeType: 'weixinApp',
-			tradeData: obj
-		}).then((res) => {
-			if(res.data.tradeRstCode == '0000') {
-				that.loading.hide()
-
-			} else {
-				that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
-			}
-		}).catch(err => {
-			that.loading.hide()
+			v.loading.hide()
 		})
 	},
 	oceanPay(v, obj) {
@@ -298,13 +322,13 @@ const tools = {
 			tradeData: obj
 		}).then((res) => {
 			if(res.data.tradeRstCode == '0000') {
-				that.loading.hide()
 
+				v.loading.hide()
 			} else {
-				that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+				v.$tools.alert(v, res.data.tradeRstMessage, v.$tools.toIndex)
 			}
 		}).catch(err => {
-			that.loading.hide()
+			v.loading.hide()
 		})
 	},
 	paypalPay(v, obj) {
@@ -313,13 +337,13 @@ const tools = {
 			tradeData: obj
 		}).then((res) => {
 			if(res.data.tradeRstCode == '0000') {
-				that.loading.hide()
+				v.loading.hide()
 
 			} else {
-				that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+				v.$tools.alert(v, res.data.tradeRstMessage, v.$tools.toIndex)
 			}
 		}).catch(err => {
-			that.loading.hide()
+			v.loading.hide()
 		})
 	}
 

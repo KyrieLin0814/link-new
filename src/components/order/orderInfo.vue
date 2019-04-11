@@ -90,10 +90,10 @@
 				<li :class="{'active': payType == 1}" @click="payTypeFunc(1)">
 					<i class="wx"></i><span>{{$t("message.WxPay")}}</span>
 				</li>
-				<li :class="{'active': payType == 2}" @click="payTypeFunc(2)">
+				<li :class="{'active': payType == 2}" @click="payTypeFunc(2)" v-if="!isWx">
 					<i class="qh"></i><span>{{$t("message.QhPay")}}</span>
 				</li>
-				<li :class="{'active': payType == 3}" @click="payTypeFunc(3)">
+				<li :class="{'active': payType == 3}" @click="payTypeFunc(3)" v-if="!isWx">
 					<i class="py"></i><span>{{$t("message.PyPal")}}</span>
 				</li>
 			</ul>
@@ -116,6 +116,7 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
+				isWx: this.$store.getters.getOpenId ? true : false,
 				currentObj: this.$store.getters.getCurrentPackage,
 				total: 0,
 				tcList: [],
@@ -158,12 +159,15 @@
 					}
 
 					that.loading.hide()
+					that.pauResultFunc()
 				} else {
 					that.$tools.alert(that, res.data.tradeRstMessage)
 					that.loading.hide()
+					that.pauResultFunc()
 				}
 			}).catch(err => {
 				that.loading.hide()
+				that.pauResultFunc()
 			})
 		},
 		mounted() {
@@ -172,6 +176,33 @@
 		methods: {
 			back() {
 				history.go(-1)
+			},
+			pauResultFunc() {
+				//wxH5 支付结果
+				let type = this.$route.query.type
+				let pId = this.$route.query.payId
+				if(type == 'payResult') {
+					var that = this
+					that.$tools.alert(that, that.langType ? '查看支付结果' : 'View payment results', function() {
+						that.$tools.loading(that)
+						that.$post('https://wx.linksfield.net/payment/weixinQuery', {
+							tradeType: 'weixinQuery',
+							tradeData: {
+								appid: '',
+								key: '',
+								mch_id: '',
+								payId: pId
+							}
+						}).then((res) => {
+							that.loading.hide()
+							that.$tools.alert(that, res.data.tradeRstMessage, function(){
+								that.$router.push('/index')
+							})
+						}).catch(err => {
+							that.loading.hide()
+						})
+					})
+				}
 			},
 			buyNext() {
 				var that = this
@@ -255,7 +286,7 @@
 					payAmount: (that.payType == 3) ? that.xdPriceUSD : that.xdPriceCNY,
 					payCurrency: (that.payType == 3) ? 'USD' : 'CNY',
 					payId: that.$store.getters.getPartnerCode + that.$tools.getNo() + that.$tools.generate(5),
-					requestOrderId: ''
+					requestOrderId: that.$store.getters.getRequestOrderId
 				}
 				that.$post('/userCardOrder', {
 					tradeType: 'userCardOrder',
@@ -279,7 +310,7 @@
 						let data = {
 							appid: '',
 							body: '',
-							KEY: '',
+							key: '',
 							mch_id: '',
 							openId: that.$store.getters.getOpenId,
 							payAmount: total,
@@ -287,31 +318,18 @@
 						}
 						that.$tools.wxPay(that, data)
 					} else {
-						let appFlag = '';
-						if(appFlag) {
-							//wxApp支付
-							let data = {
-								APPID: '',
-								body: '',
-								KEY: '',
-								MCH_ID: '',
-								payAmount: total,
-								payId: pId
-							}
-							that.$tools.weixinApp(that, data)
-						} else {
-							//wxH5支付
-							let data = {
-								appid: '',
-								body: '',
-								KEY: '',
-								mch_id: '',
-								payAmount: total,
-								payId: pId,
-								scene_info: ''
-							}
-							that.$tools.wxPayH5(that, data)
+						let url = window.location.href + '?type=payResult&payId=' + pId
+						//wxH5支付
+						let data = {
+							appid: '',
+							body: '',
+							key: '',
+							mch_id: '',
+							payAmount: total,
+							payId: pId,
+							scene_info: ''
 						}
+						that.$tools.wxPayH5(that, data, url)
 					}
 				} else if(that.payType == 2) {
 					//钱海支付

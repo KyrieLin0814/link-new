@@ -26,7 +26,7 @@
 			return {
 				langType: this.$lang == 'cn',
 				placeholder: this.$t("message.inputTxt"),
-				cardNum: ''
+				cardNum: this.$store.getters.getDeviceCode
 
 			}
 		},

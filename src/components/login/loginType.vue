@@ -38,6 +38,42 @@
 			}
 		},
 		created() {
+			var that = this
+			//处理cookie参数
+			function getCookie(cookieName) {
+				var strCookie = document.cookie;
+				var arrCookie = strCookie.split("; ");
+				for(var i = 0; i < arrCookie.length; i++) {
+					var arr = arrCookie[i].split("=");
+					if(cookieName == arr[0]) {
+						return arr[1];
+					}
+				}
+				return "";
+			}
+			//处理url参数
+			function getQuery(paramName) {
+				return that.$route.query[paramName]
+			}
+
+			var user_deviceCode = getQuery("deviceId") ? getQuery("deviceId") : getCookie("deviceId");
+			var user_openId = getQuery("openId") ? getQuery("openId") : getCookie("openId");
+			var user_partnerCode = getQuery("partnerCode") ? getQuery("partnerCode") : getCookie("partnerCode");
+			var user_requestOrderId = getQuery("requestOrderId") ? getQuery("requestOrderId") : getCookie("requestOrderId");
+
+			if(user_deviceCode) {
+				that.$store.commit('setDeviceCode', user_deviceCode)
+			}
+			if(user_openId) {
+				that.$store.commit('setOpenId', user_openId)
+			}
+			if(user_partnerCode) {
+				that.$store.commit('setPartnerCode', user_partnerCode)
+			}
+
+			if(user_requestOrderId) {
+				that.$store.commit('setRequestOrderId', user_requestOrderId)
+			}
 		},
 		methods: {
 			typeFunc(p){

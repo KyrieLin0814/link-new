@@ -7,11 +7,13 @@ const state = {
 	langType: localStorage.getItem("lang") ? localStorage.getItem("lang") : "cn",
 	loginType: sessionStorage.getItem("loginType") ? sessionStorage.getItem("loginType") : "1",
 	partnerCode: sessionStorage.getItem("partnerCode") ? sessionStorage.getItem("partnerCode") : 'P000270',
+	requestOrderId: sessionStorage.getItem("requestOrderId") ? sessionStorage.getItem("requestOrderId") : '',
 	token: sessionStorage.getItem("token") ? sessionStorage.getItem("token") : '',
 	deviceCode: sessionStorage.getItem("deviceCode") ? sessionStorage.getItem("deviceCode") : '',
 	openId: sessionStorage.getItem("openId") ? sessionStorage.getItem("openId") : '', //oc07A071Sr3kVbqqIWLGtTlwGIac
 	connSeqNo: '',
 	version: '2.0',
+	
 	baseBg: require('../assets/image/goodlist.jpg'),
 
 	//跳转缓存
@@ -138,6 +140,9 @@ const getters = {
 	getPartnerCode(state) {
 		return state.partnerCode
 	},
+	getRequestOrderId(state) {
+		return state.requestOrderId
+	},
 	getToken(state) {
 		return state.token
 	},
@@ -228,6 +233,10 @@ const mutations = {
 	setPartnerCode(state, param) {
 		state.partnerCode = param;
 		sessionStorage.setItem("partnerCode", param);
+	},
+	setRequestOrderId(state, param) {
+		state.requestOrderId = param;
+		sessionStorage.setItem("requestOrderId", param);
 	},
 	setToken(state, param) {
 		state.token = param;

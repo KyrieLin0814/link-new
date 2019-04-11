@@ -395,7 +395,7 @@
 					payAmount: that.finalPrice,
 					payCurrency: (that.payType == 3 ? 'USD' : 'CNY'),
 					payId: that.$store.getters.getPartnerCode + that.$tools.getNo() + that.$tools.generate(5),
-					requestOrderId: ''
+					requestOrderId: that.$store.getters.getRequestOrderId
 				}
 				that.$post('/' + api, {
 					tradeType: api,

@@ -109,7 +109,6 @@ const router = new Router({
 			name: 'addressEdit',
 			component: addressEdit
 		}
-
 	]
 })
 
