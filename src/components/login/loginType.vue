@@ -60,7 +60,8 @@
 			var user_openId = getQuery("openId") ? getQuery("openId") : getCookie("openId");
 			var user_partnerCode = getQuery("partnerCode") ? getQuery("partnerCode") : getCookie("partnerCode");
 			var user_requestOrderId = getQuery("requestOrderId") ? getQuery("requestOrderId") : getCookie("requestOrderId");
-
+			
+			console.log(that.$route.query)
 			if(user_deviceCode) {
 				that.$store.commit('setDeviceCode', user_deviceCode)
 			}

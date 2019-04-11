@@ -17,9 +17,7 @@
 				</div>
 
 				<div class="contentBg">
-
 					<p class="til">{{$t("message.orderDetail")}}</p>
-
 					<div class="tcBox">
 						<p class="secondTil">{{$t("message.meatch")}}</p>
 						<ul class="contentList" v-if="tcList.length > 0">
@@ -97,7 +95,8 @@
 					<i class="py"></i><span>{{$t("message.PyPal")}}</span>
 				</li>
 			</ul>
-			<cube-button class="color" @click="sendOrder()">{{$t("message.confirm")}}</cube-button>
+			<div id="paypal" v-show="payType==3"></div>
+			<cube-button v-show="payType!=3" class="color" @click="payFunc(payObj.payId, payObj.payAmount)">{{$t("message.confirm")}}</cube-button>
 		</div>
 
 		<div class="fixedBtns flex">
@@ -126,6 +125,7 @@
 				activeCard: null,
 				payType: 1, //1微信      2//钱海    3//paypal
 				payShow: false,
+				payObj: null,
 				xdPriceCNY: null,
 				xdPriceUSD: null,
 			}
@@ -159,15 +159,15 @@
 					}
 
 					that.loading.hide()
-					that.pauResultFunc()
+					that.payResultFunc()
 				} else {
 					that.$tools.alert(that, res.data.tradeRstMessage)
 					that.loading.hide()
-					that.pauResultFunc()
+					that.payResultFunc()
 				}
 			}).catch(err => {
 				that.loading.hide()
-				that.pauResultFunc()
+				that.payResultFunc()
 			})
 		},
 		mounted() {
@@ -177,7 +177,7 @@
 			back() {
 				history.go(-1)
 			},
-			pauResultFunc() {
+			payResultFunc() {
 				//wxH5 支付结果
 				let type = this.$route.query.type
 				let pId = this.$route.query.payId
@@ -195,21 +195,13 @@
 							}
 						}).then((res) => {
 							that.loading.hide()
-							that.$tools.alert(that, res.data.tradeRstMessage, function(){
+							that.$tools.alert(that, res.data.tradeRstMessage, function() {
 								that.$router.push('/index')
 							})
 						}).catch(err => {
 							that.loading.hide()
 						})
 					})
-				}
-			},
-			buyNext() {
-				var that = this
-				if(that.tcList.length != 0 && that.xdPriceCNY && that.xdPriceUSD) {
-					that.payShow = !that.payShow
-				} else {
-					that.$tools.alert(that, that.langType ? '订单异常！' : 'Order exception！', that.$tools.toIndex)
 				}
 			},
 			alertFunc(i) {
@@ -260,6 +252,15 @@
 			},
 			payTypeFunc(i) {
 				this.payType = i
+				console.log(i)
+			},
+			buyNext() {
+				var that = this
+				if(that.tcList.length != 0 && that.xdPriceCNY && that.xdPriceUSD) {
+					that.sendOrder()
+				} else {
+					that.$tools.alert(that, that.langType ? '订单异常！' : 'Order exception！', that.$tools.toIndex)
+				}
 			},
 			sendOrder() {
 				var that = this
@@ -294,7 +295,15 @@
 				}).then((res) => {
 					if(res.data.tradeRstCode == '0000') {
 						that.loading.hide()
-						that.payFunc(data.payId, data.payAmount)
+						//paypal加载
+						that.paypalRender(data.payId, data.payAmount)
+
+						//调起支付
+						that.payShow = !that.payShow
+						that.payObj = {
+							payId: data.payId,
+							payAmount: data.payAmount
+						}
 					} else {
 						that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
 					}
@@ -336,15 +345,20 @@
 					that.$tools.oceanPay(that, data)
 				} else {
 					//paypal支付
-					let data = {
-						clientId: '',
-						clientSecret: '',
-						mode: '',
-						payAmount: total,
-						payId: pId
-					}
-					that.$tools.paypalPay(that, data)
+					//显示paypal按钮
 				}
+			},
+			paypalRender(pId, total) {
+				$("#paypal").html('')
+				var that = this
+				let data = {
+					clientId: '',
+					clientSecret: '',
+					mode: 'production',
+					payAmount: total,
+					payId: pId
+				}
+				that.$tools.paypalPay(that, data)
 			}
 		}
 	}

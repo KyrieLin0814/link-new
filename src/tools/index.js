@@ -261,8 +261,10 @@ const tools = {
 				let signTypeVal = res.data.tradeData.signType;
 				let paySignVal = res.data.tradeData.paySign;
 
-				onBridgeReady()　　　　
+				onBridgeReady();
+
 				function onBridgeReady() {
+					v.payShow = !v.payShow
 					WeixinJSBridge.invoke('getBrandWCPayRequest', {　　　　　　　　　　
 						appId: appIdVal,
 						timeStamp: timeStampVal,
@@ -307,6 +309,7 @@ const tools = {
 		}).then((res) => {
 			if(res.data.tradeRstCode == '0000') {
 				v.loading.hide()
+				v.payShow = !v.payShow
 				let wxPayUrl = res.data.tradeData.mweb_url + '&redirect_url=' + encodeURIComponent(url)
 				window.location.href = wxPayUrl
 			} else {
@@ -331,13 +334,46 @@ const tools = {
 			v.loading.hide()
 		})
 	},
-	paypalPay(v, obj) {
+	paypalPay(v, obj, url) {
 		v.$post('https://wx.linksfield.net/payment/paypal', {
 			tradeType: 'paypal',
 			tradeData: obj
 		}).then((res) => {
 			if(res.data.tradeRstCode == '0000') {
 				v.loading.hide()
+				paypal.Button.render({
+					env: 'production',
+					client: {
+						production: res.data.tradeData.clientId
+					},
+					commit: true,
+					style: {
+						label: 'pay',
+						size: 'responsive', // small | medium | large | responsive
+						shape: 'pill', // pill | rect
+						color: 'blue', // gold | blue | silver | black
+					},
+					payment: function(data, actions) {
+						return actions.payment.create({
+							payment: {
+								transactions: [{
+									amount: {
+										total: obj.payAmount,
+										currency: 'USD'
+									},
+									"description": "订单",
+									"invoice_number": obj.payId
+								}]
+							}
+						});
+					},
+					onAuthorize: function(data, actions) {
+						return actions.payment.execute().then(function() {
+							window.location.href = url
+						});
+					}
+
+				}, '#paypal');
 
 			} else {
 				v.$tools.alert(v, res.data.tradeRstMessage, v.$tools.toIndex)
