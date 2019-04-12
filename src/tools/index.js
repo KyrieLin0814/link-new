@@ -282,9 +282,8 @@ const tools = {
 				let paySignVal = res.data.tradeData.paySign;
 
 				onBridgeReady();
-
 				function onBridgeReady() {
-					v.payShow = !v.payShow
+					v.payShow = false
 					WeixinJSBridge.invoke('getBrandWCPayRequest', {　　　　　　　　　　
 						appId: appIdVal,
 						timeStamp: timeStampVal,
@@ -294,23 +293,23 @@ const tools = {
 						paySign: paySignVal
 					}, function(res) {
 						if(res.err_msg === 'get_brand_wcpay_request:ok') {
-							window.location.href = url + '1'
+							window.location.href = url + '/1/' + obj.pId + '/1'
 						} else if(res.err_msg === 'get_brand_wcpay_request:cancel') {
 							v.$tools.alert(v, lang ? '支付已取消' : 'Payment has been cancelled')
 						} else if(res.err_msg === 'get_brand_wcpay_request:fail') {
-							window.location.href = url + '0'
+							window.location.href = url + '/0/' + obj.pId + '/1'
 						}
 					})
 				}
-				if(typeof WeixinJSBridge == "undefined") {　　　　　　　　
-					if(document.addEventListener) {　　　　　　　　　　
-						document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);　　　　　　　　
-					} else if(document.attachEvent) {　　　　　　　　　　
-						document.attachEvent('WeixinJSBridgeReady', onBridgeReady);　　　　　　　　　　
-						document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);　　　　　　　　
-					}　　　　
-				} else {　　　　　　
-					onBridgeReady();　　　　
+				if(typeof WeixinJSBridge == "undefined") {
+					if(document.addEventListener) {
+						document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+					} else if(document.attachEvent) {
+						document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+						document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+					}
+				} else {
+					onBridgeReady();
 				}
 			} else {
 				v.loading.hide()

@@ -28,16 +28,17 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
-				payStatus: 2, //0支付失败     1支付成功   2待定
+				payStatus: 2, //0支付失败     1支付成功   2其他方式
 				pId: null,
 				pType: null
 			}
 		},
 		mounted() {
-			this.payStatus = this.$route.query.payStatus
-			this.pId = this.$route.query.payId
-			this.pType = this.$route.query.payType
-			if(!this.payStatus){
+			this.payStatus = this.$route.params.payStatus
+			this.pId = this.$route.params.payId
+			this.pType = this.$route.params.payType
+			
+			if(this.payStatus == 2){
 				this.getPayStatus()
 			}
 		},

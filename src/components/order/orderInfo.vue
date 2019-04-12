@@ -311,7 +311,7 @@
 				if(that.payType == 1) {
 					if(that.$store.getters.getOpenId) {
 						//wx公众号支付
-						let returnUrl = window.location.origin + '/payResult?payStatus='
+						let returnUrl = window.location.origin + '/payResult'
 						let data = {
 							appid: '',
 							body: '',
@@ -323,7 +323,7 @@
 						}
 						that.$tools.wxPay(that, data,returnUrl)
 					} else {
-						let returnUrl = window.location.origin + '/payResult?payId=' + pId + '&payType=1'
+						let returnUrl = window.location.origin + '/payResult/2/' + pId + '/1'
 						//wxH5支付
 						let data = {
 							appid: '',
@@ -349,7 +349,7 @@
 			paypalRender(pId, total) {
 				var that = this
 				$("#paypal").html('')
-				let returnUrl = window.location.origin + '/payResult?payId=' + pId + '&payType=2'
+				let returnUrl = window.location.origin + '/payResult/2/' + pId + '/2'
 				let data = {
 					clientId: '',
 					clientSecret: '',
@@ -361,7 +361,7 @@
 			},
 			oceanRender(pId, total) {
 				var that = this
-				let returnUrl = window.location.origin + '/payResult?payId=' + pId + '&payType=3'
+				let returnUrl = window.location.origin + '/payResult/2/' + pId + '/3'
 				let data = {
 					account: '',
 					backUrl: returnUrl,
@@ -369,7 +369,7 @@
 					payCurrency: 'CNY',
 					payId: pId,
 					secureCode: '',
-					terminal: '',
+					terminal: ''
 				}
 				that.$tools.oceanPay(that, data)
 			}
