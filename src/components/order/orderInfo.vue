@@ -74,13 +74,11 @@
 							<span class="cardItem" v-for="(i,idx) in packageUsingDetails" :class="{'active': i.deviceCode == activeCard}" @click="alertFunc(i)">{{$t("message.card")}}{{idx+1}}</span>
 						</div>
 					</div>
-
 				</div>
-
 			</div>
 		</div>
 
-		<div class="masker" v-if="payShow" @click="payShow = !payShow"></div>
+		<div class="masker" v-if="payShow" @click="hidePay()"></div>
 		<div class="maskBox payBox" :class="{'show': payShow}">
 			<p class="til">{{$t("message.payment")}}</p>
 			<p class="priceActive">{{(payType == 3 ? ('$' + xdPriceUSD):('￥' + xdPriceCNY))}}</p>
@@ -105,6 +103,28 @@
 				<!--<span>{{$t("message.yuanFH")}}{{total?total:0}}</span>-->
 				{{$t("message.nextBuy")}}
 			</cube-button>
+		</div>
+
+		<div class="oceanBox">
+			<form action="https://secure.oceanpayment.com/gateway/service/test" method="post" id="oceanForm">
+				<input type="hidden" name="account" id="account" value="" />
+				<input type="hidden" name="backUrl" id="backUrl" value="" />
+				<input type="hidden" name="billing_address" id="billing_address" value="" />
+				<input type="hidden" name="billing_city" id="billing_city" value="" />
+				<input type="hidden" name="billing_country" id="billing_country" value="" />
+				<input type="hidden" name="billing_email" id="billing_email" value="" />
+				<input type="hidden" name="billing_firstName" id="billing_firstName" value="" />
+				<input type="hidden" name="billing_lastName" id="billing_lastName" value="" />
+				<input type="hidden" name="billing_phone" id="billing_phone" value="" />
+				<input type="hidden" name="billing_zip" id="billing_zip" value="" />
+				<input type="hidden" name="methods" id="methods" value="" />
+				<input type="hidden" name="noticeUrl" id="noticeUrl" value="" />
+				<input type="hidden" name="order_amount" id="order_amount" value="" />
+				<input type="hidden" name="order_currency" id="order_currency" value="" />
+				<input type="hidden" name="order_number" id="order_number" value="" />
+				<input type="hidden" name="signValue" id="signValue" value="" />
+				<input type="hidden" name="terminal" id="terminal" value="" />
+			</form>
 		</div>
 	</div>
 </template>
@@ -157,17 +177,13 @@
 							}
 						}
 					}
-
 					that.loading.hide()
-					that.payResultFunc()
 				} else {
 					that.$tools.alert(that, res.data.tradeRstMessage)
 					that.loading.hide()
-					that.payResultFunc()
 				}
 			}).catch(err => {
 				that.loading.hide()
-				that.payResultFunc()
 			})
 		},
 		mounted() {
@@ -176,33 +192,6 @@
 		methods: {
 			back() {
 				history.go(-1)
-			},
-			payResultFunc() {
-				//wxH5 支付结果
-				let type = this.$route.query.type
-				let pId = this.$route.query.payId
-				if(type == 'payResult') {
-					var that = this
-					that.$tools.alert(that, that.langType ? '查看支付结果' : 'View payment results', function() {
-						that.$tools.loading(that)
-						that.$post('https://wx.linksfield.net/payment/weixinQuery', {
-							tradeType: 'weixinQuery',
-							tradeData: {
-								appid: '',
-								key: '',
-								mch_id: '',
-								payId: pId
-							}
-						}).then((res) => {
-							that.loading.hide()
-							that.$tools.alert(that, res.data.tradeRstMessage, function() {
-								that.$router.push('/index')
-							})
-						}).catch(err => {
-							that.loading.hide()
-						})
-					})
-				}
 			},
 			alertFunc(i) {
 				var that = this
@@ -252,7 +241,10 @@
 			},
 			payTypeFunc(i) {
 				this.payType = i
-				console.log(i)
+			},
+			hidePay() {
+				this.payType = 1
+				this.payShow = false
 			},
 			buyNext() {
 				var that = this
@@ -297,14 +289,17 @@
 						that.loading.hide()
 						//paypal加载
 						that.paypalRender(data.payId, data.payAmount)
+						//ocean加载
+						that.oceanRender(data.payId, data.payAmount)
 
 						//调起支付
-						that.payShow = !that.payShow
+						that.payShow = true
 						that.payObj = {
 							payId: data.payId,
 							payAmount: data.payAmount
 						}
 					} else {
+						that.loading.hide()
 						that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
 					}
 				}).catch(err => {
@@ -316,6 +311,7 @@
 				if(that.payType == 1) {
 					if(that.$store.getters.getOpenId) {
 						//wx公众号支付
+						let returnUrl = window.location.origin + '/payResult?payStatus='
 						let data = {
 							appid: '',
 							body: '',
@@ -325,9 +321,9 @@
 							payAmount: total,
 							payId: pId
 						}
-						that.$tools.wxPay(that, data)
+						that.$tools.wxPay(that, data,returnUrl)
 					} else {
-						let url = window.location.href + '?type=payResult&payId=' + pId
+						let returnUrl = window.location.origin + '/payResult?payId=' + pId + '&payType=1'
 						//wxH5支付
 						let data = {
 							appid: '',
@@ -338,19 +334,22 @@
 							payId: pId,
 							scene_info: ''
 						}
-						that.$tools.wxPayH5(that, data, url)
+						that.$tools.wxPayH5(that, data, returnUrl)
 					}
 				} else if(that.payType == 2) {
 					//钱海支付
-					that.$tools.oceanPay(that, data)
+					//提交form表单
+					$("#oceanForm").submit()
 				} else {
 					//paypal支付
-					//显示paypal按钮
+					//显示paypal按钮即可
 				}
+				this.payShow = false
 			},
 			paypalRender(pId, total) {
-				$("#paypal").html('')
 				var that = this
+				$("#paypal").html('')
+				let returnUrl = window.location.origin + '/payResult?payId=' + pId + '&payType=2'
 				let data = {
 					clientId: '',
 					clientSecret: '',
@@ -358,7 +357,21 @@
 					payAmount: total,
 					payId: pId
 				}
-				that.$tools.paypalPay(that, data)
+				that.$tools.paypalPay(that, data, returnUrl)
+			},
+			oceanRender(pId, total) {
+				var that = this
+				let returnUrl = window.location.origin + '/payResult?payId=' + pId + '&payType=3'
+				let data = {
+					account: '',
+					backUrl: returnUrl,
+					payAmount: total,
+					payCurrency: 'CNY',
+					payId: pId,
+					secureCode: '',
+					terminal: '',
+				}
+				that.$tools.oceanPay(that, data)
 			}
 		}
 	}

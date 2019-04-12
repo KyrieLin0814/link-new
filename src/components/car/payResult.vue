@@ -1,0 +1,109 @@
+<template>
+	<div class="body-container bg payResult">
+
+		<div class="result" v-if="payStatus==0">
+			<img src="../../assets/image/payError.png" />
+			<p>{{$t("message.zfsb")}}</p>
+			<cube-button class="color" @click="toIndex()">{{$t("message.confirm")}}</cube-button>
+		</div>
+
+		<div class="result" v-if="payStatus==1">
+			<img src="../../assets/image/paySuccess.png" />
+			<p>{{$t("message.zfcg")}}</p>
+			<cube-button class="color" @click="toIndex()">{{$t("message.confirm")}}</cube-button>
+		</div>
+
+		<div class="result" v-if="payStatus==2">
+			<div class="noResult">
+				<p>{{$t("message.jgtip")}}</p>
+				<cube-button class="color" @click="getPayStatus()">{{$t("message.ckzfjg")}}</cube-button>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+	export default {
+		name: 'payResult',
+		data() {
+			return {
+				langType: this.$lang == 'cn',
+				payStatus: 2, //0支付失败     1支付成功   2待定
+				pId: null,
+				pType: null
+			}
+		},
+		mounted() {
+			this.payStatus = this.$route.query.payStatus
+			this.pId = this.$route.query.payId
+			this.pType = this.$route.query.payType
+			if(!this.payStatus){
+				this.getPayStatus()
+			}
+		},
+		methods: {
+			toIndex(){
+				this.$router.push("/index")
+			},
+			getPayStatus() {
+				//支付结果
+				var that = this
+				that.$tools.loading(that)
+				that.$post('https://wx.linksfield.net/payment/weixinQuery', {
+					tradeType: 'weixinQuery',
+					tradeData: {
+						appid: '',
+						key: '',
+						mch_id: '',
+						payId: that.pId,
+						payType: that.pType
+					}
+				}).then((res) => {
+					that.loading.hide()
+					if(res.data.tradeRstCode == '0000') {
+						that.$tools.renderCart(that)
+						that.payStatus = 1
+					} else if(res.data.tradeRstCode == '9998') {
+						that.payStatus = 2
+					} else {
+						that.payStatus = 0
+					}
+				}).catch(err => {
+					that.loading.hide()
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="less" scoped>
+	.payResult {
+		.result {
+			padding-top: 4rem;
+			img {
+				width: 5rem;
+				display: block;
+				margin: 0 auto;
+			}
+			p {
+				font-size: 1.2rem;
+				margin-top: 1rem;
+				text-align: center;
+			}
+			button {
+				width: 90%;
+				margin: 0 auto;
+				margin-top: 2rem;
+			}
+			.noResult {
+				p {
+					width: 65%;
+					margin: 0 auto;
+					font-size: 0.8rem;
+					color: #333;
+					line-height: 1.2rem;
+				}
+			}
+		}
+	}
+</style>

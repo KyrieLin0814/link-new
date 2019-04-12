@@ -133,6 +133,10 @@ module.exports = {
 	 	empty:'The shopping cart is empty',
 	 	emptyOrder:'No order',
 	 	xzkp:'Please choose your card',
+	 	zfcg:'Payment succeeded',
+	 	zfsb:'Payment failed',
+	 	ckzfjg:'View Payment Results',
+	 	jgtip:'Payment results may be delayed, please click to review the results later',
 
 		
 //		address

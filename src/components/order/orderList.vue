@@ -60,6 +60,9 @@
 				if(res.data.tradeRstCode == '0000') {
 					that.list = res.data.tradeData
 					that.loading.hide()
+				}else{
+					that.$tools.alert(that, res.data.tradeRstMessage,that.$tools.toIndex)
+					that.loading.hide()
 				}
 			}).catch(err => {
 				that.loading.hide()

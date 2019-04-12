@@ -50,7 +50,6 @@
 			},
 			router(str) {
 				this.$router.push(str)
-				console.log(str)
 			},
 			contactFunc() {
 				this.$createDialog({

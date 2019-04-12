@@ -27,7 +27,6 @@
 				langType: this.$lang == 'cn',
 				placeholder: this.$t("message.inputTxt"),
 				cardNum: this.$store.getters.getDeviceCode
-
 			}
 		},
 		created() {

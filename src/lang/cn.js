@@ -133,6 +133,10 @@ module.exports = {
 	 	empty:'购物车为空',
 	 	emptyOrder:'暂无订单',
 	 	xzkp:'请选择卡片',
+	 	zfcg:'支付成功',
+	 	zfsb:'支付失败',
+	 	ckzfjg:'查看支付结果',
+	 	jgtip:'支付结果可能存在延迟，请稍后点击重新查看结果',
 
 //		address
 	 	name:'姓名',

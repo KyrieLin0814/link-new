@@ -25,8 +25,7 @@ import orderInfo from '@/components/order/orderInfo'
 import car from '@/components/car/car'
 import confirmOrder from '@/components/car/confirmOrder'
 import addressEdit from '@/components/car/addressEdit'
-
-import HelloWorld from '@/components/HelloWorld'
+import payResult from '@/components/car/payResult'
 
 Vue.use(Router)
 
@@ -109,6 +108,11 @@ const router = new Router({
 			path: '/addressEdit',
 			name: 'addressEdit',
 			component: addressEdit
+		},
+		{
+			path: '/payResult',
+			name: 'payResult',
+			component: payResult
 		}
 	]
 })

@@ -45,19 +45,31 @@
 
 		},
 		mounted() {
-
+			if(this.cardList.length == 0) {
+				this.cardList.push({
+					text: (this.langType ? '卡' : 'Card') + (this.cardList.length + 1) + "：",
+					value: ''
+				})
+			}
 		},
-
 		methods: {
 			back() {
 				history.go(-1)
 			},
 			confirm() {
 				var that = this
-				this.cardList.map(function(item, idx) {
+				if(this.cardList.length == 1 && !this.cardList[0].value) {
+					return
+				}
+				let arr = JSON.parse(JSON.stringify(that.cardList))
+				if(!this.cardList[this.cardList.length-1].value){
+					arr.pop()
+				}
+				
+				arr.map(function(item, idx) {
 					item.text = (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.value
 				})
-				this.$store.commit('setCardList', that.cardList)
+				this.$store.commit('setCardListHave', arr)
 				this.$router.replace("/confirmOrder")
 			},
 			addCard() {
@@ -66,7 +78,6 @@
 						return
 					}
 				}
-
 				this.cardList.push({
 					text: (this.langType ? '卡' : 'Card') + (this.cardList.length + 1) + "：",
 					value: ''

@@ -80,7 +80,7 @@
 			</div>
 		</div>
 
-		<div class="masker" v-if="payShow" @click="payShow = !payShow"></div>
+		<div class="masker" v-if="payShow" @click="hidePay()"></div>
 		<div class="maskBox payBox" :class="{'show': payShow}">
 			<p class="til">{{$t("message.payment")}}</p>
 			<p class="priceActive">{{(payType == 3 ? '$':'￥') + finalPrice}}</p>
@@ -95,7 +95,7 @@
 					<i class="py"></i><span>{{$t("message.PyPal")}}</span>
 				</li>
 			</ul>
-			<cube-button class="color" @click="sendOrder()">{{$t("message.confirm")}}</cube-button>
+			<cube-button class="color" @click="payFunc()">{{$t("message.confirm")}}</cube-button>
 		</div>
 
 		<div class="fixedBtns flex">
@@ -256,7 +256,7 @@
 						that.$store.commit('setCardListHave', cardArr)
 						that.haveOrNo(that.kpValue)
 					}else{
-						that.$tools.alert(that, res.data.tradeRstMessage,that.$tools.toIndex)
+						that.$tools.alert(that, res.data.tradeRstMessage)
 					}
 				}).catch(err => {
 					that.$tools.alert(that, res.data.tradeRstMessage)
@@ -267,6 +267,10 @@
 			},
 			payTypeFunc(i) {
 				this.payType = i
+			},
+			hidePay() {
+				this.payType = 1
+				this.payShow = false
 			},
 			chooseCard(idx) {
 				var that = this
@@ -317,7 +321,6 @@
 				}
 
 				//用户绑定接口
-				
 				this.$tools.loading(that)
 				var deviceCodeArr = []
 				this.cardList.map(function(item) {
@@ -340,15 +343,26 @@
 					}
 				}).then((res) => {
 					if(res.data.tradeRstCode == '0000') {
-						that.payShow = !that.payShow
+						that.loading.hide()
+						that.sendOrder()
 					}else{
-						that.$tools.alert(that, res.data.tradeRstMessage,that.$tools.toIndex)
+						that.loading.hide()
+						that.$tools.alert(that, res.data.tradeRstMessage)
 					}
-					that.loading.hide()
 				}).catch(err => {
 					that.loading.hide()
 					that.$tools.alert(that, res.data.tradeRstMessage)
 				})
+			},
+			sendOrder() {
+				var that = this
+				if(that.kpValue == '0') {
+					//无卡下单
+					that.sendBaseFunc('userNoCardOrder')
+				} else {
+					//有卡下单
+					that.sendBaseFunc('userCardOrder')
+				}
 			},
 			sendBaseFunc(api) {
 				var that = this
@@ -403,24 +417,14 @@
 				}).then((res) => {
 					if(res.data.tradeRstCode == '0000') {
 						that.loading.hide()
-						that.payFunc()
+						that.payShow = true
 					}else{
-						that.$tools.alert(that, res.data.tradeRstMessage,that.$tools.toIndex)
+						that.loading.hide()
+						that.$tools.alert(that, res.data.tradeRstMessage)
 					}
 				}).catch(err => {
 					that.loading.hide()
 				})
-
-			},
-			sendOrder() {
-				var that = this
-				if(that.kpValue == '0') {
-					//无卡下单
-					that.sendBaseFunc('userNoCardOrder')
-				} else {
-					//有卡下单
-					that.sendBaseFunc('userCardOrder')
-				}
 			},
 			payFunc() {
 				alert(22222)

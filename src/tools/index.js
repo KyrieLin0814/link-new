@@ -242,12 +242,32 @@ const tools = {
 	},
 	//回到首页
 	toIndex() {
-		window.location.href = '/#/'
+		window.location.href = '/index'
+	},
+	//回到登录
+	toLogin() {
+		window.location.href = '/'
+	},
+	//支付完成重置购物车
+	renderCart(v) {
+		//		let cartList = v.$store.getters.getCartList
+		//		let checkList = v.$store.getters.getCheckList
+		//		cartList.map(function(i, idx) {
+		//			checkList.map(function(j) {
+		//				console.log(j == i.checkId)
+		//				if(j == i.checkId) {
+		//					cartList.splice(idx, 1)
+		//					delete cartList[idx]
+		//				}
+		//			})
+		//		})
+		v.$store.commit('setCartList', [])
+		v.$store.commit('setCartSelect', [])
+		v.$store.commit('setCheckList', [])
 	},
 	//支付
-	wxPay(v, obj) {
-		var lang = localStorage.getItem("lang") == 'en' ? false : true
-
+	wxPay(v, obj, url) {
+		let lang = localStorage.getItem("lang") == 'en' ? false : true
 		v.$post('https://wx.linksfield.net/payment/weixinPublic', {
 			tradeType: 'weixinPublic',
 			tradeData: obj
@@ -274,17 +294,14 @@ const tools = {
 						paySign: paySignVal
 					}, function(res) {
 						if(res.err_msg === 'get_brand_wcpay_request:ok') {
-							v.$tools.alert(v, lang ? '支付成功' : 'Successful payment', function() {
-								v.$router.push("/index")
-							})
-							v.$store.commit('setCartList', [])
+							window.location.href = url + '1'
 						} else if(res.err_msg === 'get_brand_wcpay_request:cancel') {
 							v.$tools.alert(v, lang ? '支付已取消' : 'Payment has been cancelled')
 						} else if(res.err_msg === 'get_brand_wcpay_request:fail') {
-							v.$tools.alert(v, lang ? '支付失败' : 'Failure payment')
+							window.location.href = url + '0'
 						}
-					})　
-				}　
+					})
+				}
 				if(typeof WeixinJSBridge == "undefined") {　　　　　　　　
 					if(document.addEventListener) {　　　　　　　　　　
 						document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);　　　　　　　　
@@ -296,6 +313,7 @@ const tools = {
 					onBridgeReady();　　　　
 				}
 			} else {
+				v.loading.hide()
 				v.$tools.alert(v, res.data.tradeRstMessage, v.$tools.toIndex)
 			}
 		}).catch(err => {
@@ -313,6 +331,7 @@ const tools = {
 				let wxPayUrl = res.data.tradeData.mweb_url + '&redirect_url=' + encodeURIComponent(url)
 				window.location.href = wxPayUrl
 			} else {
+				v.loading.hide()
 				v.$tools.alert(v, res.data.tradeRstMessage, v.$tools.toIndex)
 			}
 		}).catch(err => {
@@ -325,9 +344,26 @@ const tools = {
 			tradeData: obj
 		}).then((res) => {
 			if(res.data.tradeRstCode == '0000') {
-
 				v.loading.hide()
+				let result = res.data.tradeData
+				$("#account").val(result.account)
+				$("#backUrl").val(result.backUrl)
+				$("#billing_address").val(result.billing_address)
+				$("#billing_city").val(result.billing_city)
+				$("#billing_country").val(result.billing_country)
+				$("#billing_email").val(result.billing_email)
+				$("#billing_firstName").val(result.billing_firstName)
+				$("#billing_lastName").val(result.billing_lastName)
+				$("#billing_zip").val(result.billing_zip)
+				$("#methods").val(result.methods)
+				$("#noticeUrl").val(result.noticeUrl)
+				$("#order_amount").val(result.order_amount)
+				$("#order_currency").val(result.order_currency)
+				$("#order_number").val(result.order_number)
+				$("#signValue").val(result.signValue)
+				$("#terminal").val(result.terminal)
 			} else {
+				v.loading.hide()
 				v.$tools.alert(v, res.data.tradeRstMessage, v.$tools.toIndex)
 			}
 		}).catch(err => {
@@ -348,7 +384,8 @@ const tools = {
 					},
 					commit: true,
 					style: {
-						label: 'pay',
+						label: 'paypal',
+						tagline: 'false',
 						size: 'responsive', // small | medium | large | responsive
 						shape: 'pill', // pill | rect
 						color: 'blue', // gold | blue | silver | black
@@ -372,10 +409,10 @@ const tools = {
 							window.location.href = url
 						});
 					}
-
 				}, '#paypal');
 
 			} else {
+				v.loading.hide()
 				v.$tools.alert(v, res.data.tradeRstMessage, v.$tools.toIndex)
 			}
 		}).catch(err => {
