@@ -1,5 +1,22 @@
 import Vue from 'vue'
 const tools = {
+	//url参数
+	getUrlKey() {
+		let href = window.location.href,
+			paramObj = {};
+		if(href.match(/\?/)) {
+			let paramStr = href.split('?')[1],
+				unitArr = decodeURIComponent(paramStr).split('&');
+			unitArr.forEach((item) => {
+				paramObj[this.trim(item.split('=')[0])] = this.trim(item.split('=')[1]).replace(/#\/(\w+)?/, '');
+			});
+		}
+		return paramObj;
+	},
+	//去掉空格
+	trim(str) {
+		return str.replace(/^\s*|\s*$/g, '');
+	},
 	//确认提示框
 	alert(v, txt, func, til) {
 		v.$createDialog({
@@ -242,11 +259,11 @@ const tools = {
 	},
 	//回到首页
 	toIndex() {
-		window.location.href = '/index'
+		window.location.href = '/#/index'
 	},
 	//回到登录
 	toLogin() {
-		window.location.href = '/'
+		window.location.href = '/#/'
 	},
 	//支付完成重置购物车
 	renderCart(v) {
@@ -265,7 +282,21 @@ const tools = {
 		v.$store.commit('setCartSelect', [])
 		v.$store.commit('setCheckList', [])
 	},
-	//支付
+	//微信扫一扫
+	wxSaoConfig(v) {
+		var params = encodeURI(encodeURI(document.location.href))
+		v.$get("https://wx.linksfield.net/payment/weixinsao?reqUrl=" + params).then((res) => {
+			wx.config({
+				debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。  
+				appId: res.appId, // 必填，公众号的唯一标识  
+				timestamp: res.timestamp, // 必填，生成签名的时间戳  
+				nonceStr: res.nonceStr, // 必填，生成签名的随机串  
+				signature: res.signature, // 必填，签名，见附录1  
+				jsApiList: ['scanQRCode'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2  
+			})
+		})
+	},
+	//公众号支付
 	wxPay(v, obj, url) {
 		let lang = localStorage.getItem("lang") == 'en' ? false : true
 		v.$post('https://wx.linksfield.net/payment/weixinPublic', {
@@ -280,8 +311,8 @@ const tools = {
 				let packageVal = res.data.tradeData.packageStr;
 				let signTypeVal = res.data.tradeData.signType;
 				let paySignVal = res.data.tradeData.paySign;
+				//onBridgeReady();
 
-				onBridgeReady();
 				function onBridgeReady() {
 					v.payShow = false
 					WeixinJSBridge.invoke('getBrandWCPayRequest', {　　　　　　　　　　
@@ -295,7 +326,10 @@ const tools = {
 						if(res.err_msg === 'get_brand_wcpay_request:ok') {
 							window.location.href = url + '/1/' + obj.pId + '/1'
 						} else if(res.err_msg === 'get_brand_wcpay_request:cancel') {
-							v.$tools.alert(v, lang ? '支付已取消' : 'Payment has been cancelled')
+							v.$tools.toast(v, lang ? '支付已取消' : 'Payment has been cancelled', 1500)
+							setTimeout(function() {
+								location.reload()
+							}, 1500)
 						} else if(res.err_msg === 'get_brand_wcpay_request:fail') {
 							window.location.href = url + '/0/' + obj.pId + '/1'
 						}
@@ -319,6 +353,7 @@ const tools = {
 			v.loading.hide()
 		})
 	},
+	//H5支付
 	wxPayH5(v, obj, url) {
 		v.$post('https://wx.linksfield.net/payment/weixinWeb', {
 			tradeType: 'weixinWeb',
@@ -326,7 +361,7 @@ const tools = {
 		}).then((res) => {
 			if(res.data.tradeRstCode == '0000') {
 				v.loading.hide()
-				v.payShow = !v.payShow
+				v.payShow = false
 				let wxPayUrl = res.data.tradeData.mweb_url + '&redirect_url=' + encodeURIComponent(url)
 				window.location.href = wxPayUrl
 			} else {
@@ -337,6 +372,25 @@ const tools = {
 			v.loading.hide()
 		})
 	},
+	//wx二维码支付
+	wxPayCode(v, obj) {
+		v.$post('https://wx.linksfield.net/payment/weixinScan', {
+			tradeType: 'weixinScan',
+			tradeData: obj
+		}).then((res) => {
+			//支付code_url转二维码
+			$("#qrcode").html('');
+			let qrcode = new QRCode(document.getElementById("qrcode"), {
+				width: 200,
+				height: 200
+			});
+			qrcode.makeCode(res.data.tradeData.code_url)
+			v.payCode = true
+		}).catch(err => {
+			v.loading.hide()
+		})
+	},
+	//钱海支付
 	oceanPay(v, obj) {
 		v.$post('https://wx.linksfield.net/payment/oceanPay', {
 			tradeType: 'oceanPay',
@@ -369,6 +423,7 @@ const tools = {
 			v.loading.hide()
 		})
 	},
+	//paypal支付
 	paypalPay(v, obj, url) {
 		v.$post('https://wx.linksfield.net/payment/paypal', {
 			tradeType: 'paypal',

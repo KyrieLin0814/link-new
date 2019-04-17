@@ -67,7 +67,7 @@ module.exports = {
 	 	jyfs:'Payment type',
 	 	jyhm:'Payment number',
 	 	jyls:'Payment flow',
-	 	orderSccess:'The order has been completed. Thank you!',	 
+	 	orderSuccess:'The order has been completed. Thank you!',	 
 	 	
 	 	
 //		index	 	
@@ -137,6 +137,8 @@ module.exports = {
 	 	zfsb:'Payment failed',
 	 	ckzfjg:'View Payment Results',
 	 	jgtip:'Payment results may be delayed, please click to review the results later',
+	 	codeTips:'Please scan the code with Wechat,and then click the button to see the payment result',
+	 	yzf:'Payment completed',
 
 		
 //		address

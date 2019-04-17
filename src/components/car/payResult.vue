@@ -4,6 +4,7 @@
 		<div class="result" v-if="payStatus==0">
 			<img src="../../assets/image/payError.png" />
 			<p>{{$t("message.zfsb")}}</p>
+			<span>{{txt}}</span>
 			<cube-button class="color" @click="toIndex()">{{$t("message.confirm")}}</cube-button>
 		</div>
 
@@ -29,6 +30,7 @@
 			return {
 				langType: this.$lang == 'cn',
 				payStatus: 2, //0支付失败     1支付成功   2其他方式
+				txt: '',
 				pId: null,
 				pType: null
 			}
@@ -37,13 +39,13 @@
 			this.payStatus = this.$route.params.payStatus
 			this.pId = this.$route.params.payId
 			this.pType = this.$route.params.payType
-			
-			if(this.payStatus == 2){
+
+			if(this.payStatus == 2) {
 				this.getPayStatus()
 			}
 		},
 		methods: {
-			toIndex(){
+			toIndex() {
 				this.$router.push("/index")
 			},
 			getPayStatus() {
@@ -68,6 +70,7 @@
 						that.payStatus = 2
 					} else {
 						that.payStatus = 0
+						that.txt = res.data.tradeRstMessage
 					}
 				}).catch(err => {
 					that.loading.hide()
@@ -90,6 +93,13 @@
 				font-size: 1.2rem;
 				margin-top: 1rem;
 				text-align: center;
+			}
+			span {
+				margin-top:1rem;
+				display: block;
+				font-size: 0.8rem;
+				text-align: center;
+				color: #666;
 			}
 			button {
 				width: 90%;

@@ -106,6 +106,7 @@
 	.addressEdit {
 		.formContent {
 			margin: 0 -0.7rem;
+			padding-bottom:2.5rem;
 			.inputBox {
 				padding: 0.3rem 0.7rem;
 				label {

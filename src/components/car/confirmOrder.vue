@@ -255,7 +255,7 @@
 						that.cardListHave = cardArr
 						that.$store.commit('setCardListHave', cardArr)
 						that.haveOrNo(that.kpValue)
-					}else{
+					} else {
 						that.$tools.alert(that, res.data.tradeRstMessage)
 					}
 				}).catch(err => {
@@ -345,7 +345,7 @@
 					if(res.data.tradeRstCode == '0000') {
 						that.loading.hide()
 						that.sendOrder()
-					}else{
+					} else {
 						that.loading.hide()
 						that.$tools.alert(that, res.data.tradeRstMessage)
 					}
@@ -369,12 +369,32 @@
 				this.$tools.loading(that)
 				//整理下单请求参数
 				var deviceListArr = []
-				that.kpSelect.map(function(item) {
-					deviceListArr.push({
-						deviceCode: item,
-						orderList: []
+				
+				//有卡
+				if(api == 'userCardOrder') {
+					that.kpSelect.map(function(item) {
+						deviceListArr.push({
+							deviceCode: item,
+							orderList: []
+						})
 					})
-				})
+				}
+				//无卡
+				if(api == 'userNoCardOrder') {
+					that.kpSelect.map(function(item) {
+						deviceListArr.push({
+							deviceCode: item,
+							expressType: that.kdValue,
+							orderList: [],
+							recipientAddress: that.addressObj.areaTxt + that.addressObj.addressTxt,
+							recipientCompany: that.addressObj.companyName,
+							recipientEmail: that.addressObj.email,
+							recipientName: that.addressObj.name,
+							recipientPhone: that.addressObj.tel
+						})
+					})
+				}
+
 				deviceListArr.map(function(i) {
 					that.tcList.map(function(j) {
 						if(i.deviceCode == j.card) {
@@ -418,7 +438,7 @@
 					if(res.data.tradeRstCode == '0000') {
 						that.loading.hide()
 						that.payShow = true
-					}else{
+					} else {
 						that.loading.hide()
 						that.$tools.alert(that, res.data.tradeRstMessage)
 					}
@@ -568,7 +588,6 @@
 				}
 			}
 		}
-		
 		.fixedBtns {
 			span {
 				font-size: 0.6rem;

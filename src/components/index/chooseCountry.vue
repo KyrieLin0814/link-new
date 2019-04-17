@@ -57,7 +57,7 @@
 				langType: this.$lang == 'cn',
 				param: '',
 				placeholder: '',
-				countryListSeleted: this.$store.getters.getCountryList,
+				countryListSeleted: [],
 				avtiveTab: '-1',
 				areaList: [],
 				countryList: [],
@@ -65,8 +65,11 @@
 			}
 		},
 		created() {
-			//国家列表
 			var that = this
+			//默认选中
+			this.countryListSeleted = JSON.parse(JSON.stringify(that.$store.getters.getCountryList))
+			
+			//国家列表
 			that.$post('/continentList', {
 				tradeType: 'continentList'
 			}).then((res) => {
@@ -162,7 +165,6 @@
 				this.countryListSeleted = []
 			},
 			back() {
-//				console.log( this.$store.getters.getBackRouter)
 				var backRouter = this.$store.getters.getBackRouter
 				if(backRouter) {
 					this.$store.commit('setBackRouter', '')

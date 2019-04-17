@@ -15,13 +15,12 @@
 						<div class="card">{{i.text.split('：')[0]}}</div>
 						<div class="inputBox flex-1">
 							<input type="text" v-model="i.value" :placeholder="placeholder" />
-							<span class="screenBtn" @click="screenFunc()"></span>
+							<span class="screenBtn" @click="screenFunc(idx)"></span>
 						</div>
 					</li>
 				</ul>
 				<div class="tip">{{$t("message.tixing")}}</div>
 			</div>
-
 		</div>
 
 		<div class="fixedBtns flex">
@@ -38,13 +37,20 @@
 			return {
 				langType: this.$lang == 'cn',
 				placeholder: this.$t("message.inputTxt"),
-				cardList: this.$store.getters.getCardListHave
+				cardList: []
 			}
 		},
 		created() {
-
+			var that = this
+			//默认选中
+			this.cardList = JSON.parse(JSON.stringify(that.$store.getters.getCardListHave))
 		},
 		mounted() {
+			var that = this
+			if(this.$store.getters.getOpenId) {
+				that.$tools.wxSaoConfig(that)
+			}
+
 			if(this.cardList.length == 0) {
 				this.cardList.push({
 					text: (this.langType ? '卡' : 'Card') + (this.cardList.length + 1) + "：",
@@ -62,10 +68,10 @@
 					return
 				}
 				let arr = JSON.parse(JSON.stringify(that.cardList))
-				if(!this.cardList[this.cardList.length-1].value){
+				if(!this.cardList[this.cardList.length - 1].value) {
 					arr.pop()
 				}
-				
+
 				arr.map(function(item, idx) {
 					item.text = (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.value
 				})
@@ -81,6 +87,21 @@
 				this.cardList.push({
 					text: (this.langType ? '卡' : 'Card') + (this.cardList.length + 1) + "：",
 					value: ''
+				})
+			},
+			screenFunc(idx) {
+				var that = this
+				wx.scanQRCode({
+					needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，  
+					scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有  
+					success: function(res) {
+						var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果  
+						var deviceId = result.split(",")[1]
+						that.cardList[idx].value = JSON.stringify(deviceId)
+					},
+					error: function(err) {
+						//alert(JSON.stringify(err))
+					}
 				})
 			}
 		}
@@ -116,6 +137,7 @@
 			}
 		}
 		.cardAddBox {
+			padding-bottom: 2.5rem;
 			ul {
 				padding: 0.8rem 0;
 				li {
@@ -129,6 +151,7 @@
 						border-radius: 0.2rem;
 					}
 					.inputBox {
+						position: relative;
 						margin-left: 0.5rem;
 						background: #f3f3f3;
 						border-radius: 0.2rem;
@@ -138,6 +161,13 @@
 							line-height: 1.8rem;
 							background: #f3f3f3;
 							padding-left: 2.2rem;
+						}
+						.screenBtn {
+							position: absolute;
+							left: 0;
+							top: 0;
+							width: 2.2rem;
+							height: 100%;
 							background: url(../../assets/image/saoma.png)no-repeat 0.2rem center;
 							background-size: 1.4rem;
 						}

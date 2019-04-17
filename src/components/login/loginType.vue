@@ -52,16 +52,16 @@
 				return "";
 			}
 			//处理url参数
-			function getQuery(paramName) {
-				return that.$route.query[paramName]
-			}
-
-			var user_deviceCode = getQuery("deviceId") ? getQuery("deviceId") : getCookie("deviceId");
-			var user_openId = getQuery("openId") ? getQuery("openId") : getCookie("openId");
-			var user_partnerCode = getQuery("partnerCode") ? getQuery("partnerCode") : getCookie("partnerCode");
-			var user_requestOrderId = getQuery("requestOrderId") ? getQuery("requestOrderId") : getCookie("requestOrderId");
+//			function getQuery(paramName) {
+//				return that.$route.query[paramName]
+//			}
+//			onsole.log(that.$route.query)
+			var urlObj = that.$tools.getUrlKey()
+			var user_deviceCode = urlObj.deviceId ? urlObj.deviceId : getCookie("deviceId");
+			var user_openId = urlObj.openId ? urlObj.openId : getCookie("openId");
+			var user_partnerCode = urlObj.partnerCode ? urlObj.partnerCode : getCookie("partnerCode");
+			var user_requestOrderId = urlObj.requestOrderId ? urlObj.requestOrderId : getCookie("requestOrderId");
 			
-			console.log(that.$route.query)
 			if(user_deviceCode) {
 				that.$store.commit('setDeviceCode', user_deviceCode)
 			}

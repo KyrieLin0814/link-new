@@ -645,3 +645,26 @@ input {
 	transform: rotate(-45deg);
 	-webkit-transform: rotate(-45deg);
 }
+
+/*微信支付二维码*/
+.payCodeBox{
+	display: none;
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 109;
+	background: #fff;
+	padding:1.5rem 2rem 1rem;
+	transform:translate(-50%,-50%);
+	-webkit-transform:translate(-50%,-50%);
+}
+.payCodeBox.show{
+	display: block;
+}
+.payCodeBox .tips{
+	text-align: center;
+	font-size:0.6rem;
+	color:#666;
+	padding:0.5rem 0;
+	line-height:0.9rem;
+}

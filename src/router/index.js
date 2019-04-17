@@ -30,7 +30,7 @@ import payResult from '@/components/car/payResult'
 Vue.use(Router)
 
 const router = new Router({
-	mode: 'history',
+	//mode: 'history',
 	routes: [{
 			path: '/loginIndex',
 			name: 'loginIndex',

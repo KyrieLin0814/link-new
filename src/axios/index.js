@@ -29,8 +29,7 @@ const Axios = axios.create({
 			//加密
 			let sign = md5(JSON.stringify(param.data))
 			param.sign = sign
-			
-			
+
 			console.log(param)
 			data = JSON.stringify(param)
 		}
@@ -111,8 +110,9 @@ Axios.interceptors.response.use(
 		}
 		Dialog.$create({
 			type: 'alert',
-			title: lang? '提示': 'Prompt',
+			title: lang ? '提示' : 'Prompt',
 			content: error.message,
+			maskClosable: true,
 			onConfirm: () => {
 				tools.toIndex()
 			}
@@ -126,6 +126,7 @@ export function get(url, params) {
 		Axios.get(url, {
 			params: params
 		}).then(res => {
+			console.log(res.data)
 			resolve(res.data);
 		}).catch(err => {
 			reject(err.data)

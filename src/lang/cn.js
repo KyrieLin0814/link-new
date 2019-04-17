@@ -137,6 +137,8 @@ module.exports = {
 	 	zfsb:'支付失败',
 	 	ckzfjg:'查看支付结果',
 	 	jgtip:'支付结果可能存在延迟，请稍后点击重新查看结果',
+	 	codeTips:'请用微信扫描二维码进行支付，然后点击按钮查看支付结果',
+	 	yzf:'已支付',
 
 //		address
 	 	name:'姓名',

@@ -78,6 +78,7 @@
 			</div>
 		</div>
 
+		<!--支付方式弹窗-->
 		<div class="masker" v-if="payShow" @click="hidePay()"></div>
 		<div class="maskBox payBox" :class="{'show': payShow}">
 			<p class="til">{{$t("message.payment")}}</p>
@@ -94,9 +95,18 @@
 				</li>
 			</ul>
 			<div id="paypal" v-show="payType==3"></div>
-			<cube-button v-show="payType!=3" class="color" @click="payFunc(payObj.payId, payObj.payAmount)">{{$t("message.confirm")}}</cube-button>
+			<cube-button v-show="payType!=3" class="color" @click="payFunc(payObj.payId)">{{$t("message.confirm")}}</cube-button>
 		</div>
 
+		<!--二维码弹窗-->
+		<div class="masker" v-if="payCode" @click="payCode=false"></div>
+		<div class="payCodeBox" :class="{'show': payCode}">
+			<div id="qrcode"></div>
+			<p class="tips">{{$t("message.codeTips")}}</p>
+			<cube-button class="color" @click="codePayFunc()">{{$t("message.yzf")}}</cube-button>
+		</div>
+
+		<!--支付按钮-->
 		<div class="fixedBtns flex">
 			<cube-button class="gray flex-1" @click="back">{{$t('message.back')}}</cube-button>
 			<cube-button class="color flex-1" @click="buyNext()">
@@ -145,6 +155,7 @@
 				activeCard: null,
 				payType: 1, //1微信      2//钱海    3//paypal
 				payShow: false,
+				payCode: false,
 				payObj: null,
 				xdPriceCNY: null,
 				xdPriceUSD: null,
@@ -246,6 +257,10 @@
 				this.payType = 1
 				this.payShow = false
 			},
+			codePayFunc() {
+				var that = this
+				that.$router.push('/payResult/2/' + that.payObj.payId + '/1')
+			},
 			buyNext() {
 				var that = this
 				if(that.tcList.length != 0 && that.xdPriceCNY && that.xdPriceUSD) {
@@ -288,15 +303,14 @@
 					if(res.data.tradeRstCode == '0000') {
 						that.loading.hide()
 						//paypal加载
-						that.paypalRender(data.payId, data.payAmount)
+						that.paypalRender(data.payId, that.xdPriceUSD)
 						//ocean加载
-						that.oceanRender(data.payId, data.payAmount)
+						that.oceanRender(data.payId, that.xdPriceCNY)
 
 						//调起支付
 						that.payShow = true
 						that.payObj = {
-							payId: data.payId,
-							payAmount: data.payAmount
+							payId: data.payId
 						}
 					} else {
 						that.loading.hide()
@@ -306,35 +320,66 @@
 					that.loading.hide()
 				})
 			},
-			payFunc(pId, total) {
+			payFunc(pId) {
 				var that = this
 				if(that.payType == 1) {
 					if(that.$store.getters.getOpenId) {
 						//wx公众号支付
-						let returnUrl = window.location.origin + '/payResult'
+						let returnUrl = window.location.origin + '/#/payResult'
 						let data = {
 							appid: '',
 							body: '',
 							key: '',
 							mch_id: '',
 							openId: that.$store.getters.getOpenId,
-							payAmount: total,
+							payAmount: that.xdPriceCNY,
 							payId: pId
 						}
-						that.$tools.wxPay(that, data,returnUrl)
+						that.$tools.wxPay(that, data, returnUrl)
 					} else {
-						let returnUrl = window.location.origin + '/payResult/2/' + pId + '/1'
-						//wxH5支付
-						let data = {
-							appid: '',
-							body: '',
-							key: '',
-							mch_id: '',
-							payAmount: total,
-							payId: pId,
-							scene_info: ''
-						}
-						that.$tools.wxPayH5(that, data, returnUrl)
+						that.payShow = false
+						that.$createDialog({
+							type: 'confirm',
+							content: that.langType ? '选择支付方式' : 'Choosing the Way of Payment for Wechat',
+							confirmBtn: {
+								text: that.langType ? '转入微信支付' : 'To Wechat Payment',
+								active: true,
+								disabled: false,
+								href: 'javascript:;'
+							},
+							cancelBtn: {
+								text: that.langType ? '微信扫码支付' : 'Wechat Code Payment',
+								active: true,
+								disabled: false,
+								href: 'javascript:;'
+							},
+							onConfirm: () => {
+								//wxH5支付
+								let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/1'
+								let data = {
+									appid: '',
+									body: '',
+									key: '',
+									mch_id: '',
+									payAmount: that.xdPriceCNY,
+									payId: pId,
+									scene_info: ''
+								}
+								that.$tools.wxPayH5(that, data, returnUrl)
+							},
+							onCancel: () => {
+								//扫码支付
+								let data = {
+									appid: '',
+									body: '',
+									key: '',
+									mch_id: '',
+									payAmount: that.xdPriceCNY,
+									payId: pId
+								}
+								that.$tools.wxPayCode(that, data)
+							}
+						}).show()
 					}
 				} else if(that.payType == 2) {
 					//钱海支付
@@ -349,7 +394,7 @@
 			paypalRender(pId, total) {
 				var that = this
 				$("#paypal").html('')
-				let returnUrl = window.location.origin + '/payResult/2/' + pId + '/2'
+				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/2'
 				let data = {
 					clientId: '',
 					clientSecret: '',
@@ -361,7 +406,7 @@
 			},
 			oceanRender(pId, total) {
 				var that = this
-				let returnUrl = window.location.origin + '/payResult/2/' + pId + '/3'
+				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/3'
 				let data = {
 					account: '',
 					backUrl: returnUrl,
