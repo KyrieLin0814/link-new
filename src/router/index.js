@@ -110,7 +110,7 @@ const router = new Router({
 			component: addressEdit
 		},
 		{
-			path: '/payResult/:payStatus/:payId/:payType',
+			path: '/payResult/:payStatus/:payId/:payType/:deviceCode',
 			name: 'payResult',
 			component: payResult
 		}

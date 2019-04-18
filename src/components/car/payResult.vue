@@ -29,20 +29,41 @@
 		data() {
 			return {
 				langType: this.$lang == 'cn',
-				payStatus: 2, //0支付失败     1支付成功   2其他方式
+				payStatus: 2, //0支付失败     1支付成功     2其他方式（需要查询）
 				txt: '',
 				pId: null,
-				pType: null
+				pType: null,
+				deviceCode: null
 			}
 		},
 		mounted() {
 			this.payStatus = this.$route.params.payStatus
 			this.pId = this.$route.params.payId
 			this.pType = this.$route.params.payType
+			this.deviceCode = this.$route.params.deviceCode
 
-			if(this.payStatus == 2) {
-				this.getPayStatus()
-			}
+			//自动登录
+			var that = this
+			that.$tools.loading(that)
+			that.$post('/userLogin', {
+				tradeType: 'userLogin',
+				tradeData: {
+					deviceCode: that.deviceCode,
+					partnerScope: that.$store.getters.getLoginType
+				}
+			}).then((res) => {
+				if(res.data.tradeRstCode == '0000') {
+					that.$store.commit('setDeviceCode', that.deviceCode)
+					that.loading.hide()
+					if(that.payStatus == 2) {
+						//查询支付结果
+						that.getPayStatus()
+					}
+				} else {
+					that.loading.hide()
+					that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toLogin())
+				}
+			})
 		},
 		methods: {
 			toIndex() {
@@ -95,7 +116,7 @@
 				text-align: center;
 			}
 			span {
-				margin-top:1rem;
+				margin-top: 1rem;
 				display: block;
 				font-size: 0.8rem;
 				text-align: center;

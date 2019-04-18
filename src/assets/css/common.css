@@ -646,6 +646,27 @@ input {
 	-webkit-transform: rotate(-45deg);
 }
 
+@media only screen and (min-width: 150px){
+	#paypal{
+		height:25px;
+	}
+}
+@media only screen and (min-width: 200px){
+	#paypal{
+		height:35px;
+	}
+}
+@media only screen and (min-width: 300px){
+	#paypal{
+		height:45px;
+	}
+}
+@media only screen and (min-width: 500px){
+	#paypal{
+		height:55px;
+	}
+}
+
 /*微信支付二维码*/
 .payCodeBox{
 	display: none;
@@ -657,6 +678,7 @@ input {
 	padding:1.5rem 2rem 1rem;
 	transform:translate(-50%,-50%);
 	-webkit-transform:translate(-50%,-50%);
+	border-radius: 0.2rem;
 }
 .payCodeBox.show{
 	display: block;

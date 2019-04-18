@@ -21,9 +21,9 @@ const Axios = axios.create({
 			param.data.lang = store.state.langType
 			data.partnerCode = store.state.partnerCode
 			param.data.tradeTime = tools.getNowFormatDate('-')
-			if(store.state.token) {
-				param.data.token = store.state.token
-			}
+//			if(store.state.token) {
+//				param.data.token = store.state.token
+//			}
 			param.data = tools.objKeySort(param.data)
 
 			//加密

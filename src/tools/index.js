@@ -311,7 +311,6 @@ const tools = {
 				let packageVal = res.data.tradeData.packageStr;
 				let signTypeVal = res.data.tradeData.signType;
 				let paySignVal = res.data.tradeData.paySign;
-				//onBridgeReady();
 
 				function onBridgeReady() {
 					v.payShow = false
@@ -324,14 +323,11 @@ const tools = {
 						paySign: paySignVal
 					}, function(res) {
 						if(res.err_msg === 'get_brand_wcpay_request:ok') {
-							window.location.href = url + '/1/' + obj.pId + '/1'
+							window.location.href = url + '/1/' + obj.pId + '/1/' + v.$store.getters.getDeviceCode
 						} else if(res.err_msg === 'get_brand_wcpay_request:cancel') {
 							v.$tools.toast(v, lang ? '支付已取消' : 'Payment has been cancelled', 1500)
-							setTimeout(function() {
-								location.reload()
-							}, 1500)
 						} else if(res.err_msg === 'get_brand_wcpay_request:fail') {
-							window.location.href = url + '/0/' + obj.pId + '/1'
+							window.location.href = url + '/0/' + obj.pId + '/1/' + v.$store.getters.getDeviceCode
 						}
 					})
 				}
@@ -439,7 +435,7 @@ const tools = {
 					commit: true,
 					style: {
 						label: 'paypal',
-						tagline: 'false',
+						tagline: 'true',
 						size: 'responsive', // small | medium | large | responsive
 						shape: 'pill', // pill | rect
 						color: 'blue', // gold | blue | silver | black

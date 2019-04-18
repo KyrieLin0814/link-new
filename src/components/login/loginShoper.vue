@@ -57,7 +57,7 @@
 					if(res.data.tradeRstCode == '0000') {
 						that.loading.hide()
 						that.$tools.toast(that, res.data.tradeRstMessage)
-						this.$store.commit('setToken', res.data.token)
+//						this.$store.commit('setToken', res.data.token)
 						setTimeout(function() {
 							that.$router.replace("/index")
 						}, 1000)

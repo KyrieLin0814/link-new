@@ -62,21 +62,20 @@
 			back() {
 				history.go(-1)
 			},
-			confirm() {
+			screenFunc(idx) {
 				var that = this
-				if(this.cardList.length == 1 && !this.cardList[0].value) {
-					return
-				}
-				let arr = JSON.parse(JSON.stringify(that.cardList))
-				if(!this.cardList[this.cardList.length - 1].value) {
-					arr.pop()
-				}
-
-				arr.map(function(item, idx) {
-					item.text = (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.value
+				wx.scanQRCode({
+					needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，  
+					scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有  
+					success: function(res) {
+						var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果  
+						var deviceId = result.split(",")[1]
+						that.cardList[idx].value = deviceId
+					},
+					error: function(err) {
+						//alert(JSON.stringify(err))
+					}
 				})
-				this.$store.commit('setCardListHave', arr)
-				this.$router.replace("/confirmOrder")
 			},
 			addCard() {
 				if(this.cardList.length > 0) {
@@ -89,21 +88,32 @@
 					value: ''
 				})
 			},
-			screenFunc(idx) {
+			confirm() {
 				var that = this
-				wx.scanQRCode({
-					needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，  
-					scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有  
-					success: function(res) {
-						var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果  
-						var deviceId = result.split(",")[1]
-						that.cardList[idx].value = JSON.stringify(deviceId)
-					},
-					error: function(err) {
-						//alert(JSON.stringify(err))
-					}
+				if(this.cardList.length == 1 && !this.cardList[0].value) {
+					return
+				}
+				let arr = JSON.parse(JSON.stringify(that.cardList))
+				if(!this.cardList[this.cardList.length - 1].value) {
+					arr.pop()
+				}
+				
+				arr.map(function(item, idx) {
+					item.text = (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.value
 				})
+				
+				//删除已绑定卡
+				let tcList = that.$store.getters.getCartSelect
+				tcList.map(function(i){
+					i.card=""
+					i.cardText=""
+				})
+				that.$store.commit('setCartList', tcList)
+				
+				this.$store.commit('setCardListHave', arr)
+				this.$router.replace("/confirmOrder")
 			}
+			
 		}
 	}
 </script>

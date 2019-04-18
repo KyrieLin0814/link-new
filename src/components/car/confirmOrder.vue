@@ -38,8 +38,8 @@
 				<div class="tcBox">
 					<ul class="contentList">
 						<li v-for="(i,idx) in tcList">
-							<div class="top clearfix">
-								<p class="name text-1">{{i.packageName}}</p>
+							<div class="top flex">
+								<p class="name text-2 flex-1">{{i.packageName}}</p>
 								<!--<p class="detail">{{i.detail}}</p>-->
 								<p class="price">{{$t('message.yuanFH')}}{{i.currentPrice}}<span>x {{i.currentNumber}}</span></p>
 							</div>
@@ -80,29 +80,63 @@
 			</div>
 		</div>
 
-		<div class="masker" v-if="payShow" @click="hidePay()"></div>
-		<div class="maskBox payBox" :class="{'show': payShow}">
-			<p class="til">{{$t("message.payment")}}</p>
-			<p class="priceActive">{{(payType == 3 ? '$':'￥') + finalPrice}}</p>
-			<ul class="pauType">
-				<li :class="{'active': payType == 1}" @click="payTypeFunc(1)">
-					<i class="wx"></i><span>{{$t("message.WxPay")}}</span>
-				</li>
-				<li :class="{'active': payType == 2}" @click="payTypeFunc(2)">
-					<i class="qh"></i><span>{{$t("message.QhPay")}}</span>
-				</li>
-				<li :class="{'active': payType == 3}" @click="payTypeFunc(3)">
-					<i class="py"></i><span>{{$t("message.PyPal")}}</span>
-				</li>
-			</ul>
-			<cube-button class="color" @click="payFunc()">{{$t("message.confirm")}}</cube-button>
-		</div>
-
+		<!--支付按钮-->
 		<div class="fixedBtns flex">
 			<cube-button class="gray flex-1" @click="back">{{$t('message.cancel')}}</cube-button>
 			<cube-button class="color flex-1" @click="payShowFunc">
 				<span>{{$t("message.yuanFH")}}{{total}}</span> {{$t("message.pay")}}
 			</cube-button>
+		</div>
+
+		<!--支付方式弹窗-->
+		<div class="masker" v-if="payShow" @click="hidePay()"></div>
+		<div class="maskBox payBox" :class="{'show': payShow}">
+			<p class="til">{{$t("message.payment")}}</p>
+			<p class="priceActive">{{(payType == 3 ? ('$' + totalUSD):('￥' + totalCNY))}}</p>
+			<ul class="pauType">
+				<li :class="{'active': payType == 1}" @click="payTypeFunc(1)">
+					<i class="wx"></i><span>{{$t("message.WxPay")}}</span>
+				</li>
+				<li :class="{'active': payType == 2}" @click="payTypeFunc(2)" v-if="!openId">
+					<i class="qh"></i><span>{{$t("message.QhPay")}}</span>
+				</li>
+				<li :class="{'active': payType == 3}" @click="payTypeFunc(3)" v-if="!openId">
+					<i class="py"></i><span>{{$t("message.PyPal")}}</span>
+				</li>
+			</ul>
+			<div id="paypal" v-show="payType==3"></div>
+			<cube-button v-show="payType!=3" class="color" @click="payFunc(payObj.payId)">{{$t("message.confirm")}}</cube-button>
+		</div>
+
+		<!--二维码弹窗-->
+		<div class="masker" v-if="payCode" @click="payCode=false"></div>
+		<div class="payCodeBox" :class="{'show': payCode}">
+			<div id="qrcode"></div>
+			<p class="tips">{{$t("message.codeTips")}}</p>
+			<cube-button class="color" @click="codePayFunc()">{{$t("message.yzf")}}</cube-button>
+		</div>
+
+		<!--钱海表单-->
+		<div class="oceanBox">
+			<form action="https://secure.oceanpayment.com/gateway/service/test" method="post" id="oceanForm">
+				<input type="hidden" name="account" id="account" value="" />
+				<input type="hidden" name="backUrl" id="backUrl" value="" />
+				<input type="hidden" name="billing_address" id="billing_address" value="" />
+				<input type="hidden" name="billing_city" id="billing_city" value="" />
+				<input type="hidden" name="billing_country" id="billing_country" value="" />
+				<input type="hidden" name="billing_email" id="billing_email" value="" />
+				<input type="hidden" name="billing_firstName" id="billing_firstName" value="" />
+				<input type="hidden" name="billing_lastName" id="billing_lastName" value="" />
+				<input type="hidden" name="billing_phone" id="billing_phone" value="" />
+				<input type="hidden" name="billing_zip" id="billing_zip" value="" />
+				<input type="hidden" name="methods" id="methods" value="" />
+				<input type="hidden" name="noticeUrl" id="noticeUrl" value="" />
+				<input type="hidden" name="order_amount" id="order_amount" value="" />
+				<input type="hidden" name="order_currency" id="order_currency" value="" />
+				<input type="hidden" name="order_number" id="order_number" value="" />
+				<input type="hidden" name="signValue" id="signValue" value="" />
+				<input type="hidden" name="terminal" id="terminal" value="" />
+			</form>
 		</div>
 	</div>
 </template>
@@ -135,7 +169,9 @@
 				kpNum: this.$store.getters.getKPNum,
 				kpSelect: this.$store.getters.getKPSelect,
 				address: '',
-				payType: 1 //1微信      2//钱海    3//paypal
+				payType: 1, //1微信      2//钱海    3//paypal
+				payCode: false,
+				payObj: null,
 			}
 		},
 		watch: {
@@ -161,39 +197,44 @@
 			},
 		},
 		computed: {
+			//用来显示 跟随当前语言
+			//总价
 			total: function() {
 				if(this.kpValue == '0') {
-					return this.$tools.totalFunc(this.tcList, this.kd, this.kf, this.kpNum)
+					return this.$tools.totalFunc(this.tcList, this.kd, this.kf, this.kpNum).toFixed(2)
 				} else {
-					return this.$tools.totalFunc(this.tcList)
+					return this.$tools.totalFunc(this.tcList).toFixed(2)
 				}
 			},
+			//套餐价
 			tcTotal: function() {
-				return this.$tools.totalFunc(this.tcList)
+				return this.$tools.totalFunc(this.tcList).toFixed(2)
 			},
-			finalPrice: function() {
-				//根据支付方式重新计算最终价格
-				var kfCn = this.$store.state.kpPriceCn
+			//用来支付   
+			//根据支付方式,需要支付的最终中英文价格
+			totalUSD: function() {
 				var kfEn = this.$store.state.kpPriceEn
-				var kdCn = (this.kdValue == '1') ? this.$store.state.kdPriceCn : this.$store.state.sfPriceCn
 				var kdEn = (this.kdValue == '1') ? this.$store.state.kdPriceEn : this.$store.state.sfPriceEn
 
-				if(this.payType == 3) {
-					if(this.kpValue == '0') {
-						return this.$tools.totalFunc(this.tcList, kdEn, kfEn, this.kpNum, 'usd').toFixed(2)
-					} else {
-						return this.$tools.totalFunc(this.tcList, 0, 0, 0, 'usd').toFixed(2)
-					}
+				if(this.kpValue == '0') {
+					return this.$tools.totalFunc(this.tcList, kdEn, kfEn, this.kpNum, 'usd').toFixed(2)
 				} else {
-					if(this.kpValue == '0') {
-						return this.$tools.totalFunc(this.tcList, kdCn, kfCn, this.kpNum, 'cny').toFixed(2)
-					} else {
-						return this.$tools.totalFunc(this.tcList, 0, 0, 0, 'cny').toFixed(2)
-					}
+					return this.$tools.totalFunc(this.tcList, 0, 0, 0, 'usd').toFixed(2)
+				}
+			},
+			totalCNY: function() {
+				var kfCn = this.$store.state.kpPriceCn
+				var kdCn = (this.kdValue == '1') ? this.$store.state.kdPriceCn : this.$store.state.sfPriceCn
+				if(this.kpValue == '0') {
+					return this.$tools.totalFunc(this.tcList, kdCn, kfCn, this.kpNum, 'cny').toFixed(2)
+				} else {
+					return this.$tools.totalFunc(this.tcList, 0, 0, 0, 'cny').toFixed(2)
 				}
 			}
 		},
-		created() {},
+		created() {
+
+		},
 		mounted() {
 			this.address = this.addressObj.areaTxt + this.addressObj.addressTxt
 			this.kd = (this.kdValue == '1') ? this.$store.getters.getKDPrice : this.$store.getters.getSFPrice
@@ -325,7 +366,7 @@
 				var deviceCodeArr = []
 				this.cardList.map(function(item) {
 					deviceCodeArr.push({
-						deviceCode: item.value
+						deviceCode: item.value + ""
 					})
 				})
 				that.$post('/userInfoReport ', {
@@ -369,7 +410,7 @@
 				this.$tools.loading(that)
 				//整理下单请求参数
 				var deviceListArr = []
-				
+
 				//有卡
 				if(api == 'userCardOrder') {
 					that.kpSelect.map(function(item) {
@@ -426,7 +467,7 @@
 				let data = {
 					deviceList: deviceListArr,
 					partnerScope: that.$store.getters.getLoginType,
-					payAmount: that.finalPrice,
+					payAmount: that.langType ? that.totalCNY : that.totalUSD,
 					payCurrency: (that.payType == 3 ? 'USD' : 'CNY'),
 					payId: that.$store.getters.getPartnerCode + that.$tools.getNo() + that.$tools.generate(5),
 					requestOrderId: that.$store.getters.getRequestOrderId
@@ -437,7 +478,16 @@
 				}).then((res) => {
 					if(res.data.tradeRstCode == '0000') {
 						that.loading.hide()
+						//paypal加载
+						that.paypalRender(data.payId, that.totalUSD)
+						//ocean加载
+						that.oceanRender(data.payId, that.totalCNY)
+
+						//调起支付
 						that.payShow = true
+						that.payObj = {
+							payId: data.payId
+						}
 					} else {
 						that.loading.hide()
 						that.$tools.alert(that, res.data.tradeRstMessage)
@@ -446,8 +496,103 @@
 					that.loading.hide()
 				})
 			},
-			payFunc() {
-				alert(22222)
+			payFunc(pId) {
+				var that = this
+				if(that.payType == 1) {
+					if(that.$store.getters.getOpenId) {
+						//wx公众号支付
+						let returnUrl = window.location.origin + '/#/payResult'
+						let data = {
+							appid: '',
+							body: '',
+							key: '',
+							mch_id: '',
+							openId: that.$store.getters.getOpenId,
+							payAmount: that.totalCNY,
+							payId: pId
+						}
+						that.$tools.wxPay(that, data, returnUrl)
+					} else {
+						that.payShow = false
+						that.$createDialog({
+							type: 'confirm',
+							content: that.langType ? '选择支付方式' : 'Choosing the Way of Payment for Wechat',
+							confirmBtn: {
+								text: that.langType ? '转入微信支付' : 'To Wechat Payment',
+								active: true,
+								disabled: false,
+								href: 'javascript:;'
+							},
+							cancelBtn: {
+								text: that.langType ? '微信扫码支付' : 'Wechat Code Payment',
+								active: true,
+								disabled: false,
+								href: 'javascript:;'
+							},
+							onConfirm: () => {
+								//wxH5支付
+								let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/1/' + that.$store.getters.getDeviceCode
+								let data = {
+									appid: '',
+									body: '',
+									key: '',
+									mch_id: '',
+									payAmount: that.totalCNY,
+									payId: pId,
+									scene_info: ''
+								}
+								that.$tools.wxPayH5(that, data, returnUrl)
+							},
+							onCancel: () => {
+								//扫码支付
+								let data = {
+									appid: '',
+									body: '',
+									key: '',
+									mch_id: '',
+									payAmount: that.totalCNY,
+									payId: pId
+								}
+								that.$tools.wxPayCode(that, data)
+							}
+						}).show()
+					}
+				} else if(that.payType == 2) {
+					//钱海支付
+					//提交form表单
+					$("#oceanForm").submit()
+				} else {
+					//paypal支付
+					//显示paypal按钮即可
+				}
+				this.payShow = false
+			},
+			paypalRender(pId, total) {
+				var that = this
+				$("#paypal").html('')
+				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/2/' + that.$store.getters.getDeviceCode
+				let data = {
+					clientId: '',
+					clientSecret: '',
+					mode: 'production',
+					payAmount: total,
+					payId: pId
+				}
+				that.$tools.paypalPay(that, data, returnUrl)
+			},
+			oceanRender(pId, total) {
+				var that = this
+				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/3/' + that.$store.getters.getDeviceCode
+				let data = {
+					account: '',
+					backUrl: returnUrl,
+					payAmount: total,
+					payCurrency: 'CNY',
+					payId: pId,
+					secureCode: '',
+					terminal: ''
+				}
+				that.$tools.oceanPay(that, data)
 			}
 		}
 	}
@@ -510,7 +655,6 @@
 								font-size: 0.7rem;
 								line-height: 1.2rem;
 								&.name {
-									width: 70%;
 									padding-bottom: 0.3rem;
 								}
 								&.detail {
@@ -520,7 +664,6 @@
 									color: #a0a0a0;
 								}
 								&.price {
-									width: 28%;
 									text-align: right;
 									padding-right: 2%;
 									color: #F65200;

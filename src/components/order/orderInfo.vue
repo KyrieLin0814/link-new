@@ -77,6 +77,15 @@
 				</div>
 			</div>
 		</div>
+		
+		<!--支付按钮-->
+		<div class="fixedBtns flex">
+			<cube-button class="gray flex-1" @click="back">{{$t('message.back')}}</cube-button>
+			<cube-button class="color flex-1" @click="buyNext()">
+				<!--<span>{{$t("message.yuanFH")}}{{total?total:0}}</span>-->
+				{{$t("message.nextBuy")}}
+			</cube-button>
+		</div>
 
 		<!--支付方式弹窗-->
 		<div class="masker" v-if="payShow" @click="hidePay()"></div>
@@ -106,15 +115,7 @@
 			<cube-button class="color" @click="codePayFunc()">{{$t("message.yzf")}}</cube-button>
 		</div>
 
-		<!--支付按钮-->
-		<div class="fixedBtns flex">
-			<cube-button class="gray flex-1" @click="back">{{$t('message.back')}}</cube-button>
-			<cube-button class="color flex-1" @click="buyNext()">
-				<!--<span>{{$t("message.yuanFH")}}{{total?total:0}}</span>-->
-				{{$t("message.nextBuy")}}
-			</cube-button>
-		</div>
-
+		<!--钱海表单-->
 		<div class="oceanBox">
 			<form action="https://secure.oceanpayment.com/gateway/service/test" method="post" id="oceanForm">
 				<input type="hidden" name="account" id="account" value="" />
@@ -259,7 +260,7 @@
 			},
 			codePayFunc() {
 				var that = this
-				that.$router.push('/payResult/2/' + that.payObj.payId + '/1')
+				that.$router.push('/payResult/2/' + that.payObj.payId + '/1/' + that.$store.getters.getDeviceCode)
 			},
 			buyNext() {
 				var that = this
@@ -355,7 +356,7 @@
 							},
 							onConfirm: () => {
 								//wxH5支付
-								let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/1'
+								let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/1/' + that.$store.getters.getDeviceCode
 								let data = {
 									appid: '',
 									body: '',
@@ -394,7 +395,7 @@
 			paypalRender(pId, total) {
 				var that = this
 				$("#paypal").html('')
-				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/2'
+				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/2/' + that.$store.getters.getDeviceCode
 				let data = {
 					clientId: '',
 					clientSecret: '',
@@ -406,7 +407,7 @@
 			},
 			oceanRender(pId, total) {
 				var that = this
-				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/3'
+				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/3/' + that.$store.getters.getDeviceCode
 				let data = {
 					account: '',
 					backUrl: returnUrl,

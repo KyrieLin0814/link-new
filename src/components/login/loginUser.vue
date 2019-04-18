@@ -74,7 +74,7 @@
 				}).then((res) => {
 					if(res.data.tradeRstCode == '0000') {
 						that.$tools.toast(that, res.data.tradeRstMessage)
-						that.$store.commit('setToken', res.data.token)
+//						that.$store.commit('setToken', res.data.token)
 						that.$store.commit('setDeviceCode', that.cardNum)
 						setTimeout(function() {
 							that.loading.hide()
