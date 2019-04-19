@@ -23,7 +23,6 @@ Vue.config.productionTip = false
 Vue.prototype.$tools = Tools
 Vue.prototype.$post = post
 Vue.prototype.$get = get
-Vue.prototype.$lang = store.state.langType
 Vue.use(VueTouch, {
 	name: 'v-touch'
 })

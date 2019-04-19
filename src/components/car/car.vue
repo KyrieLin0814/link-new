@@ -53,7 +53,7 @@
 		name: 'car',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				total: 0,
 				checkList: this.$store.getters.getCheckList,
 				tcList: this.$store.getters.getCartList,
@@ -94,13 +94,24 @@
 				this.tcList.map(function(i) {
 					that.checkList.map(function(j) {
 						if(i.checkId == j) {
-							selectList.push(i)
+							selectList.push(JSON.parse(JSON.stringify(i)))
 						}
 					})
 				})
-				this.cartSelect = selectList
+				
+				let arr = []
+				selectList.map(function(item){
+					for(var i = 0; i <item.currentNumber; i ++){
+						arr.push(JSON.parse(JSON.stringify(item)))
+					}
+				})
+				arr.map(function(item){
+					item.currentNumber = 1
+				})
+				this.cartSelect = arr
 				this.$store.commit('setCartSelect', selectList)
-				this.total = this.$tools.totalFunc(selectList)
+				this.$store.commit('setCartSelect2', arr)
+				this.total = Number(that.$tools.totalFunc(selectList).toFixed(2))
 			},
 			delFunc(idx, obj) {
 				var that = this

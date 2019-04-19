@@ -22,7 +22,7 @@
 		name: 'loginShoper',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				p1: this.$t("message.enterUN"),
 				p2: this.$t("message.enterPW"),
 				userName: '',
@@ -34,7 +34,7 @@
 		},
 		methods: {
 			goUser() {
-				this.$router.replace('/loginUser')
+				this.$router.replace('/')
 			},
 			confirm() {
 				if(!this.userName) {
@@ -79,7 +79,7 @@
 			height: 2rem;
 			.shoper {
 				display: inline-block;
-				margin-top: 0.5rem;
+				margin-top: 0.8rem;
 				font-size: 0.7rem;
 				line-height: 1.1rem;
 				height: 1.2rem;

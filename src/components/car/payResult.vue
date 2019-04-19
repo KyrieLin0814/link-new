@@ -28,7 +28,7 @@
 		name: 'payResult',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				payStatus: 2, //0支付失败     1支付成功     2其他方式（需要查询）
 				txt: '',
 				pId: null,
@@ -41,9 +41,14 @@
 			this.pId = this.$route.params.payId
 			this.pType = this.$route.params.payType
 			this.deviceCode = this.$route.params.deviceCode
+			
+			var that = this
+			//清空购物车已购买商品
+			if(that.payStatus == 1) {
+				that.$tools.renderCart(that)
+			}
 
 			//自动登录
-			var that = this
 			that.$tools.loading(that)
 			that.$post('/userLogin', {
 				tradeType: 'userLogin',
@@ -85,8 +90,8 @@
 				}).then((res) => {
 					that.loading.hide()
 					if(res.data.tradeRstCode == '0000') {
-						that.$tools.renderCart(that)
 						that.payStatus = 1
+						that.$tools.renderCart(that)
 					} else if(res.data.tradeRstCode == '9998') {
 						that.payStatus = 2
 					} else {

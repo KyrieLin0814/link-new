@@ -41,7 +41,7 @@
 		name: 'orderList',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				list: []
 			}
 		},

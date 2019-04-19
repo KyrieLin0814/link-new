@@ -16,7 +16,7 @@
 		<div class="maskBox" :class="{'show': screenFlag}">
 			<p class="til">{{$t('message.yxzgj')}}</p>
 			<div class="countryChooses clearfix">
-				<span class="countryItem" v-for="(i,idx) in country">{{i}}<i @click="deleteFunc(idx)">x</i></span>
+				<span class="countryItem" v-for="(i,idx) in country">{{i}}<i @click="deleteFunc(idx)">&times;</i></span>
 				<span class="add" @click="addFunc">{{$t('message.add')}}</span>
 			</div>
 			<p class="til">{{$t('message.yxzsj')}}</p>
@@ -38,7 +38,7 @@
 		name: 'screenCountry',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				country: [],
 				countryText: '',
 				name: '开始',

@@ -28,6 +28,7 @@ const state = {
 	cartList: sessionStorage.getItem("cartList") ? JSON.parse(sessionStorage.getItem("cartList")) : [],
 	checkList: sessionStorage.getItem("checkList") ? JSON.parse(sessionStorage.getItem("checkList")) : [],
 	cartSelect: sessionStorage.getItem("cartSelect") ? JSON.parse(sessionStorage.getItem("cartSelect")) : [],
+	cartSelect2: sessionStorage.getItem("cartSelect2") ? JSON.parse(sessionStorage.getItem("cartSelect2")) : [],
 
 	//卡片列表
 	cardListHave: sessionStorage.getItem("cardListHave") ? JSON.parse(sessionStorage.getItem("cardListHave")) : [],
@@ -44,16 +45,16 @@ const state = {
 	},
 	//卡片、快递信息
 	kpValue: sessionStorage.getItem("kpValue") ? sessionStorage.getItem("kpValue") : '1',
-	kpPriceCn: sessionStorage.getItem("kpPriceCn") ? sessionStorage.getItem("kpPriceCn") : '10',
-	kpPriceEn: sessionStorage.getItem("kpPriceEn") ? sessionStorage.getItem("kpPriceEn") : '1.3',
+	kpPriceCn: sessionStorage.getItem("kpPriceCn") ? sessionStorage.getItem("kpPriceCn") : '0.1',
+	kpPriceEn: sessionStorage.getItem("kpPriceEn") ? sessionStorage.getItem("kpPriceEn") : '0.1',
 	kpNum: sessionStorage.getItem("kpNum") ? sessionStorage.getItem("kpNum") : '0',
 	kpSelect: sessionStorage.getItem("kpSelect") ? JSON.parse(sessionStorage.getItem("kpSelect")) : [],
 
 	kdValue: sessionStorage.getItem("kdValue") ? sessionStorage.getItem("kdValue") : '1',
-	kdPriceCn: sessionStorage.getItem("kdPriceCn") ? sessionStorage.getItem("kdPriceCn") : '10',
-	kdPriceEn: sessionStorage.getItem("kdPriceEn") ? sessionStorage.getItem("kdPriceEn") : '1.3',
-	sfPriceCn: sessionStorage.getItem("sfPriceCn") ? sessionStorage.getItem("sfPriceCn") : '15',
-	sfPriceEn: sessionStorage.getItem("sfPriceEn") ? sessionStorage.getItem("sfPriceEn") : '2.6',
+	kdPriceCn: sessionStorage.getItem("kdPriceCn") ? sessionStorage.getItem("kdPriceCn") : '0.1',
+	kdPriceEn: sessionStorage.getItem("kdPriceEn") ? sessionStorage.getItem("kdPriceEn") : '0.1',
+	sfPriceCn: sessionStorage.getItem("sfPriceCn") ? sessionStorage.getItem("sfPriceCn") : '0.15',
+	sfPriceEn: sessionStorage.getItem("sfPriceEn") ? sessionStorage.getItem("sfPriceEn") : '0.15',
 
 	//选项数组
 	listOptions: {
@@ -131,6 +132,9 @@ const getters = {
 			return state.listOptions.sjListEn
 		}
 	},
+	getLangType(state) {
+		return state.langType
+	},
 	getLoginType(state) {
 		return state.loginType
 	},
@@ -172,6 +176,9 @@ const getters = {
 	},
 	getCartSelect(state) {
 		return state.cartSelect
+	},
+	getCartSelect2(state) {
+		return state.cartSelect2
 	},
 	getCardListHave(state) {
 		return state.cardListHave
@@ -277,6 +284,10 @@ const mutations = {
 	setCartSelect(state, param) {
 		state.cartSelect = param;
 		sessionStorage.setItem("cartSelect", JSON.stringify(param));
+	},
+	setCartSelect2(state, param) {
+		state.cartSelect2 = param;
+		sessionStorage.setItem("cartSelect2", JSON.stringify(param));
 	},
 	setCardListHave(state, param) {
 		state.cardListHave = param;

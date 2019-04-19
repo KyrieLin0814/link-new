@@ -13,7 +13,7 @@
 				<div class="cards">
 					<p class="card" v-for="(i,idx) in cardList">
 						{{i.text}}
-						<span @click="delFunc(idx)">X</span>
+						<span @click="delFunc(idx)">&times;</span>
 					</p>
 				</div>
 				<div class="tip">{{$t("message.tixing")}}</div>
@@ -33,7 +33,7 @@
 		name: 'noCard',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				placeholder: this.$t("message.inputTxt"),
 				cardList: this.$store.getters.getCardListNo,
 			}
@@ -126,7 +126,7 @@
 						z-index:9;
 						width:0.8rem;
 						height:0.8rem;
-						font-size:0.6rem;
+						font-size:0.8rem;
 						line-height:0.8rem;
 						text-align: center;
 						border-radius:0.4rem;

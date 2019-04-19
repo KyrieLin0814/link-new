@@ -99,6 +99,7 @@ module.exports = {
 		add:'添加',
 		fggj:'覆盖国家',
 		sysm:'使用说明',
+		noData:'暂无套餐',
 		
 		
 		
@@ -159,7 +160,6 @@ module.exports = {
 
 
 
-		noData:'暂无套餐数据',
 		covered:'已覆盖',
 		regions: '个地区',
 		chooseMeal:'选择套餐',

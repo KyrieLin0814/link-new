@@ -146,7 +146,7 @@
 		name: 'confirmOrder',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				payShow: false,
 				openId: this.$store.getters.getOpenId,
 				kpList: this.$store.getters.getOptionKpList,
@@ -160,7 +160,7 @@
 				cardList: [],
 				cardListHave: this.$store.getters.getCardListHave,
 				cardListNo: this.$store.getters.getCardListNo,
-				tcList: this.$store.getters.getCartSelect,
+				tcList: this.$store.getters.getCartSelect2,
 				addressObj: this.$store.getters.getAddressObj,
 				kpValue: this.$store.getters.getKP,
 				kdValue: this.$store.getters.getKD,
@@ -593,6 +593,10 @@
 					terminal: ''
 				}
 				that.$tools.oceanPay(that, data)
+			},
+			codePayFunc() {
+				var that = this
+				that.$router.push('/payResult/2/' + that.payObj.payId + '/1/' + that.$store.getters.getDeviceCode)
 			}
 		}
 	}

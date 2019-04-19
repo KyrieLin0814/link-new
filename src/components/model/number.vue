@@ -11,7 +11,7 @@
 		name: 'number',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				num: 1
 			}
 		},

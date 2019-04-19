@@ -14,7 +14,7 @@
 				<ul class="clearfix" v-if="countryListSeleted.length > 0">
 					<li class="color" v-for="(item,idx) in countryListSeleted">
 						{{item}}
-						<i @click="del(idx)">X</i>
+						<i @click="del(idx)">&times;</i>
 					</li>
 				</ul>
 				<p class="zw" v-else>{{$t("message.zw")}}</p>
@@ -54,7 +54,7 @@
 		name: 'chooseCountry',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				param: '',
 				placeholder: '',
 				countryListSeleted: [],
@@ -241,7 +241,7 @@
 						color: #fff;
 						display: inline-block;
 						font-style: normal;
-						font-size: 0.6rem;
+						font-size: 0.8rem;
 					}
 				}
 			}

@@ -1,8 +1,6 @@
 <template>
 	<div class="body-container loginUser">
-		<div class="header">
-			<a class="shoper" @click="goShoper">{{$t("message.bussinessLogin")}}</a>
-		</div>
+		
 		<div class="logo">
 			<img src="../../assets/image/logo1.png" />
 		</div>
@@ -13,7 +11,7 @@
 		</div>
 		<div class="btns">
 			<cube-button class="color" @click="loginFunc">{{$t("message.loginBtn1")}}</cube-button>
-			<cube-button class="none" @click="loginLook">{{$t("message.loginBtn2")}}</cube-button>
+			<cube-button class="none" @click="loginLook" v-if="type">{{$t("message.loginBtn2")}}</cube-button>
 		</div>
 
 	</div>
@@ -24,13 +22,16 @@
 		name: 'loginUser',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
+				type:0,
 				placeholder: this.$t("message.inputTxt"),
 				cardNum: this.$store.getters.getDeviceCode
 			}
 		},
 		created() {
-
+			if(this.$route.query.type){
+				this.type = this.$route.query.type
+			}
 		},
 		mounted() {
 			let that = this
@@ -39,9 +40,6 @@
 			} 
 		},
 		methods: {
-			goShoper() {
-				this.$router.replace('/loginShoper')
-			},
 			saoFunc() {
 				let that = this
 				wx.scanQRCode({
@@ -74,7 +72,7 @@
 				}).then((res) => {
 					if(res.data.tradeRstCode == '0000') {
 						that.$tools.toast(that, res.data.tradeRstMessage)
-//						that.$store.commit('setToken', res.data.token)
+						that.$store.commit('setPartnerCode', res.data.partnerCode)
 						that.$store.commit('setDeviceCode', that.cardNum)
 						setTimeout(function() {
 							that.loading.hide()
@@ -89,7 +87,7 @@
 				})
 			},
 			loginLook() {
-				this.$router.push("/")
+				this.$router.push("/screenCountry")
 			}
 		}
 	}
@@ -98,22 +96,8 @@
 <style lang="less" scoped>
 	.loginUser {
 		padding: 0 0.8rem;
-		.header {
-			height: 2rem;
-			.shoper {
-				display: inline-block;
-				margin-top: 0.5rem;
-				font-size: 0.7rem;
-				line-height: 1.1rem;
-				height: 1.2rem;
-				padding: 0 0.5rem;
-				border: 1px solid #707070;
-				color: #707070;
-				border-radius: 0.7rem;
-			}
-		}
 		.logo {
-			padding-top: 20%;
+			padding-top: 25%;
 			img {
 				display: block;
 				width: 66%;
@@ -144,6 +128,7 @@
 			.sao {
 				display: block;
 				position: absolute;
+				z-index: 999;
 				right: 0;
 				top: 0;
 				width: 1.8rem;

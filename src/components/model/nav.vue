@@ -19,7 +19,7 @@
 			return {
 				showNav: true,
 				showTel: false,
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				logoUrl:require('../../assets/image/navLogo.png')
 			}
 		},
@@ -49,7 +49,12 @@
 				}
 			},
 			router(str) {
-				this.$router.push(str)
+				var that = this
+				if(this.$store.getters.getDeviceCode){
+					this.$router.push(str)
+				}else{
+					this.$tools.alert(that,that.langType? '请使用用户登录':'Please login with the user')
+				}
 			},
 			contactFunc() {
 				this.$createDialog({

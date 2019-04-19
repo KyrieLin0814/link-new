@@ -46,6 +46,8 @@ const tools = {
 	loading(v, t) {
 		v.loading = v.$createToast({
 			time: t ? t : 0,
+			mask: true,
+			maskClosable: false,
 			txt: 'Loading...'
 		})
 		v.loading.show()
@@ -267,19 +269,24 @@ const tools = {
 	},
 	//支付完成重置购物车
 	renderCart(v) {
-		//		let cartList = v.$store.getters.getCartList
-		//		let checkList = v.$store.getters.getCheckList
-		//		cartList.map(function(i, idx) {
-		//			checkList.map(function(j) {
-		//				console.log(j == i.checkId)
-		//				if(j == i.checkId) {
-		//					cartList.splice(idx, 1)
-		//					delete cartList[idx]
-		//				}
-		//			})
-		//		})
-		v.$store.commit('setCartList', [])
+		let cartList = JSON.parse(JSON.stringify(v.$store.getters.getCartList))
+		let checkList = JSON.parse(JSON.stringify(v.$store.getters.getCheckList))
+		cartList.map(function(i, idx) {
+			checkList.map(function(j) {
+				if(j == i.checkId) {
+					delete cartList[idx]
+				}
+			})
+		})
+		for(var i = 0; i < cartList.length; i++) {
+			if(cartList[i] == "" || typeof(cartList[i]) == "undefined") {
+				cartList.splice(i, 1);
+				i = i - 1;
+			}
+		}
+		v.$store.commit('setCartList', cartList)
 		v.$store.commit('setCartSelect', [])
+		v.$store.commit('setCartSelect2', [])
 		v.$store.commit('setCheckList', [])
 	},
 	//微信扫一扫
@@ -287,7 +294,7 @@ const tools = {
 		var params = encodeURI(encodeURI(document.location.href))
 		v.$get("https://wx.linksfield.net/payment/weixinsao?reqUrl=" + params).then((res) => {
 			wx.config({
-				debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。  
+				debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。  
 				appId: res.appId, // 必填，公众号的唯一标识  
 				timestamp: res.timestamp, // 必填，生成签名的时间戳  
 				nonceStr: res.nonceStr, // 必填，生成签名的随机串  

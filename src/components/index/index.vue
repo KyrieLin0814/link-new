@@ -17,7 +17,9 @@
 				<div>
 					<div class="swiper-container" v-if="tuijian.length>=3">
 						<div class="swiper-wrapper">
-							<div class="swiper-slide" v-for="(i,idx) in tuijian" :style="{backgroundImage: 'url(' + i.picHomepage + ')', backgroundSize: 'cover', backgroundPosition: 'center'}">
+							<div class="swiper-slide" 
+								v-for="(i,idx) in tuijian" 
+								:style="{backgroundImage: 'url(' + i.picHomepage + ')', backgroundSize: 'cover', backgroundPosition: 'center'}">
 								<span>{{idx}}</span>
 							</div>
 						</div>
@@ -120,7 +122,7 @@
 		name: 'index',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				placeholder: '',
 				tjActiveObjOld: null,
 				tjActiveObj: {},
@@ -145,6 +147,7 @@
 					if(res.data.tradeRstCode == '0000') {
 						that.tejia = res.data.teJia
 						that.tuijian = res.data.tuiJian
+						console.log(res.data.tuiJian)
 					} else {
 						that.$tools.toast(that, res.data.tradeRstMessage)
 					}
@@ -180,7 +183,9 @@
 						//推荐3图以上点击绑定
 						$(".swiper-container .swiper-slide").on('click', function(event) {
 							var str = $(event.currentTarget).attr('class')
+							var idx = Number($(event.currentTarget).find('span').text())
 							if(str.indexOf('active') != -1) {
+								that.$store.commit("setCurrentPackage", that.tuijian[idx])
 								that.$router.push("/goodDetail")
 							}
 						})

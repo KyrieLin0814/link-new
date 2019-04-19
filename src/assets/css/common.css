@@ -342,7 +342,9 @@ input {
 	z-index: 101;
 	background: rgba(0, 0, 0, 0.3);
 }
-
+.cube-popup-mask{
+	opacity:0.15;
+}
 
 /*暂无数据*/
 
@@ -535,7 +537,7 @@ input {
 	color: #F65200;
 	width: 0.8rem;
 	height: 0.8rem;
-	line-height: 0.7rem;
+	line-height: 0.8rem;
 	text-align: center;
 	font-style: normal;
 	font-size: 0.8rem;

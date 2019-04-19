@@ -145,7 +145,7 @@
 		name: 'orderInfo',
 		data() {
 			return {
-				langType: this.$lang == 'cn',
+				langType: this.$store.getters.getLangType == 'cn',
 				isWx: this.$store.getters.getOpenId ? true : false,
 				currentObj: this.$store.getters.getCurrentPackage,
 				total: 0,

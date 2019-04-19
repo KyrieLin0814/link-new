@@ -7,7 +7,7 @@ module.exports = {
 		loginBtn2:'Look around',
 		loginBtn3:'Have card',
 		loginBtn4:'Login',
-		bussinessLogin: 'Businessmen login',
+		bussinessLogin: 'Business login',
 		userLogin: 'User login',
 		enterUN: 'Username',
 		enterPW: 'Password',
@@ -31,7 +31,6 @@ module.exports = {
 //		price
 		yuanFH:'$',
 		yuan:'USD',
-		
 	
 	
 //		button
@@ -99,6 +98,7 @@ module.exports = {
 		add:'Add',
 		fggj:'Covered countries',
 		sysm:'Instructions',
+		noData:'No package',
 		
 		
 		
@@ -159,7 +159,6 @@ module.exports = {
 		
 		
 		
-		noData:'No package data.',
 		covered:'Covered',
 		regions: 'regions',
 		chooseMeal:'Choose a package',
