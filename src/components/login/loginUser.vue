@@ -1,6 +1,6 @@
 <template>
 	<div class="body-container loginUser">
-		
+
 		<div class="logo">
 			<img src="../../assets/image/logo1.png" />
 		</div>
@@ -23,13 +23,13 @@
 		data() {
 			return {
 				langType: this.$store.getters.getLangType == 'cn',
-				type:0,
+				type: 0,
 				placeholder: this.$t("message.inputTxt"),
 				cardNum: this.$store.getters.getDeviceCode
 			}
 		},
 		created() {
-			if(this.$route.query.type){
+			if(this.$route.query.type) {
 				this.type = this.$route.query.type
 			}
 		},
@@ -37,7 +37,14 @@
 			let that = this
 			if(this.$store.getters.getOpenId) {
 				that.$tools.wxSaoConfig(that)
-			} 
+			}
+			
+			if(this.$store.getters.getYouke) {
+				that.cardNum = ''
+				that.$store.commit('setDeviceCode', '')
+				that.$store.commit('setYouke', '0')
+			}
+
 		},
 		methods: {
 			saoFunc() {
@@ -87,7 +94,24 @@
 				})
 			},
 			loginLook() {
-				this.$router.push("/screenCountry")
+				var that = this
+				that.$tools.loading(that)
+				that.$post('/random', {
+					tradeType: 'random',
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000') {
+						that.$store.commit('setYouke', '1')
+						that.$store.commit('setDeviceCode', res.data.deviceCode)
+						that.loading.hide()
+						that.$router.push("/screenCountry")
+					} else {
+						that.loading.hide()
+						that.$tools.alert(that, res.data.tradeRstMessage)
+					}
+				}).catch(err => {
+					that.loading.hide()
+				})
+
 			}
 		}
 	}

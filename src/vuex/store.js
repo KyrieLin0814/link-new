@@ -13,7 +13,8 @@ const state = {
 	openId: sessionStorage.getItem("openId") ? sessionStorage.getItem("openId") : '', //oc07A071Sr3kVbqqIWLGtTlwGIac
 	connSeqNo: '',
 	version: '2.0',
-	
+	youke: sessionStorage.getItem("youke") ? sessionStorage.getItem("youke") : '0',
+
 	baseBg: require('../assets/image/goodlist.jpg'),
 
 	//跳转缓存
@@ -141,6 +142,9 @@ const getters = {
 	getOpenId(state) {
 		return state.openId
 	},
+	getYouke(state) {
+		return state.youke
+	},
 	getPartnerCode(state) {
 		return state.partnerCode
 	},
@@ -236,6 +240,10 @@ const mutations = {
 	setOpenId(state, param) {
 		state.openId = param;
 		sessionStorage.setItem("openId", param);
+	},
+	setYouke(state, param) {
+		state.youke = param;
+		sessionStorage.setItem("youke", param);
 	},
 	setPartnerCode(state, param) {
 		state.partnerCode = param;

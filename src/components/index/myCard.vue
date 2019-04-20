@@ -93,27 +93,58 @@
 				if(this.cardList.length == 1 && !this.cardList[0].value) {
 					return
 				}
-				let arr = JSON.parse(JSON.stringify(that.cardList))
+				var arr = JSON.parse(JSON.stringify(that.cardList))
 				if(!this.cardList[this.cardList.length - 1].value) {
 					arr.pop()
 				}
-				
+				let dataArr = []
 				arr.map(function(item, idx) {
 					item.text = (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.value
+					dataArr.push({
+						deviceCode: item.value
+					})
 				})
-				
-				//删除已绑定卡
-				let tcList = that.$store.getters.getCartSelect
-				tcList.map(function(i){
-					i.card=""
-					i.cardText=""
+
+				//验证卡号有效性
+				that.$tools.loading(that)
+				that.$post('/verify  ', {
+					tradeType: 'verify  ',
+					tradeData: dataArr
+				}).then((res) => {
+					if(res.data.tradeRstCode == '0000') {
+						let cards = res.data.tradeData
+						let strArr = []
+						cards.map(function(i) {
+							if(i.tradeRstCode != '0000') {
+								strArr.push(i.deviceCode)
+							}
+						})
+						that.loading.hide()
+						if(strArr.length == 0) {
+							//重置已绑定卡
+							let tcList = that.$store.getters.getCartSelect
+							tcList.map(function(i) {
+								i.card = ""
+								i.cardText = ""
+							})
+							that.$store.commit('setCartList', tcList)
+							//储存有效卡
+							that.$store.commit('setCardListHave', arr)
+							that.$router.replace("/confirmOrder")
+						} else {
+							let str = strArr.join("、")
+							let strCn = '无效卡号(' + str + ')'
+							let strEn = 'Invalid card number(' + str + ')'
+							that.$tools.alert(that, that.langType ? strCn : strEn)
+						}
+					} else {
+						that.loading.hide()
+						that.$tools.alert(that, res.data.tradeRstMessage)
+					}
+				}).catch(err => {
+					that.loading.hide()
 				})
-				that.$store.commit('setCartList', tcList)
-				
-				this.$store.commit('setCardListHave', arr)
-				this.$router.replace("/confirmOrder")
 			}
-			
 		}
 	}
 </script>

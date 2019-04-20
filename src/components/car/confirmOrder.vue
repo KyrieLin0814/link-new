@@ -177,10 +177,7 @@
 		watch: {
 			kpValue(newVal, oldVal) {
 				this.$store.commit("setKP", newVal)
-				this.tcList.map(function(item) {
-					delete item.card
-				})
-				this.$store.commit('setCartList', this.tcList)
+				this.deleteCardBind()
 				this.haveOrNo(newVal)
 				this.kfFunc(0)
 			},
@@ -252,6 +249,12 @@
 		methods: {
 			back() {
 				history.go(-1)
+			},
+			deleteCardBind() {
+				this.tcList.map(function(item) {
+					delete item.card
+				})
+				this.$store.commit('setCartList', this.tcList)
 			},
 			kfFunc(type) {
 				var num = 0;
@@ -488,6 +491,15 @@
 						that.payObj = {
 							payId: data.payId
 						}
+					} else if(res.data.tradeRstCode == '0010') {
+						that.loading.hide()
+						that.$tools.alert(that, res.data.tradeRstMessage, function() {
+							that.$store.commit('setCardListHave', [])
+							that.$store.commit('setCardListNo', [])
+							that.kfFunc(0)
+							that.deleteCardBind()
+							that.$router.push('/loginUser?type=1')
+						})
 					} else {
 						that.loading.hide()
 						that.$tools.alert(that, res.data.tradeRstMessage)
@@ -501,7 +513,7 @@
 				if(that.payType == 1) {
 					if(that.$store.getters.getOpenId) {
 						//wx公众号支付
-						let returnUrl = window.location.origin + '/#/payResult'
+						let returnUrl = that.$tools.getUrl() + '/payResult'
 						let data = {
 							appid: '',
 							body: '',
@@ -531,7 +543,7 @@
 							},
 							onConfirm: () => {
 								//wxH5支付
-								let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/1/' + that.$store.getters.getDeviceCode
+								let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/1/' + that.$store.getters.getDeviceCode
 								let data = {
 									appid: '',
 									body: '',
@@ -570,7 +582,7 @@
 			paypalRender(pId, total) {
 				var that = this
 				$("#paypal").html('')
-				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/2/' + that.$store.getters.getDeviceCode
+				let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/2/' + that.$store.getters.getDeviceCode
 				let data = {
 					clientId: '',
 					clientSecret: '',
@@ -582,7 +594,7 @@
 			},
 			oceanRender(pId, total) {
 				var that = this
-				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/3/' + that.$store.getters.getDeviceCode
+				let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/3/' + that.$store.getters.getDeviceCode
 				let data = {
 					account: '',
 					backUrl: returnUrl,

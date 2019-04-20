@@ -267,6 +267,11 @@ const tools = {
 	toLogin() {
 		window.location.href = '/#/'
 	},
+	//获取url基础路径
+	getUrl(){
+		let url = window.location.href.split('#')[0] + '#'
+		return url
+	},
 	//支付完成重置购物车
 	renderCart(v) {
 		let cartList = JSON.parse(JSON.stringify(v.$store.getters.getCartList))

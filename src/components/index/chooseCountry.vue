@@ -68,16 +68,19 @@
 			var that = this
 			//默认选中
 			this.countryListSeleted = JSON.parse(JSON.stringify(that.$store.getters.getCountryList))
-			
+
 			//国家列表
+			that.$tools.loading(that)
 			that.$post('/continentList', {
 				tradeType: 'continentList'
 			}).then((res) => {
 				if(res.data.tradeRstCode == '0000') {
 					that.areaList = res.data.tradeData
 				}
+				that.loading.hide()
 			}).catch(err => {
 				console.log(err)
+				that.loading.hide()
 			})
 
 			that.getCountry()
@@ -111,6 +114,7 @@
 			},
 			getCountry(p, func) {
 				var that = this
+				that.$tools.loading(that)
 				that.$post('/countryList', {
 					tradeType: 'countryList',
 					tradeData: {
@@ -123,8 +127,10 @@
 							func()
 						}
 					}
+					that.loading.hide()
 				}).catch(err => {
 					console.log(err)
+					that.loading.hide()
 				})
 			},
 			find() {
@@ -272,7 +278,7 @@
 						span {
 							display: inline-block;
 							font-size: 0.7rem;
-							padding: 0 0.3rem;
+							padding: 0 0.5rem;
 							line-height: 1.5rem;
 							&.active {
 								color: #f65200;

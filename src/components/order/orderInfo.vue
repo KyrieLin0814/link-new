@@ -326,7 +326,7 @@
 				if(that.payType == 1) {
 					if(that.$store.getters.getOpenId) {
 						//wx公众号支付
-						let returnUrl = window.location.origin + '/#/payResult'
+						let returnUrl = that.$tools.getUrl() + '/payResult'
 						let data = {
 							appid: '',
 							body: '',
@@ -356,7 +356,7 @@
 							},
 							onConfirm: () => {
 								//wxH5支付
-								let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/1/' + that.$store.getters.getDeviceCode
+								let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/1/' + that.$store.getters.getDeviceCode
 								let data = {
 									appid: '',
 									body: '',
@@ -395,7 +395,7 @@
 			paypalRender(pId, total) {
 				var that = this
 				$("#paypal").html('')
-				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/2/' + that.$store.getters.getDeviceCode
+				let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/2/' + that.$store.getters.getDeviceCode
 				let data = {
 					clientId: '',
 					clientSecret: '',
@@ -407,7 +407,7 @@
 			},
 			oceanRender(pId, total) {
 				var that = this
-				let returnUrl = window.location.origin + '/#/payResult/2/' + pId + '/3/' + that.$store.getters.getDeviceCode
+				let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/3/' + that.$store.getters.getDeviceCode
 				let data = {
 					account: '',
 					backUrl: returnUrl,

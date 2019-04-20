@@ -101,6 +101,7 @@
 		methods: {
 			getList(z, g, t) {
 				var that = this
+				that.$tools.loading(that)
 				var sale = that.$route.params.sale ? that.$route.params.sale : ''
 				that.$post('/packageList', {
 					tradeType: 'packageList',
@@ -115,15 +116,19 @@
 					if(res.data.tradeRstCode == '0000') {
 						that.goodList = that.cutFunc(res.data.tradeData)
 					}
+
+					that.loading.hide()
 				}).catch(err => {
+
+					that.loading.hide()
 					console.log(err)
 				})
 			},
-			cutFunc(arr){
+			cutFunc(arr) {
 				var codes = []
 				var arrFinal = []
-				arr.map(function(i){
-					if(JSON.stringify(codes).indexOf(i.packageCode) == -1){
+				arr.map(function(i) {
+					if(JSON.stringify(codes).indexOf(i.packageCode) == -1) {
 						codes.push(i.packageCode)
 						arrFinal.push(i)
 					}
