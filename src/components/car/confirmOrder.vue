@@ -41,8 +41,9 @@
 							<div class="top flex">
 								<p class="name text-2 flex-1">{{i.packageName}}</p>
 								<!--<p class="detail">{{i.detail}}</p>-->
-								<p class="price">{{$t('message.yuanFH')}}{{i.currentPrice}}<span>x {{i.currentNumber}}</span></p>
+								<p class="price">{{$t('message.yuanFH')}}{{i.currentPrice}}<span></span></p>
 							</div>
+							<div class="line"></div>
 							<div class="bottom">
 								<span class="card" v-if="i.card">{{i.cardText.split("：")[0]}}</span>
 								<span class="noCard" v-else>{{$t("message.xzkp")}}</span>
@@ -67,13 +68,13 @@
 					<li class="clearfix" v-show="kpValue == '0'">
 						<p class="thirdTil">{{$t("message.kdCost")}}</p>
 						<div class="total">
-							{{$t("message.yuanFH")}}<span>{{kd}} x 1</span>
+							{{$t("message.yuanFH")}}<span>{{kd}}</span>
 						</div>
 					</li>
 					<li class="clearfix" v-show="kpValue == '0'">
 						<p class="thirdTil">{{$t("message.kpCost")}}</p>
 						<div class="total">
-							{{$t("message.yuanFH")}}<span>{{kf}} x {{kpNum}}</span>
+							{{$t("message.yuanFH")}}<span>{{kf}} &times; {{Number(kpNum)}}</span>
 						</div>
 					</li>
 				</ul>
@@ -236,9 +237,28 @@
 			this.address = this.addressObj.areaTxt + this.addressObj.addressTxt
 			this.kd = (this.kdValue == '1') ? this.$store.getters.getKDPrice : this.$store.getters.getSFPrice
 
+			var that = this
 			//微信 && 获取卡片信息
 			if(this.openId && this.$store.getters.getCardListHave.length == 0) {
 				this.getCard()
+				this.cardListNo = [{
+					text: (that.langType ? '卡' : 'Card') + '1',
+					value: (that.langType ? '卡' : 'Card') + '1'
+				}]
+				this.$store.commit('setCardListNo', this.cardListNo)
+			} else if(this.$store.getters.getCardListHave.length == 0 && this.$store.getters.getCardListNo.length == 0) {
+				if(this.$store.getters.getYouke == '0') {
+					this.cardListHave = [{
+						value: that.$store.getters.getDeviceCode,
+						text: (that.langType ? '卡' : 'Card') + '1' + "：" + that.$store.getters.getDeviceCode,
+					}]
+					this.$store.commit('setCardListHave', this.cardListHave)
+				}
+				this.cardListNo = [{
+					text: (that.langType ? '卡' : 'Card') + '1',
+					value: (that.langType ? '卡' : 'Card') + '1'
+				}]
+				this.$store.commit('setCardListNo', this.cardListNo)
 			} else {
 				this.cardListHave = this.$store.getters.getCardListHave
 				this.cardListNo = this.$store.getters.getCardListNo
@@ -254,7 +274,7 @@
 				this.tcList.map(function(item) {
 					delete item.card
 				})
-				this.$store.commit('setCartList', this.tcList)
+				this.$store.commit('setCartSelect2', this.tcList)
 			},
 			kfFunc(type) {
 				var num = 0;
@@ -284,26 +304,24 @@
 			getCard() {
 				var that = this
 				//卡片列表
+				this.$tools.loading(that)
 				that.$post('/queryDeviceCode', {
 					tradeType: 'queryDeviceCode',
 					openId: that.openId
 				}).then((res) => {
-					if(res.data.tradeRstCode == '0000') {
-						var cardArr = []
-						res.data.tradeData.map(function(item, idx) {
-							cardArr.push({
-								text: (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.deviceCode,
-								value: item.deviceCode
-							})
+					var cardArr = []
+					res.data.tradeData.map(function(item, idx) {
+						cardArr.push({
+							text: (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.deviceCode,
+							value: item.deviceCode
 						})
-						that.cardListHave = cardArr
-						that.$store.commit('setCardListHave', cardArr)
-						that.haveOrNo(that.kpValue)
-					} else {
-						that.$tools.alert(that, res.data.tradeRstMessage)
-					}
-				}).catch(err => {
-					that.$tools.alert(that, res.data.tradeRstMessage)
+					})
+					that.cardListHave = cardArr
+					that.$store.commit('setCardListHave', cardArr)
+					that.haveOrNo(that.kpValue)
+					that.loading.hide()
+				}).catch(function() {
+					that.loading.hide()
 				})
 			},
 			addressFunc() {
@@ -328,7 +346,7 @@
 					onSelect: (selectedVal, selectedIndex, selectedText) => {
 						that.tcList[idx].card = selectedVal[0]
 						that.tcList[idx].cardText = selectedText[0]
-						that.$store.commit('setCartList', that.tcList)
+						that.$store.commit('setCartSelect2', that.tcList)
 						//无卡情况，计算卡片数量
 						that.kfFunc(1)
 						that.$forceUpdate()
@@ -526,46 +544,44 @@
 						that.$tools.wxPay(that, data, returnUrl)
 					} else {
 						that.payShow = false
-						that.$createDialog({
-							type: 'confirm',
-							content: that.langType ? '选择支付方式' : 'Choosing the Way of Payment for Wechat',
-							confirmBtn: {
-								text: that.langType ? '转入微信支付' : 'To Wechat Payment',
-								active: true,
-								disabled: false,
-								href: 'javascript:;'
-							},
-							cancelBtn: {
-								text: that.langType ? '微信扫码支付' : 'Wechat Code Payment',
-								active: true,
-								disabled: false,
-								href: 'javascript:;'
-							},
-							onConfirm: () => {
-								//wxH5支付
-								let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/1/' + that.$store.getters.getDeviceCode
-								let data = {
-									appid: '',
-									body: '',
-									key: '',
-									mch_id: '',
-									payAmount: that.totalCNY,
-									payId: pId,
-									scene_info: ''
+						that.$createActionSheet({
+							title: that.langType ? '选择支付方式' : 'The Way of Payment for Wechat',
+							cancelTxt: that.$t("message.cancel"),
+							data: [{
+									content: that.langType ? '转入微信支付' : 'To Wechat Payment',
+									align: 'center'
+								},
+								{
+									content: that.langType ? '微信扫码支付' : 'Wechat Code Payment',
+									align: 'center'
 								}
-								that.$tools.wxPayH5(that, data, returnUrl)
-							},
-							onCancel: () => {
-								//扫码支付
-								let data = {
-									appid: '',
-									body: '',
-									key: '',
-									mch_id: '',
-									payAmount: that.totalCNY,
-									payId: pId
+							],
+							onSelect: (item, index) => {
+								if(index == 0) {
+									//wxH5支付
+									let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/1/' + that.$store.getters.getDeviceCode
+									let data = {
+										appid: '',
+										body: '',
+										key: '',
+										mch_id: '',
+										payAmount: that.totalCNY,
+										payId: pId,
+										scene_info: ''
+									}
+									that.$tools.wxPayH5(that, data, returnUrl)
+								} else {
+									//扫码支付
+									let data = {
+										appid: '',
+										body: '',
+										key: '',
+										mch_id: '',
+										payAmount: that.totalCNY,
+										payId: pId
+									}
+									that.$tools.wxPayCode(that, data)
 								}
-								that.$tools.wxPayCode(that, data)
 							}
 						}).show()
 					}
@@ -665,11 +681,11 @@
 						padding: 0.4rem 0.5rem;
 						margin-bottom: 0.5rem;
 						.top {
-							border-bottom: 2px dotted #f5f5f5;
 							p {
 								float: left;
 								font-size: 0.7rem;
-								line-height: 1.2rem;
+								line-height: 1rem;
+								padding:0.1rem 0;
 								&.name {
 									padding-bottom: 0.3rem;
 								}
@@ -693,11 +709,12 @@
 							}
 						}
 						.bottom {
+							padding:0.3rem 0 0.1rem;
 							span.card {
 								background: #F65200;
 								font-size: 0.7rem;
 								color: #fff;
-								line-height: 1.4rem;
+								line-height: 0.7rem;
 								height: 1.4rem;
 								border-radius: 0.7rem;
 								padding: 0 0.5rem;

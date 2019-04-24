@@ -42,10 +42,13 @@
 				//				}else{
 				//					this.$tools.toast(this, this.langType ? '不能再少了':'No less')
 				//				}
+				let flag = false
 				if(this.num > 1) {
 					this.num--
+				}else{
+					flag = true
 				}
-				this.$emit('currentNum', this.num);
+				this.$emit('currentNum', this.num, false, flag);
 			},
 			add() {
 				//				if(this.num < Number(this.large)) {
@@ -54,7 +57,7 @@
 				//					this.$tools.toast(this, this.langType ? '不能再多了':'No more')
 				//				}
 				this.num++
-					this.$emit('currentNum', this.num);
+					this.$emit('currentNum', this.num, true);
 			}
 		}
 	}

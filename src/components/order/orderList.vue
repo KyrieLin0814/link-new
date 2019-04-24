@@ -9,7 +9,7 @@
 			<ul class="list" v-if="list.length > 0">
 				<li class="item" v-for="i in list">
 					<div class="top clearfix">
-						<p>{{$t("message.order")}} {{i.orderId}}</p>
+						<p>{{$t("message.order")}}：{{i.payId}}</p>
 						<span>{{$tools.timeShow(i.orderTime)}}</span>
 					</div>
 					<p class="til">{{$t("message.tcCost")}}</p>
@@ -28,6 +28,7 @@
 						</li>
 					</ul>
 					<div class="totalCost">{{$t("message.heji")}}：<span>{{$t("message.yuanFH")}}{{i.paymentAmount}}</span></div>
+					<div class="line"></div>
 					<cube-button class="color" @click="toInfo(i)">{{$t("message.clickToInfo")}}</cube-button>
 				</li>
 			</ul>
@@ -51,14 +52,12 @@
 			that.$post('/myOrder ', {
 				tradeType: 'myOrder ',
 				tradeData: {
-					deviceCode: that.$store.getters.getDeviceCode,
-					orderId:"",
-					orderStatus:"",
-					orderType: "",
+					deviceCode: that.$store.getters.getDeviceCode
 				}
 			}).then((res) => {
 				if(res.data.tradeRstCode == '0000') {
-					that.list = res.data.tradeData
+					let result = res.data.tradeData
+					that.list = result.sort(that.$tools.compare('orderTime'))
 					that.loading.hide()
 				}else{
 					that.$tools.alert(that, res.data.tradeRstMessage,that.$tools.toIndex)
@@ -109,11 +108,11 @@
 		.list {
 			padding: 0.2rem 0 1rem;
 			.item {
+				position: relative;
 				margin-bottom: 1.3rem;
 				background: #fff;
 				padding: 0.5rem;
 				border-radius: 0.3rem;
-				box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.1);
 				.top {
 					font-size: 0.6rem;
 					color: #bfbfbf;
@@ -148,7 +147,6 @@
 					text-align: right;
 					font-size: 0.7rem;
 					line-height: 2rem;
-					border-bottom: 2px dotted #ccc;
 					span {
 						color: #db3749;
 						font-size: 1rem;

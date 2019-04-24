@@ -74,7 +74,7 @@
 				this.screenFlag = true
 			} else {
 				var that = this
-				let type = this.$route.params.type
+				let type = this.$route.query.type
 				let zhou = ''
 				let country = ''
 				let packageType = ''

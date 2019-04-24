@@ -46,6 +46,7 @@ module.exports = {
 //		order	
 		myOrder:'我的订单',
 		orderDetail:'订单详情',
+		ddxd:'订单续订',
 		meatch: "套餐匹配",
 	 	costDetail:'费用详情',
 	 	payDetail:'支付详情',
@@ -66,7 +67,8 @@ module.exports = {
 	 	jyfs:'交易方式',
 	 	jyhm:'交易号码',
 	 	jyls:'交易流水',
-	 	orderSuccess:'订单已完成，感谢！',	 	
+	 	orderSuccess:'订单已完成，感谢！',	
+	 	xk:'选卡',
 
 	 	
 	 	
@@ -81,7 +83,7 @@ module.exports = {
 		duoxuan:'可多选',
 		moreChoice:'更多选择',
 		startFind:'开始搜索',
-		moveUp:'向上滑动开启新世界',
+		moveUp:'向上滑动开启新世界',
 		chooseCountry:'选择国家',
 		search:'查询',
 		choosedCountry:'已选择国家',

@@ -41,34 +41,20 @@
 			this.pId = this.$route.params.payId
 			this.pType = this.$route.params.payType
 			this.deviceCode = this.$route.params.deviceCode
-			
+
 			var that = this
+			
 			//清空购物车已购买商品
 			if(that.payStatus == 1) {
 				that.$tools.renderCart(that)
 			}
 
 			//自动登录
-			that.$tools.loading(that)
-			that.$post('/userLogin', {
-				tradeType: 'userLogin',
-				tradeData: {
-					deviceCode: that.deviceCode,
-					partnerScope: that.$store.getters.getLoginType
-				}
-			}).then((res) => {
-				if(res.data.tradeRstCode == '0000') {
-					that.$store.commit('setDeviceCode', that.deviceCode)
-					that.loading.hide()
-					if(that.payStatus == 2) {
-						//查询支付结果
-						that.getPayStatus()
-					}
-				} else {
-					that.loading.hide()
-					that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toLogin())
-				}
-			})
+			that.$store.commit('setDeviceCode', that.deviceCode)
+			if(that.payStatus == 2) {
+				//查询支付结果
+				that.getPayStatus()
+			}
 		},
 		methods: {
 			toIndex() {

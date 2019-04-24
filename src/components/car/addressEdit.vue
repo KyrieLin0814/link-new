@@ -10,7 +10,7 @@
 				</div>
 				<div class="inputBox tel">
 					<label>{{$t("message.tel")}}：</label>
-					<input type="number" v-model="addressObj.tel" :placeholder=" langType ? '请输入联系电话':'Please enter your telephone number' " />
+					<input type="text" maxlength="11" v-model="addressObj.tel" :placeholder=" langType ? '请输入联系电话':'Please enter your telephone number'" />
 				</div>
 
 				<div class="inputBox local" v-if="langType">
@@ -60,11 +60,12 @@
 		data() {
 			return {
 				langType: this.$store.getters.getLangType == 'cn',
-				addressObj: this.$store.getters.getAddressObj
+				addressObj: {}
 			}
 		},
 		created() {
-
+			var that = this
+			this.addressObj = JSON.parse(JSON.stringify(that.$store.getters.getAddressObj))
 		},
 		mounted() {
 			var that = this
@@ -83,6 +84,17 @@
 			},
 			confirm() {
 				var that = this
+				let reg1 = /^[1-9]\d*$/
+				let reg2 = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/
+				if(!reg1.test(this.addressObj.tel)) {
+					that.$tools.alert(that, this.langType ? '请输入正确的电话' : 'Please enter the correct phone number')
+					return
+				}
+				if(!reg2.test(this.addressObj.email)) {
+					that.$tools.alert(that, this.langType ? '请输入正确的邮箱' : 'Please enter the correct E-mail')
+					return
+				}
+
 				if(this.addressObj.name &&
 					this.addressObj.tel &&
 					this.addressObj.areaTxt &&
@@ -106,7 +118,7 @@
 	.addressEdit {
 		.formContent {
 			margin: 0 -0.7rem;
-			padding-bottom:2.5rem;
+			padding-bottom: 2.5rem;
 			.inputBox {
 				padding: 0.3rem 0.7rem;
 				label {

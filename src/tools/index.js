@@ -247,16 +247,47 @@ const tools = {
 	},
 	//时间显示格式
 	timeShow(t, type) {
-		let year = t.substring(0, 4)
-		let month = t.substring(4, 6)
-		let day = t.substring(6, 8)
-		let hour = t.substring(8, 10)
-		let min = t.substring(10, 12)
-		let sec = t.substring(12, 14)
-		if(type) {
-			return year + '-' + month + '-' + day + " " + hour + ':' + min + ':' + sec
-		} else {
-			return year + '-' + month + '-' + day
+		if(t) {
+			let year = t.substring(0, 4)
+			let month = t.substring(4, 6)
+			let day = t.substring(6, 8)
+			let hour = t.substring(8, 10)
+			let min = t.substring(10, 12)
+			let sec = t.substring(12, 14)
+			if(type) {
+				return year + '-' + month + '-' + day + " " + hour + ':' + min + ':' + sec
+			} else {
+				return year + '-' + month + '-' + day
+			}
+		}else{
+			if(type) {
+				return '2019-01-01 00:00:00'
+			} else {
+				return '2019-01-01'
+			}
+		}
+
+	},
+	//卡号查重
+	testCard(arr, u_key) {
+		let map = new Map()
+		let flag = false
+		arr.forEach((item, index) => {
+			if(!map.has(item[u_key])) {
+				map.set(item[u_key], item)
+			} else {
+				flag = true
+			}
+		})
+		//		return [...map.values()]
+		return flag
+	},
+	//数组排序
+	compare(property) {
+		return function(a, b) {
+			var value1 = a[property];
+			var value2 = b[property];
+			return value2 - value1;
 		}
 	},
 	//回到首页
@@ -268,7 +299,7 @@ const tools = {
 		window.location.href = '/#/'
 	},
 	//获取url基础路径
-	getUrl(){
+	getUrl() {
 		let url = window.location.href.split('#')[0] + '#'
 		return url
 	},
@@ -299,7 +330,7 @@ const tools = {
 		var params = encodeURI(encodeURI(document.location.href))
 		v.$get("https://wx.linksfield.net/payment/weixinsao?reqUrl=" + params).then((res) => {
 			wx.config({
-				debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。  
+				debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。  
 				appId: res.appId, // 必填，公众号的唯一标识  
 				timestamp: res.timestamp, // 必填，生成签名的时间戳  
 				nonceStr: res.nonceStr, // 必填，生成签名的随机串  
@@ -382,6 +413,7 @@ const tools = {
 	},
 	//wx二维码支付
 	wxPayCode(v, obj) {
+		v.$tools.loading(v)
 		v.$post('https://wx.linksfield.net/payment/weixinScan', {
 			tradeType: 'weixinScan',
 			tradeData: obj
@@ -394,6 +426,7 @@ const tools = {
 			});
 			qrcode.makeCode(res.data.tradeData.code_url)
 			v.payCode = true
+			v.loading.hide()
 		}).catch(err => {
 			v.loading.hide()
 		})

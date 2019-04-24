@@ -111,6 +111,8 @@
 				this.cartSelect = arr
 				this.$store.commit('setCartSelect', selectList)
 				this.$store.commit('setCartSelect2', arr)
+				
+				console.log(arr)
 				this.total = Number(that.$tools.totalFunc(selectList).toFixed(2))
 			},
 			delFunc(idx, obj) {

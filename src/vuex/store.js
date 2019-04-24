@@ -5,38 +5,38 @@ Vue.use(Vuex)
 const state = {
 	//用户信息
 	langType: localStorage.getItem("lang") ? localStorage.getItem("lang") : "cn",
-	loginType: sessionStorage.getItem("loginType") ? sessionStorage.getItem("loginType") : "1",
-	partnerCode: sessionStorage.getItem("partnerCode") ? sessionStorage.getItem("partnerCode") : 'P000270',
-	requestOrderId: sessionStorage.getItem("requestOrderId") ? sessionStorage.getItem("requestOrderId") : '',
-	token: sessionStorage.getItem("token") ? sessionStorage.getItem("token") : '',
-	deviceCode: sessionStorage.getItem("deviceCode") ? sessionStorage.getItem("deviceCode") : '',
-	openId: sessionStorage.getItem("openId") ? sessionStorage.getItem("openId") : '', //oc07A071Sr3kVbqqIWLGtTlwGIac
+	loginType: localStorage.getItem("loginType") ? localStorage.getItem("loginType") : "1",
+	partnerCode: localStorage.getItem("partnerCode") ? localStorage.getItem("partnerCode") : 'P000270',
+	requestOrderId: localStorage.getItem("requestOrderId") ? localStorage.getItem("requestOrderId") : '',
+	token: localStorage.getItem("token") ? localStorage.getItem("token") : '',
+	deviceCode: localStorage.getItem("deviceCode") ? localStorage.getItem("deviceCode") : '',
+	openId: localStorage.getItem("openId") ? localStorage.getItem("openId") : '', //oc07A071Sr3kVbqqIWLGtTlwGIac
 	connSeqNo: '',
 	version: '2.0',
-	youke: sessionStorage.getItem("youke") ? sessionStorage.getItem("youke") : '0',
+	youke: localStorage.getItem("youke") ? localStorage.getItem("youke") : '0',
 
 	baseBg: require('../assets/image/goodlist.jpg'),
 
 	//跳转缓存
 	pageParam: {
-		backRouter: sessionStorage.getItem("backRouter") ? sessionStorage.getItem("backRouter") : '',
-		currentPackage: sessionStorage.getItem("currentPackage") ? JSON.parse(sessionStorage.getItem("currentPackage")) : {},
-		countryList: sessionStorage.getItem("countryList") ? JSON.parse(sessionStorage.getItem("countryList")) : [],
-		packageType: sessionStorage.getItem("packageType") ? sessionStorage.getItem("packageType") : '',
+		backRouter: localStorage.getItem("backRouter") ? localStorage.getItem("backRouter") : '',
+		currentPackage: localStorage.getItem("currentPackage") ? JSON.parse(localStorage.getItem("currentPackage")) : {},
+		countryList: localStorage.getItem("countryList") ? JSON.parse(localStorage.getItem("countryList")) : [],
+		packageType: localStorage.getItem("packageType") ? localStorage.getItem("packageType") : '',
 
 	},
 	//购物车数组
-	cartList: sessionStorage.getItem("cartList") ? JSON.parse(sessionStorage.getItem("cartList")) : [],
-	checkList: sessionStorage.getItem("checkList") ? JSON.parse(sessionStorage.getItem("checkList")) : [],
-	cartSelect: sessionStorage.getItem("cartSelect") ? JSON.parse(sessionStorage.getItem("cartSelect")) : [],
-	cartSelect2: sessionStorage.getItem("cartSelect2") ? JSON.parse(sessionStorage.getItem("cartSelect2")) : [],
+	cartList: localStorage.getItem("cartList") ? JSON.parse(localStorage.getItem("cartList")) : [],  
+	checkList: localStorage.getItem("checkList") ? JSON.parse(localStorage.getItem("checkList")) : [],
+	cartSelect: localStorage.getItem("cartSelect") ? JSON.parse(localStorage.getItem("cartSelect")) : [],
+	cartSelect2: localStorage.getItem("cartSelect2") ? JSON.parse(localStorage.getItem("cartSelect2")) : [],
 
 	//卡片列表
-	cardListHave: sessionStorage.getItem("cardListHave") ? JSON.parse(sessionStorage.getItem("cardListHave")) : [],
-	cardListNo: sessionStorage.getItem("cardListNo") ? JSON.parse(sessionStorage.getItem("cardListNo")) : [],
+	cardListHave: localStorage.getItem("cardListHave") ? JSON.parse(localStorage.getItem("cardListHave")) : [],
+	cardListNo: localStorage.getItem("cardListNo") ? JSON.parse(localStorage.getItem("cardListNo")) : [],
 
 	//用户绑定信息
-	addressObj: sessionStorage.getItem("addressObj") ? JSON.parse(sessionStorage.getItem("addressObj")) : {
+	addressObj: localStorage.getItem("addressObj") ? JSON.parse(localStorage.getItem("addressObj")) : {
 		name: '',
 		tel: '',
 		areaTxt: '',
@@ -45,17 +45,17 @@ const state = {
 		email: ''
 	},
 	//卡片、快递信息
-	kpValue: sessionStorage.getItem("kpValue") ? sessionStorage.getItem("kpValue") : '1',
-	kpPriceCn: sessionStorage.getItem("kpPriceCn") ? sessionStorage.getItem("kpPriceCn") : '0.1',
-	kpPriceEn: sessionStorage.getItem("kpPriceEn") ? sessionStorage.getItem("kpPriceEn") : '0.1',
-	kpNum: sessionStorage.getItem("kpNum") ? sessionStorage.getItem("kpNum") : '0',
-	kpSelect: sessionStorage.getItem("kpSelect") ? JSON.parse(sessionStorage.getItem("kpSelect")) : [],
+	kpValue: localStorage.getItem("kpValue") ? localStorage.getItem("kpValue") : '1',
+	kpPriceCn: localStorage.getItem("kpPriceCn") ? localStorage.getItem("kpPriceCn") : '0.1',
+	kpPriceEn: localStorage.getItem("kpPriceEn") ? localStorage.getItem("kpPriceEn") : '0.1',
+	kpNum: localStorage.getItem("kpNum") ? localStorage.getItem("kpNum") : '0',
+	kpSelect: localStorage.getItem("kpSelect") ? JSON.parse(localStorage.getItem("kpSelect")) : [],
 
-	kdValue: sessionStorage.getItem("kdValue") ? sessionStorage.getItem("kdValue") : '1',
-	kdPriceCn: sessionStorage.getItem("kdPriceCn") ? sessionStorage.getItem("kdPriceCn") : '0.1',
-	kdPriceEn: sessionStorage.getItem("kdPriceEn") ? sessionStorage.getItem("kdPriceEn") : '0.1',
-	sfPriceCn: sessionStorage.getItem("sfPriceCn") ? sessionStorage.getItem("sfPriceCn") : '0.15',
-	sfPriceEn: sessionStorage.getItem("sfPriceEn") ? sessionStorage.getItem("sfPriceEn") : '0.15',
+	kdValue: localStorage.getItem("kdValue") ? localStorage.getItem("kdValue") : '1',
+	kdPriceCn: localStorage.getItem("kdPriceCn") ? localStorage.getItem("kdPriceCn") : '0.1',
+	kdPriceEn: localStorage.getItem("kdPriceEn") ? localStorage.getItem("kdPriceEn") : '0.1',
+	sfPriceCn: localStorage.getItem("sfPriceCn") ? localStorage.getItem("sfPriceCn") : '0.15',
+	sfPriceEn: localStorage.getItem("sfPriceEn") ? localStorage.getItem("sfPriceEn") : '0.15',
 
 	//选项数组
 	listOptions: {
@@ -235,103 +235,103 @@ const mutations = {
 	},
 	setLoginType(state, param) {
 		state.loginType = param;
-		sessionStorage.setItem("loginType", param);
+		localStorage.setItem("loginType", param);
 	},
 	setOpenId(state, param) {
 		state.openId = param;
-		sessionStorage.setItem("openId", param);
+		localStorage.setItem("openId", param);
 	},
 	setYouke(state, param) {
 		state.youke = param;
-		sessionStorage.setItem("youke", param);
+		localStorage.setItem("youke", param);
 	},
 	setPartnerCode(state, param) {
 		state.partnerCode = param;
-		sessionStorage.setItem("partnerCode", param);
+		localStorage.setItem("partnerCode", param);
 	},
 	setRequestOrderId(state, param) {
 		state.requestOrderId = param;
-		sessionStorage.setItem("requestOrderId", param);
+		localStorage.setItem("requestOrderId", param);
 	},
 	setToken(state, param) {
 		state.token = param;
-		sessionStorage.setItem("token", param);
+		localStorage.setItem("token", param);
 	},
 	setDeviceCode(state, param) {
 		state.deviceCode = param;
-		sessionStorage.setItem("deviceCode", param);
+		localStorage.setItem("deviceCode", param);
 	},
 	setCurrentPackage(state, param) {
 		state.pageParam.currentPackage = param;
-		sessionStorage.setItem("currentPackage", JSON.stringify(param));
+		localStorage.setItem("currentPackage", JSON.stringify(param));
 	},
 	setCountryList(state, param) {
 		state.pageParam.countryList = param;
-		sessionStorage.setItem("countryList", JSON.stringify(param));
+		localStorage.setItem("countryList", JSON.stringify(param));
 	},
 	setBackRouter(state, param) {
 		state.pageParam.backRouter = param;
-		sessionStorage.setItem("backRouter", param);
+		localStorage.setItem("backRouter", param);
 	},
 	setPackageType(state, param) {
 		state.pageParam.packageType = param;
-		sessionStorage.setItem("packageType", param);
+		localStorage.setItem("packageType", param);
 	},
 	setAddressObj(state, param) {
 		state.addressObj = param;
-		sessionStorage.setItem("addressObj", JSON.stringify(param));
+		localStorage.setItem("addressObj", JSON.stringify(param));
 	},
 	setCartList(state, param) {
 		state.cartList = param;
-		sessionStorage.setItem("cartList", JSON.stringify(param));
+		localStorage.setItem("cartList", JSON.stringify(param));
 	},
 	setCheckList(state, param) {
 		state.checkList = param;
-		sessionStorage.setItem("checkList", JSON.stringify(param));
+		localStorage.setItem("checkList", JSON.stringify(param));
 	},
 	setCartSelect(state, param) {
 		state.cartSelect = param;
-		sessionStorage.setItem("cartSelect", JSON.stringify(param));
+		localStorage.setItem("cartSelect", JSON.stringify(param));
 	},
 	setCartSelect2(state, param) {
 		state.cartSelect2 = param;
-		sessionStorage.setItem("cartSelect2", JSON.stringify(param));
+		localStorage.setItem("cartSelect2", JSON.stringify(param));
 	},
 	setCardListHave(state, param) {
 		state.cardListHave = param;
-		sessionStorage.setItem("cardListHave", JSON.stringify(param));
+		localStorage.setItem("cardListHave", JSON.stringify(param));
 	},
 	setCardListNo(state, param) {
 		state.cardListNo = param;
-		sessionStorage.setItem("cardListNo", JSON.stringify(param));
+		localStorage.setItem("cardListNo", JSON.stringify(param));
 	},
 	setKP(state, param) {
 		state.kpValue = param;
-		sessionStorage.setItem("kpValue", param);
+		localStorage.setItem("kpValue", param);
 	},
 	setKD(state, param) {
 		state.kdValue = param;
-		sessionStorage.setItem("kdValue", param);
+		localStorage.setItem("kdValue", param);
 	},
 	setKPPrice(state, param) {
 		state.kpPrice = param;
-		sessionStorage.setItem("kpPrice", param);
+		localStorage.setItem("kpPrice", param);
 	},
 	setKPNum(state, param) {
 		state.kpNum = JSON.stringify(param);
-		sessionStorage.setItem("kpNum", param);
+		localStorage.setItem("kpNum", param);
 	},
 	setKPSelect(state, param) {
 		state.kpSelect = param;
-		sessionStorage.setItem("kpSelect", JSON.stringify(param));
+		localStorage.setItem("kpSelect", JSON.stringify(param));
 	},
 	setKDPrice(state, param) {
 		state.kdPrice = param;
-		sessionStorage.setItem("kdPrice", param);
+		localStorage.setItem("kdPrice", param);
 	},
 	setSFPrice(state, param) {
 		state.sfPrice = param;
-		sessionStorage.setItem("sfPrice", param);
+		localStorage.setItem("sfPrice", param);
 	},
 
 };

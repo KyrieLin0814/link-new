@@ -20,10 +20,10 @@
 				showNav: true,
 				showTel: false,
 				langType: this.$store.getters.getLangType == 'cn',
-				logoUrl:require('../../assets/image/navLogo.png')
+				logoUrl: require('../../assets/image/navLogo.png')
 			}
 		},
-		created(){
+		created() {
 			var that = this
 			that.$tools.loading(that)
 			that.$post('/partnerShowInfo', {
@@ -50,19 +50,19 @@
 			},
 			router(str) {
 				var that = this
-				if(this.$store.getters.getDeviceCode){
-					this.$router.push(str)
-				}else{
-					this.$tools.alert(that,that.langType? '请使用用户登录':'Please login with the user')
-				}
+				//				if(this.$store.getters.getDeviceCode){
+				this.$router.push(str)
+				//				}else{
+				//					this.$tools.alert(that,that.langType? '请使用用户登录':'Please login with the user')
+				//				}
 			},
 			contactFunc() {
 				this.$createDialog({
 					type: 'alert',
 					title: this.$t("message.contactNav"),
-					maskClosable:true,
-					confirmBtn :{
-						text:''
+					maskClosable: true,
+					confirmBtn: {
+						text: ''
 					},
 				}, (createElement) => {
 					return [
@@ -76,7 +76,7 @@
 								'class': {
 									'phoneText': true
 								}
-							},'4001-123-123'),
+							}, '4001-123-123'),
 						])
 					]
 				}).show()
@@ -124,8 +124,8 @@
 			transition: all 0.3s;
 			li.logo {
 				margin: 0 0 0.5rem;
-				font-size:0;
-				padding:0;
+				font-size: 0;
+				padding: 0;
 				img {
 					display: block;
 					width: 100%;

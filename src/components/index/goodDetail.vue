@@ -167,36 +167,36 @@
 			},
 			addCart() {
 				var that = this
-				if(this.$store.getters.getDeviceCode) {
-					var currentObj = JSON.parse(JSON.stringify(this.obj))
-					currentObj.orderPeriod = this.orderPeriod
-					currentObj.currentNumber = this.currentNumber
-					currentObj.currentPrice = this.currentPrice
-					currentObj.currentOldPrice = this.currentOldPrice
-					currentObj.currentPriceWx = this.currentPriceWx
-					currentObj.currentPricePp = this.currentPricePp
+				//				if(this.$store.getters.getDeviceCode) {
+				var currentObj = JSON.parse(JSON.stringify(this.obj))
+				currentObj.orderPeriod = this.orderPeriod
+				currentObj.currentNumber = this.currentNumber
+				currentObj.currentPrice = this.currentPrice
+				currentObj.currentOldPrice = this.currentOldPrice
+				currentObj.currentPriceWx = this.currentPriceWx
+				currentObj.currentPricePp = this.currentPricePp
 
-					var cartList = this.$store.getters.getCartList
-					//购物车是否存在该套餐
-					var have = false
-					var haveIdx = null
-					cartList.map(function(item, idx) {
-						if(currentObj.packageCode == item.packageCode && currentObj.orderPeriod == item.orderPeriod) {
-							haveIdx = idx
-							have = true
-						}
-					})
-					if(have) {
-						cartList[haveIdx].currentNumber = cartList[haveIdx].currentNumber + currentObj.currentNumber
-					} else {
-						cartList.push(currentObj)
+				var cartList = this.$store.getters.getCartList
+				//购物车是否存在该套餐
+				var have = false
+				var haveIdx = null
+				cartList.map(function(item, idx) {
+					if(currentObj.packageCode == item.packageCode && currentObj.orderPeriod == item.orderPeriod) {
+						haveIdx = idx
+						have = true
 					}
-
-					this.$store.commit('setCartList', cartList)
-					this.$router.push('/car')
+				})
+				if(have) {
+					cartList[haveIdx].currentNumber = cartList[haveIdx].currentNumber + currentObj.currentNumber
 				} else {
-					this.$tools.alert(that, that.langType ? '请使用用户登录' : 'Please login with the user')
+					cartList.push(currentObj)
 				}
+
+				this.$store.commit('setCartList', cartList)
+				this.$router.push('/car')
+				//				} else {
+				//					this.$tools.alert(that, that.langType ? '请使用用户登录' : 'Please login with the user')
+				//				}
 			},
 			buyNow() {
 				this.$router.push('/confirmOrder')

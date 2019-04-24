@@ -46,6 +46,7 @@ module.exports = {
 //		order	
 		myOrder:'My order',
 		orderDetail:'Order detail',
+		ddxd:'Order repurchase',
 		meatch: "Meal matching",
 	 	costDetail:'Details of cost',
 	 	payDetail:'Details of payment',
@@ -67,6 +68,7 @@ module.exports = {
 	 	jyhm:'Payment number',
 	 	jyls:'Payment flow',
 	 	orderSuccess:'The order has been completed. Thank you!',	 
+	 	xk:'Select',
 	 	
 	 	
 //		index	 	

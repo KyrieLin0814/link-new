@@ -42,7 +42,6 @@
 		},
 		created() {
 			var that = this
-			//默认选中
 			this.cardList = JSON.parse(JSON.stringify(that.$store.getters.getCardListHave))
 		},
 		mounted() {
@@ -99,11 +98,16 @@
 				}
 				let dataArr = []
 				arr.map(function(item, idx) {
+					item.value = item.value.replace(/\s+/g,"")
 					item.text = (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.value
 					dataArr.push({
 						deviceCode: item.value
 					})
 				})
+				if(this.$tools.testCard(arr,'value')){
+					that.$tools.alert(that, that.langType ? '请勿添加重复卡号' : "Don’t add duplicate card number")
+					return
+				}
 
 				//验证卡号有效性
 				that.$tools.loading(that)

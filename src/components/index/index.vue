@@ -225,12 +225,7 @@
 				})
 			},
 			hotFunc(t) {
-				this.$router.push({
-					name: 'goodList',
-					params: {
-						type: t
-					}
-				})
+				this.$router.push("/goodList?type=" + t)
 			}
 		}
 	}

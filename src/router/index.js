@@ -20,6 +20,7 @@ import noCard from '@/components/index/noCard'
 //order
 import orderList from '@/components/order/orderList'
 import orderInfo from '@/components/order/orderInfo'
+import buyAgain from '@/components/order/buyAgain'
 
 //car
 import car from '@/components/car/car'
@@ -95,6 +96,11 @@ const router = new Router({
 			component: orderInfo
 		},
 		{
+			path: '/buyAgain',
+			name: 'buyAgain',
+			component: buyAgain
+		},
+		{
 			path: '/car',
 			name: 'car',
 			component: car
@@ -120,11 +126,42 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
 	if(to.name.indexOf('login') != -1) {
 		//清理token
-		store.state.token = ''
-		sessionStorage.removeItem('token')
+		store.commit('setAddressObj', {
+			name: '',
+			tel: '',
+			areaTxt: '',
+			addressTxt: '',
+			companyName: '',
+			email: ''
+		})
+		localStorage.removeItem('addressObj')
+
+		store.commit('setCartList', [])
+		localStorage.removeItem('cartList')
+
+		store.commit('setCheckList', [])
+		localStorage.removeItem('checkList')
+
+		store.commit('setCartSelect', [])
+		localStorage.removeItem('cartSelect')
+
+		store.commit('setCartSelect2', [])
+		localStorage.removeItem('cartSelect2')
+		
+		store.commit('setCardListHave', [])
+		localStorage.removeItem('cardListHave')
+		
+		store.commit('setCardListNo', [])
+		localStorage.removeItem('cardListNo')
+		
+		store.commit('setKPNum', '0')
+		localStorage.removeItem('kpNum')
+		
+		store.commit('setKPSelect', [])
+		localStorage.removeItem('kpSelect')
+		
 		next()
 	} else {
-
 		next()
 	}
 })

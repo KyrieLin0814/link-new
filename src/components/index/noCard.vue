@@ -35,20 +35,15 @@
 			return {
 				langType: this.$store.getters.getLangType == 'cn',
 				placeholder: this.$t("message.inputTxt"),
-				cardList: this.$store.getters.getCardListNo,
+				cardList: [],
 			}
 		},
 		created() {
-
+			var that = this
+			this.cardList = JSON.parse(JSON.stringify(that.$store.getters.getCardListNo))
 		},
 		mounted() {
-			if(this.cardList.length == 0){
-				this.cardList.push({
-					text:(this.langType ? '卡' : 'Card') + 1,
-					value:(this.langType ? '卡' : 'Card') + 1
-				})
-				this.$store.commit('setCardListNo',this.cardList)
-			}
+
 		},
 		methods: {
 			back() {
@@ -56,18 +51,18 @@
 			},
 			confirm() {
 				this.$router.replace("/confirmOrder")
-				this.$store.commit('setCardListNo',this.cardList)
+				this.$store.commit('setCardListNo', this.cardList)
 			},
 			addCard() {
-				var str = this.cardList[this.cardList.length-1].text
-				var num = str.substr(str.length-1,1)
+				var str = this.cardList[this.cardList.length - 1].text
+				var num = str.substr(str.length - 1, 1)
 				console.log(num)
 				this.cardList.push({
-					text:(this.langType ? '卡' : 'Card') + (Number(num)+1),
-					value:(this.langType ? '卡' : 'Card') + (Number(num)+1)
+					text: (this.langType ? '卡' : 'Card') + (Number(num) + 1),
+					value: (this.langType ? '卡' : 'Card') + (Number(num) + 1)
 				})
 			},
-			delFunc(idx){
+			delFunc(idx) {
 				this.cardList.splice(idx, 1)
 			}
 		}
@@ -115,22 +110,21 @@
 					background: #F65200;
 					color: #fff;
 					border-radius: 0.2rem;
-					span{
+					span {
 						display: block;
 						position: absolute;
-						right:-0.3rem;
-						top:-0.3rem;
+						right: -0.3rem;
+						top: -0.3rem;
 						background: #fff;
-						border:1px solid #F65200;
-						color:#F65200;
-						z-index:9;
-						width:0.8rem;
-						height:0.8rem;
-						font-size:0.8rem;
-						line-height:0.8rem;
+						border: 1px solid #F65200;
+						color: #F65200;
+						z-index: 9;
+						width: 0.8rem;
+						height: 0.8rem;
+						font-size: 0.8rem;
+						line-height: 0.8rem;
 						text-align: center;
-						border-radius:0.4rem;
-						
+						border-radius: 0.4rem;
 					}
 				}
 			}

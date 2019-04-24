@@ -11,7 +11,7 @@
 				<div class="okBox">
 					<p class="wc">{{$t("message.orderSuccess")}}</p>
 					<p class="code">
-						<span>{{$t("message.order")}}:{{currentObj.orderId}}</span>
+						<span>{{$t("message.order")}}:{{currentObj.payId}}</span>
 						<span class="date">{{$tools.timeShow(currentObj.orderTime,1)}}</span>
 					</p>
 				</div>
@@ -33,6 +33,7 @@
 							</li>
 						</ul>
 					</div>
+					<div class="line"></div>
 
 					<div class="costBox">
 						<p class="secondTil">{{$t("message.costDetail")}}</p>
@@ -40,7 +41,7 @@
 							<li class="clearfix">
 								<p class="thirdTil">{{$t("message.tcCost")}}</p>
 								<div class="total">
-									{{$t("message.yuanFH")}}{{costDetails.packageFee}}
+									{{$t("message.yuanFH")}}{{total}}
 									</span>
 								</div>
 							</li>
@@ -58,26 +59,28 @@
 							</li>
 						</ul>
 					</div>
+					<div class="line"></div>
 
 					<div class="payBox" v-if="payDetails">
 						<p class="secondTil">{{$t("message.payDetail")}}</p>
 						<ul class="contentList">
 							<li>{{$t("message.jyfs")}}：{{$t("message.payArr")[payDetails.paymentType]}}</li>
 							<li>{{$t("message.jyhm")}}：{{payDetails.transactionId}}</li>
-							<li>{{$t("message.jyls")}}：{{payDetails.orderId}}</li>
+							<li>{{$t("message.jyls")}}：{{payDetails.payId}}</li>
 						</ul>
 					</div>
+					<div class="line"></div>
 
 					<div class="tcBox">
 						<p class="secondTil">{{$t("message.tcDetail")}}</p>
 						<div class="cards clearfix">
-							<span class="cardItem" v-for="(i,idx) in packageUsingDetails" :class="{'active': i.deviceCode == activeCard}" @click="alertFunc(i)">{{$t("message.card")}}{{idx+1}}</span>
+							<span class="cardItem" v-for="(i,idx) in cardList" :class="{'active': i.deviceCode == activeCard}" @click="alertFunc(i)">{{$t("message.card")}}{{idx+1}}</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
 		<!--支付按钮-->
 		<div class="fixedBtns flex">
 			<cube-button class="gray flex-1" @click="back">{{$t('message.back')}}</cube-button>
@@ -86,57 +89,7 @@
 				{{$t("message.nextBuy")}}
 			</cube-button>
 		</div>
-
-		<!--支付方式弹窗-->
-		<div class="masker" v-if="payShow" @click="hidePay()"></div>
-		<div class="maskBox payBox" :class="{'show': payShow}">
-			<p class="til">{{$t("message.payment")}}</p>
-			<p class="priceActive">{{(payType == 3 ? ('$' + xdPriceUSD):('￥' + xdPriceCNY))}}</p>
-			<ul class="pauType">
-				<li :class="{'active': payType == 1}" @click="payTypeFunc(1)">
-					<i class="wx"></i><span>{{$t("message.WxPay")}}</span>
-				</li>
-				<li :class="{'active': payType == 2}" @click="payTypeFunc(2)" v-if="!isWx">
-					<i class="qh"></i><span>{{$t("message.QhPay")}}</span>
-				</li>
-				<li :class="{'active': payType == 3}" @click="payTypeFunc(3)" v-if="!isWx">
-					<i class="py"></i><span>{{$t("message.PyPal")}}</span>
-				</li>
-			</ul>
-			<div id="paypal" v-show="payType==3"></div>
-			<cube-button v-show="payType!=3" class="color" @click="payFunc(payObj.payId)">{{$t("message.confirm")}}</cube-button>
-		</div>
-
-		<!--二维码弹窗-->
-		<div class="masker" v-if="payCode" @click="payCode=false"></div>
-		<div class="payCodeBox" :class="{'show': payCode}">
-			<div id="qrcode"></div>
-			<p class="tips">{{$t("message.codeTips")}}</p>
-			<cube-button class="color" @click="codePayFunc()">{{$t("message.yzf")}}</cube-button>
-		</div>
-
-		<!--钱海表单-->
-		<div class="oceanBox">
-			<form action="https://secure.oceanpayment.com/gateway/service/test" method="post" id="oceanForm">
-				<input type="hidden" name="account" id="account" value="" />
-				<input type="hidden" name="backUrl" id="backUrl" value="" />
-				<input type="hidden" name="billing_address" id="billing_address" value="" />
-				<input type="hidden" name="billing_city" id="billing_city" value="" />
-				<input type="hidden" name="billing_country" id="billing_country" value="" />
-				<input type="hidden" name="billing_email" id="billing_email" value="" />
-				<input type="hidden" name="billing_firstName" id="billing_firstName" value="" />
-				<input type="hidden" name="billing_lastName" id="billing_lastName" value="" />
-				<input type="hidden" name="billing_phone" id="billing_phone" value="" />
-				<input type="hidden" name="billing_zip" id="billing_zip" value="" />
-				<input type="hidden" name="methods" id="methods" value="" />
-				<input type="hidden" name="noticeUrl" id="noticeUrl" value="" />
-				<input type="hidden" name="order_amount" id="order_amount" value="" />
-				<input type="hidden" name="order_currency" id="order_currency" value="" />
-				<input type="hidden" name="order_number" id="order_number" value="" />
-				<input type="hidden" name="signValue" id="signValue" value="" />
-				<input type="hidden" name="terminal" id="terminal" value="" />
-			</form>
-		</div>
+		
 	</div>
 </template>
 
@@ -153,13 +106,8 @@
 				costDetails: null,
 				payDetails: null,
 				packageUsingDetails: [],
+				cardList:[],
 				activeCard: null,
-				payType: 1, //1微信      2//钱海    3//paypal
-				payShow: false,
-				payCode: false,
-				payObj: null,
-				xdPriceCNY: null,
-				xdPriceUSD: null,
 			}
 		},
 		created() {
@@ -169,22 +117,32 @@
 				tradeType: 'myOrderDetails ',
 				tradeData: {
 					deviceCode: that.$store.getters.getDeviceCode,
-					orderId: that.currentObj.orderId
+					payId: that.currentObj.payId
 				}
 			}).then((res) => {
 				if(res.data.tradeRstCode == '0000') {
 					that.tcList = res.data.packageMatch
 					that.costDetails = res.data.costDetails[0]
 					that.payDetails = res.data.payDetails[0]
-					that.total = Number(that.costDetails.cardFee) + Number(that.costDetails.expressFee) + Number(that.costDetails.packageFee)
+					that.tcList.map(function(i){
+						that.total  = that.total + Number(i.paymentAmount)
+					})
 					that.packageUsingDetails = res.data.packageUsingDetails
-					that.activeCard = that.packageUsingDetails[0].deviceCode
+					
+					that.packageUsingDetails.map(function(item){
+						if(JSON.stringify(that.cardList).indexOf(item.deviceCode) == -1){
+							//所有卡列表
+							that.cardList.push(item)
+						}
+					})
+					that.activeCard = that.cardList[0].deviceCode
+					
 					that.xdPriceCNY = res.data.xdPriceCNY
 					that.xdPriceUSD = res.data.xdPriceUSD
 
-					for(let i = 0; i < that.packageUsingDetails.length; i++) {
+					for(let i = 0; i < that.cardList.length; i++) {
 						for(let j = 0; j < that.tcList.length; j++) {
-							if(that.packageUsingDetails[i].deviceCode == that.tcList[j].deviceCode) {
+							if(that.cardList[i].deviceCode == that.tcList[j].deviceCode) {
 								that.tcList[j].cardNum = i + 1
 							}
 						}
@@ -213,7 +171,7 @@
 					tradeType: 'usedPackageDetails  ',
 					tradeData: {
 						deviceCode: i.deviceCode,
-						orderId: that.currentObj.orderId
+						orderId: ''
 					}
 				}).then((res) => {
 					if(res.data.tradeRstCode == '0000') {
@@ -251,173 +209,9 @@
 					that.loading.hide()
 				})
 			},
-			payTypeFunc(i) {
-				this.payType = i
-			},
-			hidePay() {
-				this.payType = 1
-				this.payShow = false
-			},
-			codePayFunc() {
-				var that = this
-				that.$router.push('/payResult/2/' + that.payObj.payId + '/1/' + that.$store.getters.getDeviceCode)
-			},
 			buyNext() {
-				var that = this
-				if(that.tcList.length != 0 && that.xdPriceCNY && that.xdPriceUSD) {
-					that.sendOrder()
-				} else {
-					that.$tools.alert(that, that.langType ? '订单异常！' : 'Order exception！', that.$tools.toIndex)
-				}
-			},
-			sendOrder() {
-				var that = this
-				that.$tools.loading(that)
-				let orderNo = that.$tools.getNo() + that.$tools.generate(5)
-				let deviceListArr = [{
-					deviceCode: that.costDetails.deviceCode,
-					orderList: [{
-						cardFee: that.costDetails.cardFee,
-						expressFee: that.costDetails.expressFee,
-						globalOrder: '0',
-						orderNo: orderNo,
-						orderPeriod: '1',
-						packageCode: that.tcList[0].packageCode,
-						packageFee: (that.payType == 3) ? that.xdPriceUSD : that.xdPriceCNY,
-						packageName: that.tcList[0].packageName,
-						packageType: that.tcList[0].packageType,
-					}]
-				}]
-
-				let data = {
-					deviceList: deviceListArr,
-					partnerScope: that.$store.getters.getLoginType,
-					payAmount: (that.payType == 3) ? that.xdPriceUSD : that.xdPriceCNY,
-					payCurrency: (that.payType == 3) ? 'USD' : 'CNY',
-					payId: that.$store.getters.getPartnerCode + that.$tools.getNo() + that.$tools.generate(5),
-					requestOrderId: that.$store.getters.getRequestOrderId
-				}
-				that.$post('/userCardOrder', {
-					tradeType: 'userCardOrder',
-					tradeData: data
-				}).then((res) => {
-					if(res.data.tradeRstCode == '0000') {
-						that.loading.hide()
-						//paypal加载
-						that.paypalRender(data.payId, that.xdPriceUSD)
-						//ocean加载
-						that.oceanRender(data.payId, that.xdPriceCNY)
-
-						//调起支付
-						that.payShow = true
-						that.payObj = {
-							payId: data.payId
-						}
-					} else {
-						that.loading.hide()
-						that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
-					}
-				}).catch(err => {
-					that.loading.hide()
-				})
-			},
-			payFunc(pId) {
-				var that = this
-				if(that.payType == 1) {
-					if(that.$store.getters.getOpenId) {
-						//wx公众号支付
-						let returnUrl = that.$tools.getUrl() + '/payResult'
-						let data = {
-							appid: '',
-							body: '',
-							key: '',
-							mch_id: '',
-							openId: that.$store.getters.getOpenId,
-							payAmount: that.xdPriceCNY,
-							payId: pId
-						}
-						that.$tools.wxPay(that, data, returnUrl)
-					} else {
-						that.payShow = false
-						that.$createDialog({
-							type: 'confirm',
-							content: that.langType ? '选择支付方式' : 'Choosing the Way of Payment for Wechat',
-							confirmBtn: {
-								text: that.langType ? '转入微信支付' : 'To Wechat Payment',
-								active: true,
-								disabled: false,
-								href: 'javascript:;'
-							},
-							cancelBtn: {
-								text: that.langType ? '微信扫码支付' : 'Wechat Code Payment',
-								active: true,
-								disabled: false,
-								href: 'javascript:;'
-							},
-							onConfirm: () => {
-								//wxH5支付
-								let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/1/' + that.$store.getters.getDeviceCode
-								let data = {
-									appid: '',
-									body: '',
-									key: '',
-									mch_id: '',
-									payAmount: that.xdPriceCNY,
-									payId: pId,
-									scene_info: ''
-								}
-								that.$tools.wxPayH5(that, data, returnUrl)
-							},
-							onCancel: () => {
-								//扫码支付
-								let data = {
-									appid: '',
-									body: '',
-									key: '',
-									mch_id: '',
-									payAmount: that.xdPriceCNY,
-									payId: pId
-								}
-								that.$tools.wxPayCode(that, data)
-							}
-						}).show()
-					}
-				} else if(that.payType == 2) {
-					//钱海支付
-					//提交form表单
-					$("#oceanForm").submit()
-				} else {
-					//paypal支付
-					//显示paypal按钮即可
-				}
-				this.payShow = false
-			},
-			paypalRender(pId, total) {
-				var that = this
-				$("#paypal").html('')
-				let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/2/' + that.$store.getters.getDeviceCode
-				let data = {
-					clientId: '',
-					clientSecret: '',
-					mode: 'production',
-					payAmount: total,
-					payId: pId
-				}
-				that.$tools.paypalPay(that, data, returnUrl)
-			},
-			oceanRender(pId, total) {
-				var that = this
-				let returnUrl = that.$tools.getUrl() + '/payResult/2/' + pId + '/3/' + that.$store.getters.getDeviceCode
-				let data = {
-					account: '',
-					backUrl: returnUrl,
-					payAmount: total,
-					payCurrency: 'CNY',
-					payId: pId,
-					secureCode: '',
-					terminal: ''
-				}
-				that.$tools.oceanPay(that, data)
+				this.$router.push("/buyAgain")
+				
 			}
 		}
 	}
@@ -468,7 +262,7 @@
 				padding: 1rem 0.7rem;
 				border-radius: 0.3rem;
 				margin-bottom: 3.6rem;
-				box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.1);
+				/*box-shadow: 0 0 15px 3px rgba(0, 0, 0, 0.1);*/
 				background: #fff;
 				.til {
 					font-size: 0.8rem;
@@ -483,8 +277,10 @@
 					margin-top: 0.5rem;
 				}
 				.contentList {
-					border-bottom: 2px dotted #ccc;
 					padding: 0 0.7rem 0.7rem;
+					margin: 0 -0.7rem;
+				}
+				.line {
 					margin: 0 -0.7rem;
 				}
 				.tcBox {
