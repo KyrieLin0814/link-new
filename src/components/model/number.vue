@@ -47,9 +47,9 @@
 				//					this.$tools.toast(this, this.langType ? '不能再少了':'No less')
 				//				}
 				let flag = false
-				let min = 0
+				let min = 1
 				if(this.type){
-					type = 1
+					min = 0
 				}
 				if(this.num > min) {
 					this.num--

@@ -28,7 +28,7 @@
 									<p class="price">{{$t('message.yuanFH')}}{{i.paymentAmount}}</p>
 								</div>
 								<div class="bottom">
-									<span class="card">{{$t("message.card")}}{{i.cardNum}}</span>
+									<span class="card">{{i.deviceCode}}</span>
 								</div>
 							</li>
 						</ul>
@@ -74,7 +74,7 @@
 					<div class="tcBox">
 						<p class="secondTil">{{$t("message.tcDetail")}}</p>
 						<div class="cards clearfix">
-							<span class="cardItem" v-for="(i,idx) in cardList" :class="{'active': i.deviceCode == activeCard}" @click="alertFunc(i)">{{$t("message.card")}}{{idx+1}}</span>
+							<span class="cardItem" v-for="(i,idx) in cardList" :class="{'active': i.deviceCode == activeCard}" @click="alertFunc(i)">{{i.deviceCode}}</span>
 						</div>
 					</div>
 				</div>
@@ -140,13 +140,13 @@
 					that.xdPriceCNY = res.data.xdPriceCNY
 					that.xdPriceUSD = res.data.xdPriceUSD
 
-					for(let i = 0; i < that.cardList.length; i++) {
-						for(let j = 0; j < that.tcList.length; j++) {
-							if(that.cardList[i].deviceCode == that.tcList[j].deviceCode) {
-								that.tcList[j].cardNum = i + 1
-							}
-						}
-					}
+//					for(let i = 0; i < that.cardList.length; i++) {
+//						for(let j = 0; j < that.tcList.length; j++) {
+//							if(that.cardList[i].deviceCode == that.tcList[j].deviceCode) {
+//								that.tcList[j].cardNum = i + 1
+//							}
+//						}
+//					}
 					that.loading.hide()
 				} else {
 					that.$tools.alert(that, res.data.tradeRstMessage)
@@ -365,13 +365,15 @@
 				.cards {
 					padding: 0.4rem 0;
 					.cardItem {
+						display: inline-block;
+						float:left;
 						border: 1px solid #a0a0a0;
 						color: #a0a0a0;
 						font-size: 0.7rem;
-						line-height: 1.3rem;
-						height: 1.4rem;
+						height: 1rem;
+						line-height: 0.95rem;
 						border-radius: 0.7rem;
-						padding: 0 0.6rem;
+						padding: 0 0.3rem;
 						margin: 0 0.5rem 0.5rem 0;
 						&.active {
 							border: 1px solid #F65200;

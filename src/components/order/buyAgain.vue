@@ -18,7 +18,7 @@
 									<p class="detail">
 										{{$t("message.orderPeriod")}}:{{i.orderPeriod}} {{(i.packageType == '0' || i.packageType == '1')? $t("message.day") : (i.packageType == '5' ? $t("message.nian") : $t("message.yue") ) }}
 									</p>
-									<number-bar @currentNum="currentNumber(idx, arguments)" :currentNumber='i.currentNumber'></number-bar>
+									<number-bar @currentNum="currentNumber(idx, arguments)" :currentNumber='i.currentNumber' :type="true"></number-bar>
 								</div>
 							</li>
 						</ul>
@@ -30,17 +30,22 @@
 						<p class="til">{{$t("message.meatch")}}</p>
 						<ul class="contentList" v-if="matchList.length > 0">
 							<li v-for="(i,idx) in matchList">
-								<div class="top clearfix">
-									<p class="name text-1">{{i.packageName}}</p>
+								<div class="top flex">
+									<p class="name text-2 flex-1">{{i.packageName}}</p>
+									<!--<p class="detail">{{i.detail}}</p>-->
 									<p class="price">{{$t('message.yuanFH')}}{{i.paymentAmount}}</p>
-									<span class="card" v-if="i.card">{{i.card}}</span>
-									<span class="noCard" v-else>{{$t("message.xk")}}</span>
-									<div class="chooseCard" @click="chooseCard(idx)">
-										<img src="../../assets/image/xiala.png" />
-									</div>
+								</div>
+								<div class="line"></div>
+								<div class="bottom">
+									<span class="card" v-if="i.deviceCode">{{i.deviceCode}}</span>
+									<span class="noCard" v-else>{{$t("message.xzkp")}}</span>
+								</div>
+								<div class="chooseCard" @click="chooseCard(idx)">
+									<img src="../../assets/image/xiala.png" />
 								</div>
 							</li>
 						</ul>
+						<p class="noPackages" v-else>{{$t("message.noData")}}</p>
 					</div>
 					<div class="lineB"></div>
 
@@ -56,7 +61,6 @@
 							</li>
 						</ul>
 					</div>
-					<div class="lineB"></div>
 				</div>
 			</div>
 		</div>
@@ -144,7 +148,7 @@
 				payObj: null,
 				xdPriceCNY: '0',
 				xdPriceUSD: '0',
-				total: 0
+				total: '0'
 			}
 		},
 		components: {
@@ -187,7 +191,7 @@
 						if(JSON.stringify(that.cardList).indexOf(item.deviceCode) == -1) {
 							that.cardList.push({
 								value: item.deviceCode,
-								text: (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.deviceCode
+								text:  item.deviceCode
 							})
 						}
 					})
@@ -245,12 +249,25 @@
 			changeMatchList(idx, type) {
 				var that = this
 				let obj = JSON.parse(JSON.stringify(that.numberList[idx]))
+				obj.deviceCode = ''
 				let flag = false
-
+				
+				if(that.matchList.length == 0) {
+					that.matchList.push(obj)
+					return
+				}
+				
 				for(let i = 0; i < that.matchList.length; i++) {
 					if(that.matchList[i].orderPeriod == obj.orderPeriod && that.matchList[i].packageCode == obj.packageCode) {
 						flag = true
 					}
+					//减为0   则末尾添加
+					if(!flag && i == that.matchList.length - 1) {
+						that.matchList.push(obj)
+						break
+					}
+
+					//有套餐
 					if(flag) {
 						if(i == that.matchList.length - 1) {
 							if(that.matchList[i].orderPeriod == obj.orderPeriod && that.matchList[i].packageCode == obj.packageCode) {
@@ -272,7 +289,6 @@
 							}
 						} else {
 							if(that.matchList[i].orderPeriod != obj.orderPeriod || that.matchList[i].packageCode != obj.packageCode) {
-								flag = false
 								if(type) {
 									that.matchList.splice(i, 0, obj)
 									break
@@ -291,7 +307,6 @@
 					title: that.langType ? '选择卡片' : 'Choose card',
 					data: [that.cardList],
 					onSelect: (selectedVal, selectedIndex, selectedText) => {
-						that.matchList[idx].card = selectedText[0].split("：")[0]
 						that.matchList[idx].deviceCode = selectedVal[0]
 						that.$forceUpdate()
 					},
@@ -327,7 +342,7 @@
 					}
 					that.sendOrder()
 				} else {
-					that.$tools.alert(that, that.langType ? '订单异常！' : 'Order exception！')
+					that.$tools.alert(that, that.langType ? '请选择套餐！' : 'Please choose the packages!')
 				}
 			},
 			sendOrder() {
@@ -523,7 +538,7 @@
 		overflow: hidden;
 		background: #fff!important;
 		.lineB {
-			background: #f1f1f1;
+			background: #f5f5f5;
 			height: 0.7rem;
 			margin: 0 -0.7rem;
 		}
@@ -591,62 +606,71 @@
 					}
 				}
 				.tcBox {
-					padding: 0.5rem 0;
+					padding: 0 .7rem;
+					background: #f5f5f5;
+					margin: 0 -.7rem;
+					.til {
+						border-bottom: none;
+						padding: 0;
+					}
 					ul {
 						li {
-							padding: 0.4rem 0rem;
-							margin-top: 0.6rem;
-							border-bottom: 1px solid #ccc;
-							&:last-child {
-								border: none;
-							}
+							position: relative;
+							background: #fff;
+							border-radius: 0.5rem;
+							padding: 0.4rem 0.5rem;
+							margin-top: 0.2rem;
 							.top {
-								p,
-								span,
-								div {
-									float: left;
-								}
 								p {
+									float: left;
 									font-size: 0.7rem;
+									line-height: 1rem;
+									padding: 0.1rem 0;
 									&.name {
-										width: 50%;
-										line-height: 1rem;
-									}
-									&.price {
-										padding: 0 0.3rem;
-										text-align: right;
-										color: #F65200;
-										font-size: 1rem;
+										padding-bottom: 0.3rem;
 									}
 									&.detail {
 										width: 30%;
 										text-align: center;
-										color: #a0a0a0;
 										font-size: 0.6rem;
+										color: #a0a0a0;
+									}
+									&.price {
+										text-align: right;
+										padding-right: 2%;
+										color: #F65200;
+										font-size: 1rem;
+										span {
+											color: #a0a0a0;
+											font-size: 0.8rem;
+											padding-left: 0.3rem;
+										}
 									}
 								}
-								span {
-									font-size: 0.6rem;
-									line-height: 1rem;
-									height: 1rem;
+							}
+							.bottom {
+								padding: 0.3rem 0 0.1rem;
+								span.card {
+									background: #F65200;
+									font-size: 0.7rem;
+									color: #fff;
+									line-height: 0.7rem;
+									height: 1.4rem;
 									border-radius: 0.7rem;
-									padding: 0 0.4rem;
-									&.card {
-										background: #F65200;
-										border: 1px solid #F65200;
-										color: #fff;
-									}
-									&.noCard {
-										background: #fff;
-										border: 1px solid #999;
-										color: #999;
-									}
+									padding: 0 0.5rem;
 								}
-								.chooseCard {
-									float: right;
-									img {
-										width: 1rem;
-									}
+								span.noCard {
+									font-size: 0.7rem;
+									color: #999;
+								}
+							}
+							.chooseCard {
+								position: absolute;
+								right: 0rem;
+								bottom: 0rem;
+								padding: 0.3rem 0.7rem;
+								img {
+									width: 1rem;
 								}
 							}
 						}
@@ -687,5 +711,10 @@
 				padding-right: 0.3rem;
 			}
 		}
+	}
+	.noPackages{
+		margin-top:0.4rem;
+		font-size:0.6rem;
+		color:#a0a0a0;
 	}
 </style>

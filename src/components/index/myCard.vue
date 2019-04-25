@@ -12,7 +12,7 @@
 			<div class="cardAddBox">
 				<ul v-if="cardList.length>0">
 					<li class="flex" v-for="(i,idx) in cardList">
-						<div class="card">{{i.text.split('：')[0]}}</div>
+						<div class="card">{{$t("message.card")}}{{idx + 1}}</div>
 						<div class="inputBox flex-1">
 							<input type="text" v-model="i.value" :placeholder="placeholder" />
 							<span class="screenBtn" @click="screenFunc(idx)"></span>
@@ -52,7 +52,7 @@
 
 			if(this.cardList.length == 0) {
 				this.cardList.push({
-					text: (this.langType ? '卡' : 'Card') + (this.cardList.length + 1) + "：",
+					text: '',
 					value: ''
 				})
 			}
@@ -83,7 +83,7 @@
 					}
 				}
 				this.cardList.push({
-					text: (this.langType ? '卡' : 'Card') + (this.cardList.length + 1) + "：",
+					text: '',
 					value: ''
 				})
 			},
@@ -99,7 +99,7 @@
 				let dataArr = []
 				arr.map(function(item, idx) {
 					item.value = item.value.replace(/\s+/g,"")
-					item.text = (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.value
+					item.text = item.value.replace(/\s+/g,"")
 					dataArr.push({
 						deviceCode: item.value
 					})
@@ -129,7 +129,6 @@
 							let tcList = that.$store.getters.getCartSelect
 							tcList.map(function(i) {
 								i.card = ""
-								i.cardText = ""
 							})
 							that.$store.commit('setCartList', tcList)
 							//储存有效卡

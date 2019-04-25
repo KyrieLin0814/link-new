@@ -41,11 +41,11 @@
 							<div class="top flex">
 								<p class="name text-2 flex-1">{{i.packageName}}</p>
 								<!--<p class="detail">{{i.detail}}</p>-->
-								<p class="price">{{$t('message.yuanFH')}}{{i.currentPrice}}<span></span></p>
+								<p class="price">{{$t('message.yuanFH')}}{{i.currentPrice}}</p>
 							</div>
 							<div class="line"></div>
 							<div class="bottom">
-								<span class="card" v-if="i.card">{{i.cardText.split("：")[0]}}</span>
+								<span class="card" v-if="i.card">{{i.card}}</span>
 								<span class="noCard" v-else>{{$t("message.xzkp")}}</span>
 							</div>
 							<div class="chooseCard" @click="chooseCard(idx)">
@@ -250,7 +250,7 @@
 				if(this.$store.getters.getYouke == '0') {
 					this.cardListHave = [{
 						value: that.$store.getters.getDeviceCode,
-						text: (that.langType ? '卡' : 'Card') + '1' + "：" + that.$store.getters.getDeviceCode,
+						text: that.$store.getters.getDeviceCode
 					}]
 					this.$store.commit('setCardListHave', this.cardListHave)
 				}
@@ -312,10 +312,16 @@
 					var cardArr = []
 					res.data.tradeData.map(function(item, idx) {
 						cardArr.push({
-							text: (that.langType ? '卡' : 'Card') + (idx + 1) + '：' + item.deviceCode,
+							text: item.deviceCode,
 							value: item.deviceCode
 						})
 					})
+					if(!cardArr.length){
+						cardArr=[{
+							text: that.$store.getters.getDeviceCode,
+							value: that.$store.getters.getDeviceCode
+						}]
+					}
 					that.cardListHave = cardArr
 					that.$store.commit('setCardListHave', cardArr)
 					that.haveOrNo(that.kpValue)
@@ -345,7 +351,6 @@
 					data: [that.cardList],
 					onSelect: (selectedVal, selectedIndex, selectedText) => {
 						that.tcList[idx].card = selectedVal[0]
-						that.tcList[idx].cardText = selectedText[0]
 						that.$store.commit('setCartSelect2', that.tcList)
 						//无卡情况，计算卡片数量
 						that.kfFunc(1)

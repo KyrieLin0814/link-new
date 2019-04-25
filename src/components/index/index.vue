@@ -217,12 +217,7 @@
 				this.$router.push('/goodList')
 			},
 			more() {
-				this.$router.push({
-					name: 'goodList',
-					params: {
-						sale: '1'
-					}
-				})
+				this.$router.push("/goodList?sale=1")
 			},
 			hotFunc(t) {
 				this.$router.push("/goodList?type=" + t)

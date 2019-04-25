@@ -136,7 +136,7 @@ router.beforeEach((to, from, next) => {
 		})
 		localStorage.removeItem('addressObj')
 
-		store.commit('currentPackage', {})
+		store.commit('setCurrentPackage', {})
 		localStorage.removeItem('currentPackage')
 
 		store.commit('setCartList', [])

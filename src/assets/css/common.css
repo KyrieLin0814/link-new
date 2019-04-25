@@ -431,15 +431,15 @@ input {
 	margin-left: 5.5rem;
 }
 
-@media screen and (max-width: 321px) {
+@media screen and (max-width: 320px) {
 	.swiper-container {
-		height: 7.5rem;
+		height: 6.5rem;
 	}
 	.swiper-slide.swiper-slide-active {
-		margin-left: -6rem;
+		margin-left: -4.5rem;
 	}
 	.swiper-slide.swiper-slide-prev {
-		margin-left: 6.5rem;
+		margin-left: 5rem;
 	}
 }
 

@@ -86,7 +86,7 @@
 		},
 		methods: {
 			back() {
-				//				this.$router.push("/index")
+				//this.$router.push("/index")
 				history.go(-2)
 			},
 			totalFunc() {
@@ -109,11 +109,11 @@
 				arr.map(function(item) {
 					item.currentNumber = 1
 				})
+				
 				this.cartSelect = arr
 				this.$store.commit('setCartSelect', selectList)
 				this.$store.commit('setCartSelect2', arr)
 
-				console.log(arr)
 				this.total = Number(that.$tools.totalFunc(selectList).toFixed(2))
 			},
 			delFunc(idx, obj) {

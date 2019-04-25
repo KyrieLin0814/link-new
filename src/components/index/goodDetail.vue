@@ -113,6 +113,7 @@
 		created() {
 			var that = this
 			var meal = that.$store.getters.getCurrentPackage
+			that.$tools.loading(that)
 			that.$post('/packageDetails', {
 				tradeType: 'packageDetails',
 				tradeData: {
@@ -121,6 +122,7 @@
 				}
 			}).then((res) => {
 				if(res.data.tradeRstCode == '0000') {
+					that.loading.hide()
 					that.obj = res.data.tradeData[0]
 					let packageType = that.obj.packageType
 					if(packageType == '0') {

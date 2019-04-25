@@ -102,7 +102,7 @@
 			getList(z, g, t) {
 				var that = this
 				that.$tools.loading(that)
-				var sale = that.$route.params.sale ? that.$route.params.sale : ''
+				var sale = that.$route.query.sale ? that.$route.query.sale : ''
 				that.$post('/packageList', {
 					tradeType: 'packageList',
 					tradeData: {
