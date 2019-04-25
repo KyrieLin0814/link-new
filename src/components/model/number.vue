@@ -19,6 +19,10 @@
 			currentNumber: {
 				type: Number,
 				default: 1
+			},
+			type: {
+				type: Boolean,
+				default: false
 			}
 			//			max: {
 			//				type: String,
@@ -43,12 +47,14 @@
 				//					this.$tools.toast(this, this.langType ? '不能再少了':'No less')
 				//				}
 				let flag = false
-				if(this.num > 1) {
-					this.num--
-				}else{
-					flag = true
+				let min = 0
+				if(this.type){
+					type = 1
 				}
-				this.$emit('currentNum', this.num, false, flag);
+				if(this.num > min) {
+					this.num--
+					this.$emit('currentNum', this.num, false, flag);
+				}
 			},
 			add() {
 				//				if(this.num < Number(this.large)) {
@@ -57,7 +63,7 @@
 				//					this.$tools.toast(this, this.langType ? '不能再多了':'No more')
 				//				}
 				this.num++
-					this.$emit('currentNum', this.num, true);
+				this.$emit('currentNum', this.num, true);
 			}
 		}
 	}

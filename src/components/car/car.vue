@@ -22,7 +22,7 @@
 							</div>
 
 							<div class="delBox" @click.stop>
-								<label @click="delFunc(idx,i)">X</label>
+								<label @click="delFunc(idx,i)">&times;</label>
 							</div>
 							<div class="numModel" @click.stop>
 								<label>
@@ -86,7 +86,8 @@
 		},
 		methods: {
 			back() {
-				this.$router.push("/index")
+				//				this.$router.push("/index")
+				history.go(-2)
 			},
 			totalFunc() {
 				var that = this
@@ -98,20 +99,20 @@
 						}
 					})
 				})
-				
+
 				let arr = []
-				selectList.map(function(item){
-					for(var i = 0; i <item.currentNumber; i ++){
+				selectList.map(function(item) {
+					for(var i = 0; i < item.currentNumber; i++) {
 						arr.push(JSON.parse(JSON.stringify(item)))
 					}
 				})
-				arr.map(function(item){
+				arr.map(function(item) {
 					item.currentNumber = 1
 				})
 				this.cartSelect = arr
 				this.$store.commit('setCartSelect', selectList)
 				this.$store.commit('setCartSelect2', arr)
-				
+
 				console.log(arr)
 				this.total = Number(that.$tools.totalFunc(selectList).toFixed(2))
 			},
@@ -217,9 +218,9 @@
 					display: inline-block;
 					position: relative;
 					z-index: 99;
-					font-size: 0.7rem;
+					font-size: 0.8rem;
 					line-height: 1.1rem;
-					color: #dfdfdf;
+					color: #999;
 					padding: 0 0.25rem;
 				}
 			}

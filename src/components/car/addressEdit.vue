@@ -169,7 +169,7 @@
 				&.tel,
 				&.area {
 					padding-bottom: 0.5rem;
-					border-bottom: 1rem solid #f8f8f8;
+					border-bottom: 1rem solid #f1f1f1;
 				}
 			}
 		}

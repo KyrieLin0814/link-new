@@ -74,31 +74,31 @@
 				this.screenFlag = true
 			} else {
 				var that = this
-				let type = this.$route.query.type
-				let zhou = ''
-				let country = ''
-				let packageType = ''
-
-				if(type == 1) {
-					zhou = that.langType ? '亚洲' : 'Asia'
-				} else if(type == 2) {
-					zhou = that.langType ? '欧洲' : 'Europe'
-				} else if(type == 3) {
-					zhou = that.langType ? '非洲' : 'Africa'
-				} else if(type == 4) {
-					zhou = that.langType ? '南美洲' : 'SouthAmerica'
-				} else if(type == 5) {
-					zhou = that.langType ? '北美洲' : 'NorthAmerica'
-				} else if(type == 6) {
-					zhou = that.langType ? '大洋洲' : 'Oceania'
-				} else {
-					country = that.$store.getters.getCountryList.join(',')
-					packageType = that.$store.getters.getPackageType
-				}
+				let zhou = that.getZhou()
+				let country = that.$store.getters.getCountryList.join(',')
+				let packageType = that.$store.getters.getPackageType
 				that.getList(zhou, country, packageType)
 			}
 		},
 		methods: {
+			getZhou() {
+				let type = this.$route.query.type
+				let zhou = ''
+				if(type == 1) {
+					zhou = this.langType ? '亚洲' : 'Asia'
+				} else if(type == 2) {
+					zhou = this.langType ? '欧洲' : 'Europe'
+				} else if(type == 3) {
+					zhou = this.langType ? '非洲' : 'Africa'
+				} else if(type == 4) {
+					zhou = this.langType ? '南美洲' : 'SouthAmerica'
+				} else if(type == 5) {
+					zhou = this.langType ? '北美洲' : 'NorthAmerica'
+				} else if(type == 6) {
+					zhou = this.langType ? '大洋洲' : 'Oceania'
+				} else {}
+				return zhou
+			},
 			getList(z, g, t) {
 				var that = this
 				that.$tools.loading(that)
@@ -166,7 +166,7 @@
 
 				var country = this.$store.getters.getCountryList.join(',')
 				var packageType = this.$store.getters.getPackageType
-				this.getList('', country, packageType)
+				this.getList('亚洲', country, packageType)
 			},
 		}
 	}

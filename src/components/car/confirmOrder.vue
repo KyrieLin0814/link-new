@@ -470,8 +470,8 @@
 								}
 								let orderNo = that.$tools.getNo() + that.$tools.generate(5)
 								i.orderList.push({
-									cardFee: that.kf,
-									expressFee: that.kd,
+									cardFee: (api == 'userNoCardOrder') ? that.kf : '0',
+									expressFee: (api == 'userNoCardOrder') ? that.kd : '0',
 									globalOrder: '0',
 									orderNo: orderNo,
 									orderPeriod: j.orderPeriod,
@@ -685,7 +685,7 @@
 								float: left;
 								font-size: 0.7rem;
 								line-height: 1rem;
-								padding:0.1rem 0;
+								padding: 0.1rem 0;
 								&.name {
 									padding-bottom: 0.3rem;
 								}
@@ -709,7 +709,7 @@
 							}
 						}
 						.bottom {
-							padding:0.3rem 0 0.1rem;
+							padding: 0.3rem 0 0.1rem;
 							span.card {
 								background: #F65200;
 								font-size: 0.7rem;

@@ -39,7 +39,7 @@
 				that.$tools.wxSaoConfig(that)
 			}
 			
-			if(this.$store.getters.getYouke) {
+			if(this.$store.getters.getYouke == '1') {
 				that.cardNum = ''
 				that.$store.commit('setDeviceCode', '')
 				that.$store.commit('setYouke', '0')

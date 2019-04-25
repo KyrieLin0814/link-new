@@ -65,8 +65,7 @@
 		<div class="fixedBtns flex">
 			<cube-button class="gray flex-1" @click="back">{{$t('message.back')}}</cube-button>
 			<cube-button class="color flex-1" @click="buyNext">
-				<!--<span>{{$t("message.yuanFH")}}{{total?total:0}}</span>-->
-				{{$t("message.nextBuy")}}
+				<span>{{$t("message.yuanFH")}}{{total?total:0}}</span> {{$t("message.pay")}}
 			</cube-button>
 		</div>
 
@@ -143,8 +142,8 @@
 				payShow: false,
 				payCode: false,
 				payObj: null,
-				xdPriceCNY: 0,
-				xdPriceUSD: 0,
+				xdPriceCNY: '0',
+				xdPriceUSD: '0',
 				total: 0
 			}
 		},
@@ -155,12 +154,15 @@
 			matchList(newVal) {
 				var that = this
 				this.$nextTick(function() {
-					that.xdPriceCNY = 0
+					let totalCNY = 0
+					let totalUSD = 0
 					newVal.map(function(i) {
-						that.xdPriceCNY = that.xdPriceCNY + Number(i.paymentAmount)
-						that.xdPriceUSD = that.xdPriceCNY + Number(i.paymentAmount)
+						totalCNY = totalCNY + Number(i.xdPriceCNY)
+						totalUSD = totalUSD + Number(i.xdPriceUSD)
 					})
-					that.total = that.langType ? 　that.xdPriceCNY　 : 　that.xdPriceUSD
+					that.xdPriceCNY = totalCNY.toFixed(2)
+					that.xdPriceUSD = totalUSD.toFixed(2)
+					that.total = that.langType ? 　totalCNY.toFixed(2) : totalUSD.toFixed(2)
 				})
 			}
 		},
@@ -176,8 +178,8 @@
 			}).then((res) => {
 				if(res.data.tradeRstCode == '0000') {
 					that.tcList = res.data.packageMatch
-					that.costDetails = res.data.costDetails[0]
-					that.payDetails = res.data.payDetails[0]
+					that.costDetails = res.data.costDetails
+					that.payDetails = res.data.payDetails
 					that.packageUsingDetails = res.data.packageUsingDetails
 
 					//所有卡列表cardList
@@ -233,7 +235,8 @@
 				that.numberList.map(function(item) {
 					for(let i = 0; i < item.currentNumber; i++) {
 						let obj = JSON.parse(JSON.stringify(item))
-						delete obj.currentNumber
+						obj.currentNumber = 1
+						obj.deviceCode = ''
 						arr.push(obj)
 					}
 				})
@@ -243,32 +246,44 @@
 				var that = this
 				let obj = JSON.parse(JSON.stringify(that.numberList[idx]))
 				let flag = false
-				that.matchList.map(function(i, j) {
-					if(i.orderPeriod == obj.orderPeriod && i.packageCode == obj.packageCode) {
+
+				for(let i = 0; i < that.matchList.length; i++) {
+					if(that.matchList[i].orderPeriod == obj.orderPeriod && that.matchList[i].packageCode == obj.packageCode) {
 						flag = true
 					}
-					if(j == that.matchList.length - 1) {
-						if(type) {
-							that.matchList.push(obj)
-							return
+					if(flag) {
+						if(i == that.matchList.length - 1) {
+							if(that.matchList[i].orderPeriod == obj.orderPeriod && that.matchList[i].packageCode == obj.packageCode) {
+								if(type) {
+									that.matchList.push(obj)
+									break
+								} else {
+									that.matchList.splice(i, 1)
+									break
+								}
+							} else {
+								if(type) {
+									that.matchList.splice(i, 0, obj)
+									break
+								} else {
+									that.matchList.splice(i - 1, 1)
+									break
+								}
+							}
 						} else {
-							that.matchList.splice(j, 1)
-						}
-					} else {
-						if(flag) {
-							if(i.orderPeriod != obj.orderPeriod && i.packageCode != obj.packageCode) {
+							if(that.matchList[i].orderPeriod != obj.orderPeriod || that.matchList[i].packageCode != obj.packageCode) {
 								flag = false
 								if(type) {
-									that.matchList.splice(j, 0, obj)
-									return
+									that.matchList.splice(i, 0, obj)
+									break
 								} else {
-									that.matchList.splice(j - 1, 1)
-									return
+									that.matchList.splice(i - 1, 1)
+									break
 								}
 							}
 						}
 					}
-				})
+				}
 			},
 			chooseCard(idx) {
 				var that = this
@@ -288,9 +303,7 @@
 				const index = arguments[0]
 				const tag = arguments[1][0]
 				this.numberList[index].currentNumber = tag
-				if(!arguments[1][2]) {
-					this.changeMatchList(index, arguments[1][1])
-				}
+				this.changeMatchList(index, arguments[1][1])
 			},
 			payTypeFunc(i) {
 				this.payType = i
@@ -302,6 +315,16 @@
 			buyNext() {
 				var that = this
 				if(that.matchList.length != 0 && that.xdPriceCNY && that.xdPriceUSD) {
+					let flag = false
+					that.matchList.map(function(item) {
+						if(!item.deviceCode) {
+							flag = true
+						}
+					})
+					if(flag) {
+						that.$tools.alert(that, that.langType ? '请给每个套餐匹配卡片' : 'Please assign the cards to the packages')
+						return
+					}
 					that.sendOrder()
 				} else {
 					that.$tools.alert(that, that.langType ? '订单异常！' : 'Order exception！')
@@ -314,13 +337,12 @@
 				let orderList = []
 				let cardNo = []
 				let deviceListArr = []
+
 				this.matchList.map(function(item) {
 					if(item.deviceCode && cardNo.indexOf(item.deviceCode) == -1) {
 						cardNo.push(item.deviceCode)
 					}
 				})
-				console.log(cardNo)
-				return
 
 				cardNo.map(function(item) {
 					deviceListArr.push({
@@ -331,27 +353,33 @@
 
 				deviceListArr.map(function(i) {
 					that.matchList.map(function(j) {
-						
-						//这
-						orderList.push({
-							cardFee: '',
-							expressFee: that.costDetails.expressFee,
-							globalOrder: '0',
-							orderNo: orderNo,
-							orderPeriod: '1',
-							packageCode: that.tcList[0].packageCode,
-							packageFee: (that.payType == 3) ? that.xdPriceUSD : that.xdPriceCNY,
-							packageName: that.tcList[0].packageName,
-							packageType: that.tcList[0].packageType,
-						})
+						console.log(i.deviceCode == j.deviceCode)
+
+						if(i.deviceCode == j.deviceCode) {
+							for(let t = 0; t < Number(j.currentNumber); t++) {
+								let fee = null
+								//当前套餐，当前支付类型下价格
+								if(that.payType == 3) {
+									fee = j.xdPriceUSD
+								} else {
+									fee = j.xdPriceCNY
+								}
+								let orderNo = that.$tools.getNo() + that.$tools.generate(5)
+								i.orderList.push({
+									cardFee: '0',
+									expressFee: '0',
+									globalOrder: '0',
+									orderNo: orderNo,
+									orderPeriod: j.orderPeriod,
+									packageCode: j.packageCode,
+									packageFee: fee,
+									packageName: j.packageName,
+									packageType: j.packageType,
+								})
+							}
+						}
 					})
 				})
-
-				let orderNo = that.$tools.getNo() + that.$tools.generate(5)
-				let deviceListArr = [{
-					deviceCode: that.$store.getters.getDeviceCode,
-					orderList: []
-				}]
 
 				let data = {
 					deviceList: deviceListArr,
@@ -379,7 +407,7 @@
 						}
 					} else {
 						that.loading.hide()
-						that.$tools.alert(that, res.data.tradeRstMessage, that.$tools.toIndex)
+						that.$tools.alert(that, res.data.tradeRstMessage)
 					}
 				}).catch(err => {
 					that.loading.hide()
@@ -493,7 +521,7 @@
 <style lang="less" scoped>
 	.buyAgain {
 		overflow: hidden;
-		background: #fff;
+		background: #fff!important;
 		.lineB {
 			background: #f1f1f1;
 			height: 0.7rem;

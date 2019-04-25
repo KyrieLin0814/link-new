@@ -122,8 +122,8 @@
 			}).then((res) => {
 				if(res.data.tradeRstCode == '0000') {
 					that.tcList = res.data.packageMatch
-					that.costDetails = res.data.costDetails[0]
-					that.payDetails = res.data.payDetails[0]
+					that.costDetails = res.data.costDetails
+					that.payDetails = res.data.payDetails
 					that.tcList.map(function(i){
 						that.total  = that.total + Number(i.paymentAmount)
 					})
@@ -171,7 +171,7 @@
 					tradeType: 'usedPackageDetails  ',
 					tradeData: {
 						deviceCode: i.deviceCode,
-						orderId: ''
+						orderId: i.orderId
 					}
 				}).then((res) => {
 					if(res.data.tradeRstCode == '0000') {
