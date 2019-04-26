@@ -9,7 +9,7 @@
 			<ul class="list" v-if="list.length > 0">
 				<li class="item" v-for="i in list">
 					<div class="top clearfix">
-						<p>{{$t("message.order")}}：{{i.payId}}</p>
+						<p class="text-1">{{$t("message.order")}}：{{i.payId}}</p>
 						<span>{{$tools.timeShow(i.orderTime)}}</span>
 					</div>
 					<p class="til">{{$t("message.tcCost")}}</p>
@@ -119,9 +119,12 @@
 					margin-bottom: 0.3rem;
 					line-height: 1rem;
 					p {
+						width:calc(100% - 5rem);
 						float: left;
 					}
 					span {
+						width:5rem;
+						text-align: right;
 						float: right;
 					}
 				}

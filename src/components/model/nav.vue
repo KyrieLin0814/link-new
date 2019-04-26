@@ -5,7 +5,7 @@
 		<ul class="nav" :class="{'hide': showNav}" @click="navFunc($event)">
 			<li class="logo"><img :src="logoUrl"></li>
 			<li class="navItem" @click="router('/orderList')"><i class="nav1"></i>{{$t("message.orderNav")}}</li>
-			<li class="navItem" @click="router('/car')"><i class="nav2"></i>{{$t("message.car")}}</li>
+			<li class="navItem" @click="router('/car?back=index')"><i class="nav2"></i>{{$t("message.car")}}</li>
 			<li class="navItem" @click="contactFunc()"><i class="nav3"></i>{{$t("message.contactNav")}}</li>
 		</ul>
 	</div>

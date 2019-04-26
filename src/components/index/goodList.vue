@@ -10,11 +10,11 @@
 			</div>
 			<div class="listContent" v-if="goodList.length > 0">
 				<ul>
-					<li class="flex" v-for="i in goodList">
+					<li v-for="i in goodList">
 						<div class="imgBox">
 							<img :src="i.picDetailspage">
 						</div>
-						<div class="content flex-1">
+						<div class="content">
 							<p class="name text-2">{{i.packageName}}</p>
 							<!--<p class="detail">{{i.detail}}</p>-->
 							<div class="priceBox clearfix">
@@ -72,13 +72,12 @@
 			this.country = JSON.parse(JSON.stringify(this.$store.getters.getCountryList))
 			if(this.$route.params.routerType) {
 				this.screenFlag = true
-			} else {
-				var that = this
-				let zhou = that.getZhou()
-				let country = that.$store.getters.getCountryList.join(',')
-				let packageType = that.$store.getters.getPackageType
-				that.getList(zhou, country, packageType)
 			}
+			var that = this
+			let zhou = that.getZhou()
+			let country = that.$store.getters.getCountryList.join(',')
+			let packageType = that.$store.getters.getPackageType
+			that.getList(zhou, country, packageType)
 		},
 		methods: {
 			getZhou() {
@@ -167,7 +166,7 @@
 				var country = this.$store.getters.getCountryList.join(',')
 				var packageType = this.$store.getters.getPackageType
 				this.getList('亚洲', country, packageType)
-			},
+			}
 		}
 	}
 </script>
@@ -219,7 +218,11 @@
 			padding: 1rem 0;
 			ul {
 				li {
+					font-size:0;
 					margin-bottom: 1rem;
+					&>div{
+						display: inline-block;
+					}
 					.imgBox {
 						margin-right: 0.5rem;
 						background: #f5f5f5;
@@ -229,6 +232,7 @@
 						}
 					}
 					.content {
+						vertical-align: top;
 						width: calc(100% - 9rem);
 						p {
 							max-width: 100%;
@@ -259,7 +263,8 @@
 						}
 					}
 					.carBox {
-						width: 2.5rem;
+						width: 2.4rem;
+						vertical-align: bottom;
 						position: relative;
 						a {
 							display: block;

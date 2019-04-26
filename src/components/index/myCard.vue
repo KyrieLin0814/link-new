@@ -135,9 +135,9 @@
 							that.$store.commit('setCardListHave', arr)
 							that.$router.replace("/confirmOrder")
 						} else {
-							let str = strArr.join("、")
+							let str = strArr.join("、</br>")
 							let strCn = '无效卡号(' + str + ')'
-							let strEn = 'Invalid card number(' + str + ')'
+							let strEn = 'Invalid card number:</br>' + str
 							that.$tools.alert(that, that.langType ? strCn : strEn)
 						}
 					} else {

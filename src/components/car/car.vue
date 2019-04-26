@@ -9,11 +9,11 @@
 			<div v-if="tcList.length>0">
 				<cube-checkbox-group v-model="checkList" class="checkboxBox">
 					<cube-checkbox :option="i.checkId" v-for="(i,idx) in tcList" :key="i.id">
-						<div class="checkBoxContent flex">
+						<div class="checkBoxContent">
 							<div class="imgBox">
 								<img :src="i.picDetailspage" />
 							</div>
-							<div class="content flex-1">
+							<div class="content">
 								<p class="name text-2">{{i.packageName}}</p>
 								<p class="detail">
 									{{$t("message.orderPeriod")}}:{{i.orderPeriod}} {{(i.packageType == '0' || i.packageType == '1')? $t("message.day") : (i.packageType == '5' ? $t("message.nian") : $t("message.yue") ) }}
@@ -86,8 +86,11 @@
 		},
 		methods: {
 			back() {
-				//this.$router.push("/index")
-				history.go(-2)
+				if(this.$route.query.back) {
+					this.$router.push("/" + this.$route.query.back)
+				} else {
+					history.go(-2)
+				}
 			},
 			totalFunc() {
 				var that = this
@@ -109,7 +112,7 @@
 				arr.map(function(item) {
 					item.currentNumber = 1
 				})
-				
+
 				this.cartSelect = arr
 				this.$store.commit('setCartSelect', selectList)
 				this.$store.commit('setCartSelect2', arr)
@@ -179,6 +182,10 @@
 		.checkBoxContent {
 			position: relative;
 			width: 100%;
+			font-size: 0;
+			&>div {
+				display: inline-block;
+			}
 			.imgBox {
 				margin-right: 0.5rem;
 				background: #f5f5f5;
@@ -188,10 +195,11 @@
 				}
 			}
 			.content {
-				width: calc(100% - 9rem);
+				width: calc(100% - 8rem);
+				vertical-align: top;
 				p {
 					max-width: 100%;
-					line-height: 1rem;
+					line-height: 0.9rem;
 					font-size: 0.7rem;
 					&.detail {
 						margin: 0.1rem 0;
@@ -204,15 +212,15 @@
 							vertical-align: bottom;
 							display: inline-block;
 							padding-left: 0.2rem;
-							font-size: 1rem;
+							font-size: 0.9rem;
 							color: #f65200;
 						}
 					}
 				}
 			}
 			.delBox {
+				float:right;
 				font-size: 0;
-				margin-right: -0.2rem;
 				height: 1rem;
 				label {
 					display: inline-block;

@@ -396,6 +396,7 @@
 							font-size: 0.7rem;
 							line-height: 1rem;
 							height: 2rem;
+							width:100%;
 							i {
 								font-style: normal;
 								background: #f74031;

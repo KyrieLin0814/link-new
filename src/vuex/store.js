@@ -21,7 +21,7 @@ const state = {
 	pageParam: {
 		backRouter: localStorage.getItem("backRouter") ? localStorage.getItem("backRouter") : '',
 		currentPackage: localStorage.getItem("currentPackage") ? JSON.parse(localStorage.getItem("currentPackage")) : {},
-		countryList: localStorage.getItem("countryList") ? JSON.parse(localStorage.getItem("countryList")) : [],
+		countryList: sessionStorage.getItem("countryList") ? JSON.parse(sessionStorage.getItem("countryList")) : [],
 		packageType: localStorage.getItem("packageType") ? localStorage.getItem("packageType") : '',
 
 	},
@@ -267,7 +267,7 @@ const mutations = {
 	},
 	setCountryList(state, param) {
 		state.pageParam.countryList = param;
-		localStorage.setItem("countryList", JSON.stringify(param));
+		sessionStorage.setItem("countryList", JSON.stringify(param));
 	},
 	setBackRouter(state, param) {
 		state.pageParam.backRouter = param;
